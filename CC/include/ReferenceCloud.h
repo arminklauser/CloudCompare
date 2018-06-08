@@ -167,7 +167,7 @@ protected:
 	virtual void updateBBWithPoint(const CCVector3& P);
 
 	//! Container of 3D point indexes
-	typedef GenericChunkedArray<1,unsigned> ReferencesContainer;
+	typedef GenericChunkedArray<1, unsigned> ReferencesContainer;
 
 	//! Indexes of (some of) the associated cloud points
 	ReferencesContainer* m_theIndexes;

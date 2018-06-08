@@ -143,7 +143,7 @@ struct DataCloud
 	SimpleCloud* rotatedCloud;
 	ScalarField* weights;
 	ReferenceCloud* CPSetRef;
-	ChunkedPointCloud* CPSetPlain;
+	PointCloud* CPSetPlain;
 };
 
 ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexedCloudPersist* inputModelCloud,
@@ -318,7 +318,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 	//Closest Point Set (see ICP algorithm)
 	if (inputModelMesh)
 	{
-		data.CPSetPlain = new ChunkedPointCloud;
+		data.CPSetPlain = new PointCloud;
 		cloudGarbage.add(data.CPSetPlain);
 	}
 	else
@@ -409,7 +409,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 				}
 				else if (data.CPSetPlain)
 				{
-					filteredData.CPSetPlain = new ChunkedPointCloud; //we must also update the CPSet!
+					filteredData.CPSetPlain = new PointCloud; //we must also update the CPSet!
 					cloudGarbage.add(filteredData.CPSetPlain);
 				}
 
@@ -494,7 +494,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 			}
 			else if (data.CPSetPlain)
 			{
-				filteredData.CPSetPlain = new ChunkedPointCloud; //we must also update the CPSet!
+				filteredData.CPSetPlain = new PointCloud; //we must also update the CPSet!
 				cloudGarbage.add(filteredData.CPSetPlain);
 			}
 			cloudGarbage.add(filteredData.cloud);

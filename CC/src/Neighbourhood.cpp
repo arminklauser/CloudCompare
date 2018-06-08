@@ -712,7 +712,7 @@ GenericIndexedMesh* Neighbourhood::triangulateOnPlane(	bool duplicateVertices/*=
 		//change the default mesh's reference
 		if (duplicateVertices)
 		{
-			ChunkedPointCloud* cloud = new ChunkedPointCloud();
+			PointCloud* cloud = new PointCloud();
 			const unsigned count = m_associatedCloud->size();
 			if (!cloud->reserve(count))
 			{
@@ -786,7 +786,7 @@ GenericIndexedMesh* Neighbourhood::triangulateFromQuadric(unsigned nStepX, unsig
 	const PointCoordinateType stepX = spanX/(nStepX-1);
 	const PointCoordinateType stepY = spanY/(nStepY-1);
 
-	ChunkedPointCloud* vertices = new ChunkedPointCloud();
+	PointCloud* vertices = new PointCloud();
 	if (!vertices->reserve(nStepX*nStepY))
 	{
 		delete vertices;

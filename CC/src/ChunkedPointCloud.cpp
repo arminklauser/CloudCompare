@@ -24,33 +24,28 @@
 
 using namespace CCLib;
 
-ChunkedPointCloud::ChunkedPointCloud()
+PointCloud::PointCloud()
 	: GenericIndexedCloudPersist()
-	, m_points(new GenericChunkedArray<3,PointCoordinateType>())
-	, m_validBB(false)
 	, m_currentPointIndex(0)
 	, m_currentInScalarFieldIndex(-1)
 	, m_currentOutScalarFieldIndex(-1)
 {
-	m_points->link();
 }
 
-ChunkedPointCloud::~ChunkedPointCloud()
+PointCloud::~PointCloud()
 {
 	deleteAllScalarFields();
-
-	m_points->release();
 }
 
-void ChunkedPointCloud::clear()
+void PointCloud::clear()
 {
-	m_points->clear();
+	m_points.clear();
 	deleteAllScalarFields();
 	placeIteratorAtBeginning();
 	invalidateBoundingBox();
 }
 
-void ChunkedPointCloud::forEach(genericPointAction action)
+void PointCloud::forEach(genericPointAction action)
 {
 	//there's no point of calling forEach if there's no activated scalar field!
 	ScalarField* currentOutScalarFieldArray = getCurrentOutScalarField();
@@ -67,40 +62,48 @@ void ChunkedPointCloud::forEach(genericPointAction action)
 	}
 }
 
-void ChunkedPointCloud::getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
+void PointCloud::getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
 {
-	if (!m_validBB)
+	if (!m_bbox.isValid())
 	{
-		m_points->computeMinAndMax();
-		m_validBB = true;
+		for (const CCVector3& P : m_points)
+		{
+			m_bbox.add(P);
+		}
 	}
 
-	bbMin = CCVector3(m_points->getMin());
-	bbMax = CCVector3(m_points->getMax());
+	bbMin = m_bbox.minCorner();
+	bbMax = m_bbox.maxCorner();
 }
 
-void ChunkedPointCloud::invalidateBoundingBox()
+void PointCloud::invalidateBoundingBox()
 {
-	m_validBB = false;
+	m_bbox.setValidity(false);
 }
 
-void ChunkedPointCloud::placeIteratorAtBeginning()
+void PointCloud::placeIteratorAtBeginning()
 {
 	m_currentPointIndex = 0;
 }
 
-const CCVector3* ChunkedPointCloud::getNextPoint()
+const CCVector3* PointCloud::getNextPoint()
 {
-	return (m_currentPointIndex < m_points->currentSize() ? point(m_currentPointIndex++) : 0);
+	return (m_currentPointIndex < m_points.size() ? point(m_currentPointIndex++) : 0);
 }
 
-bool ChunkedPointCloud::resize(unsigned newCount)
+bool PointCloud::resize(unsigned newCount)
 {
-	unsigned oldCount = m_points->currentSize();
+	size_t oldCount = m_points.size();
 
 	//we try to enlarge the 3D points array
-	if (!m_points->resize(newCount))
+	try
+	{
+		m_points.resize(newCount);
+	}
+	catch (const std::bad_alloc&)
+	{
 		return false;
+	}
 
 	//then the scalar fields
 	for (size_t i = 0; i < m_scalarFields.size(); ++i)
@@ -114,7 +117,7 @@ bool ChunkedPointCloud::resize(unsigned newCount)
 				m_scalarFields[j]->computeMinAndMax();
 			}
 			//we can assume that newCount > oldNumberOfPoints, so it should always be ok
-			m_points->resize(oldCount);
+			m_points.resize(oldCount);
 			return false;
 		}
 		m_scalarFields[i]->computeMinAndMax();
@@ -123,70 +126,78 @@ bool ChunkedPointCloud::resize(unsigned newCount)
 	return true;
 }
 
-bool ChunkedPointCloud::reserve(unsigned newCapacity)
+bool PointCloud::reserve(unsigned newCapacity)
 {
 	//we try to enlarge the 3D points array
-	if (!m_points->reserve(newCapacity))
+	try
+	{
+		m_points.reserve(newCapacity);
+	}
+	catch (const std::bad_alloc&)
 	{
 		return false;
 	}
 
 	//then the scalar fields
-	for (size_t i=0; i<m_scalarFields.size(); ++i)
+	for (size_t i = 0; i < m_scalarFields.size(); ++i)
 	{
 		if (!m_scalarFields[i]->reserve(newCapacity))
 			return false;
 	}
 
 	//double check
-	return (m_points->capacity() >= newCapacity);
+	return (m_points.capacity() >= newCapacity);
 }
 
-void ChunkedPointCloud::addPoint(const CCVector3 &P)
+void PointCloud::addPoint(const CCVector3 &P)
 {
 	//NaN coordinates check
 	if (	P.x != P.x
 		||	P.y != P.y
 		||	P.z != P.z )
 	{
-		//replace NaN point by (0,0,0)
+		//replace NaN point by (0, 0, 0)
 		CCVector3 fakeP(0, 0, 0);
-		m_points->addElement(fakeP.u);
+		m_points.push_back(fakeP);
 	}
 	else
 	{
-		m_points->addElement(P.u);
+		m_points.push_back(P);
 	}
-	m_validBB = false;
+
+	m_bbox.setValidity(false);
 }
 
-void ChunkedPointCloud::applyTransformation(PointProjectionTools::Transformation& trans)
+void PointCloud::applyTransformation(PointProjectionTools::Transformation& trans)
 {
 	unsigned count = size();
 
 	//always apply the scale before everything (applying before or after rotation does not changes anything)
 	if (fabs(static_cast<double>(trans.s) - 1.0) > ZERO_TOLERANCE)
 	{
-		for (unsigned i=0; i<count; ++i)
-			*point(i) *= trans.s;
-		m_validBB = false; //invalidate bb
+		for (CCVector3& P : m_points)
+		{
+			P *= trans.s;
+		}
+		m_bbox.setValidity(false); //invalidate bb
 	}
 
 	if (trans.R.isValid())
 	{
-		for (unsigned i=0; i<count; ++i)
+		for (CCVector3& P : m_points)
 		{
-			CCVector3* P = point(i);
-			(*P) = trans.R * (*P);
+			P = trans.R * P;
 		}
-		m_validBB = false;
+		m_bbox.setValidity(false); //invalidate bb
 	}
 
 	if (trans.T.norm() > ZERO_TOLERANCE) //T applied only if it makes sense
 	{
-		for (unsigned i=0; i<count; ++i)
-			*point(i) += trans.T;
-		m_validBB = false;
+		for (CCVector3& P : m_points)
+		{
+			P += trans.T;
+		}
+		m_bbox.setValidity(false); //invalidate bb
 	}
 }
 
@@ -196,7 +207,7 @@ void ChunkedPointCloud::applyTransformation(PointProjectionTools::Transformation
 /***                 ***/
 /***********************/
 
-bool ChunkedPointCloud::isScalarFieldEnabled() const
+bool PointCloud::isScalarFieldEnabled() const
 {
 	ScalarField* currentInScalarFieldArray = getCurrentInScalarField();
 	if (!currentInScalarFieldArray)
@@ -205,10 +216,10 @@ bool ChunkedPointCloud::isScalarFieldEnabled() const
 	}
 
 	unsigned sfValuesCount = currentInScalarFieldArray->currentSize();
-	return (sfValuesCount > 0 && sfValuesCount >= m_points->currentSize());
+	return (sfValuesCount > 0 && sfValuesCount >= m_points.size());
 }
 
-bool ChunkedPointCloud::enableScalarField()
+bool PointCloud::enableScalarField()
 {
 	ScalarField* currentInScalarField = getCurrentInScalarField();
 
@@ -240,10 +251,10 @@ bool ChunkedPointCloud::enableScalarField()
 		m_currentOutScalarFieldIndex = m_currentInScalarFieldIndex;
 	}
 
-	return currentInScalarField->resize(m_points->capacity());
+	return currentInScalarField->resize(m_points.capacity());
 }
 
-void ChunkedPointCloud::setPointScalarValue(unsigned pointIndex, ScalarType value)
+void PointCloud::setPointScalarValue(unsigned pointIndex, ScalarType value)
 {
 	assert(m_currentInScalarFieldIndex>=0 && m_currentInScalarFieldIndex<(int)m_scalarFields.size());
 	//slow version
@@ -255,24 +266,24 @@ void ChunkedPointCloud::setPointScalarValue(unsigned pointIndex, ScalarType valu
 	m_scalarFields[m_currentInScalarFieldIndex]->setValue(pointIndex, value);
 }
 
-ScalarType ChunkedPointCloud::getPointScalarValue(unsigned pointIndex) const
+ScalarType PointCloud::getPointScalarValue(unsigned pointIndex) const
 {
 	assert(m_currentOutScalarFieldIndex >= 0 && m_currentOutScalarFieldIndex < static_cast<int>(m_scalarFields.size()));
 
 	return m_scalarFields[m_currentOutScalarFieldIndex]->getValue(pointIndex);
 }
 
-ScalarField* ChunkedPointCloud::getScalarField(int index) const
+ScalarField* PointCloud::getScalarField(int index) const
 {
 	return (index >= 0 && index < static_cast<int>(m_scalarFields.size()) ? m_scalarFields[index] : 0);
 }
 
-const char* ChunkedPointCloud::getScalarFieldName(int index) const
+const char* PointCloud::getScalarFieldName(int index) const
 {
 	return (index >= 0 && index < static_cast<int>(m_scalarFields.size()) ? m_scalarFields[index]->getName() : 0);
 }
 
-int ChunkedPointCloud::addScalarField(const char* uniqueName)
+int PointCloud::addScalarField(const char* uniqueName)
 {
 	//we don't accept two SF with the same name!
 	if (getScalarFieldIndexByName(uniqueName) >= 0)
@@ -307,7 +318,7 @@ int ChunkedPointCloud::addScalarField(const char* uniqueName)
 	return static_cast<int>(m_scalarFields.size()) - 1;
 }
 
-void ChunkedPointCloud::deleteScalarField(int index)
+void PointCloud::deleteScalarField(int index)
 {
 	int sfCount = static_cast<int>(m_scalarFields.size());
 	if (index < 0 || index >= sfCount)
@@ -336,7 +347,7 @@ void ChunkedPointCloud::deleteScalarField(int index)
 	m_scalarFields.pop_back();
 }
 
-void ChunkedPointCloud::deleteAllScalarFields()
+void PointCloud::deleteAllScalarFields()
 {
 	m_currentInScalarFieldIndex = m_currentOutScalarFieldIndex = -1;
 
@@ -347,7 +358,7 @@ void ChunkedPointCloud::deleteAllScalarFields()
 	}
 }
 
-int ChunkedPointCloud::getScalarFieldIndexByName(const char* name) const
+int PointCloud::getScalarFieldIndexByName(const char* name) const
 {
 	size_t sfCount = m_scalarFields.size();
 	for (size_t i = 0; i < sfCount; ++i)
@@ -360,7 +371,7 @@ int ChunkedPointCloud::getScalarFieldIndexByName(const char* name) const
 	return -1;
 }
 
-bool ChunkedPointCloud::renameScalarField(int index, const char* newName)
+bool PointCloud::renameScalarField(int index, const char* newName)
 {
 	if (getScalarFieldIndexByName(newName) < 0)
 	{
@@ -374,16 +385,16 @@ bool ChunkedPointCloud::renameScalarField(int index, const char* newName)
 	return false;
 }
 
-void ChunkedPointCloud::swapPoints(unsigned firstIndex, unsigned secondIndex)
+void PointCloud::swapPoints(unsigned firstIndex, unsigned secondIndex)
 {
 	if (	firstIndex == secondIndex
-		||	firstIndex >= m_points->currentSize()
-		||	secondIndex >= m_points->currentSize())
+		||	firstIndex >= m_points.size()
+		||	secondIndex >= m_points.size())
 	{
 		return;
 	}
 
-	m_points->swap(firstIndex, secondIndex);
+	std::swap(m_points[firstIndex], m_points[secondIndex]);
 
 	for (size_t i = 0; i < m_scalarFields.size(); ++i)
 	{

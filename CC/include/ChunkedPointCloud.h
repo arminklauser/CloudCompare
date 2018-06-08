@@ -20,10 +20,12 @@
 #define CHUNKED_POINT_CLOUD_HEADER
 
 //Local
-#include "GenericChunkedArray.h"
 #include "GenericIndexedCloudPersist.h"
 #include "PointProjectionTools.h"
+#include "BoundingBox.h"
 
+//STL
+#include <vector>
 
 namespace CCLib
 {
@@ -31,24 +33,18 @@ namespace CCLib
 class ScalarField;
 
 //! A storage-efficient point cloud structure that can also handle an unlimited number of scalar fields
-/** This structure is based on the GenericChunkedArray structure and the
-    GenericIndexedCloud interface. It can store more than 67M points thanks to it's
-	"chunked" database (if there is enough free memory, of course). There is no
-	512 Mo limit. On the counter part, the access to each point is slightly
-	slower (but this shouldn't really be noticeable!).
-**/
-class CC_CORE_LIB_API ChunkedPointCloud : virtual public GenericIndexedCloudPersist
+class CC_CORE_LIB_API PointCloud : virtual public GenericIndexedCloudPersist
 {
 public:
 
 		//! Default constructor
-		ChunkedPointCloud();
+		PointCloud();
 
 		//! Default destructor
-		virtual ~ChunkedPointCloud();
+		virtual ~PointCloud();
 
 		//**** inherited form GenericCloud ****//
-		inline virtual unsigned size() const override { return m_points->currentSize(); }
+		inline virtual unsigned size() const override { return static_cast<unsigned>(m_points.size()); }
 		virtual void forEach(genericPointAction action) override;
 		virtual void getBoundingBox(CCVector3& bbMin, CCVector3& bbMax) override;
 		virtual void placeIteratorAtBeginning() override;
@@ -82,7 +78,7 @@ public:
 		/** The cloud database is resized with the specified size. If the new size
 			is smaller, the overflooding points will be deleted. If its greater,
 			the database is filled with blank points (warning, the
-			ChunkedPointCloud::addPoint method will insert points after those ones).
+			PointCloud::addPoint method will insert points after those ones).
 			\param newNumberOfPoints the new number of points
 			\return true if the method succeeds, false otherwise
 		**/
@@ -90,7 +86,7 @@ public:
 
 		//! Reserves memory for the point database
 		/** This method tries to reserve some memory to store points
-			that will be inserted later (with ChunkedPointCloud::addPoint).
+			that will be inserted later (with PointCloud::addPoint).
 			If the new number of points is smaller than the actual one,
 			nothing happens.
 			\param newNumberOfPoints the new number of points
@@ -105,7 +101,7 @@ public:
 
 		//! Adds a 3D point to the database
 		/** To assure the best efficiency, the database memory must have already
-			been reserved (with ChunkedPointCloud::reserve). Otherwise nothing
+			been reserved (with PointCloud::reserve). Otherwise nothing
 			happens.
 			\param P a 3D point
 		**/
@@ -142,19 +138,19 @@ public:
 		virtual int getScalarFieldIndexByName(const char* name) const;
 
 		//! Returns the scalar field currently associated to the cloud input
-		/** See ChunkedPointCloud::setPointScalarValue.
+		/** See PointCloud::setPointScalarValue.
 			\return a pointer to the currently defined INPUT scalar field (or 0 if none)
 		**/
 		inline virtual ScalarField* getCurrentInScalarField() const { return getScalarField(m_currentInScalarFieldIndex); }
 
 		//! Returns the scalar field currently associated to the cloud output
-		/** See ChunkedPointCloud::getPointScalarValue.
+		/** See PointCloud::getPointScalarValue.
 			\return a pointer to the currently defined OUTPUT scalar field (or 0 if none)
 		**/
 		inline virtual ScalarField* getCurrentOutScalarField() const { return getScalarField(m_currentOutScalarFieldIndex); }
 
 		//! Sets the INPUT scalar field
-		/** This scalar field will be used by the ChunkedPointCloud::setPointScalarValue method.
+		/** This scalar field will be used by the PointCloud::setPointScalarValue method.
 			\param index a scalar field index (or -1 if none)
 		**/
 		inline virtual void setCurrentInScalarField(int index) { m_currentInScalarFieldIndex=index; }
@@ -163,7 +159,7 @@ public:
 		inline virtual int getCurrentInScalarFieldIndex() { return m_currentInScalarFieldIndex; }
 
 		//! Sets the OUTPUT scalar field
-		/** This scalar field will be used by the ChunkedPointCloud::getPointScalarValue method.
+		/** This scalar field will be used by the PointCloud::getPointScalarValue method.
 			\param index a scalar field index (or -1 if none)
 		**/
 		inline virtual void setCurrentOutScalarField(int index) { m_currentOutScalarFieldIndex=index; }
@@ -172,8 +168,8 @@ public:
 		inline virtual int getCurrentOutScalarFieldIndex() { return m_currentOutScalarFieldIndex; }
 
 		//! Sets both the INPUT & OUTPUT scalar field
-		/** This scalar field will be used by both ChunkedPointCloud::getPointScalarValue
-			and ChunkedPointCloud::setPointScalarValue methods.
+		/** This scalar field will be used by both PointCloud::getPointScalarValue
+			and PointCloud::setPointScalarValue methods.
 			\param index a scalar field index
 		**/
 		inline virtual void setCurrentScalarField(int index) { setCurrentInScalarField(index);setCurrentOutScalarField(index); }
@@ -208,7 +204,7 @@ public:
 		virtual void deleteAllScalarFields();
 
 		//! Returns cloud capacity (i.e. reserved size)
-		inline virtual unsigned capacity() const { return m_points->capacity(); }
+		inline virtual unsigned capacity() const { return static_cast<unsigned>(m_points.capacity()); }
 
 protected:
 
@@ -220,20 +216,20 @@ protected:
 			\param index point index
 			\return pointer on point stored data
 		**/
-		inline virtual CCVector3* point(unsigned index) { assert(index < size()); return reinterpret_cast<CCVector3*>(m_points->getValue(index)); }
+		inline virtual CCVector3* point(unsigned index) { assert(index < size()); return &(m_points[index]); }
 
 		//! Returns const access to a given point
 		/** WARNING: index must be valid
 			\param index point index
 			\return pointer on point stored data
 		**/
-		inline virtual const CCVector3* point(unsigned index) const { assert(index < size()); return reinterpret_cast<CCVector3*>(m_points->getValue(index)); }
+		inline virtual const CCVector3* point(unsigned index) const { assert(index < size()); return &(m_points[index]); }
 
 		//! 3D Points database
-		GenericChunkedArray<3,PointCoordinateType>* m_points;
+		std::vector<CCVector3> m_points;
 
-		//! Bounding-box validity
-		bool m_validBB;
+		//! Bounding-box
+		BoundingBox m_bbox;
 
 		//! 'Iterator' on the points db
 		unsigned m_currentPointIndex;
