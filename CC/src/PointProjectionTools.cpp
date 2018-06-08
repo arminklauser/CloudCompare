@@ -16,16 +16,16 @@
 //#                                                                        #
 //##########################################################################
 
-#include "PointProjectionTools.h"
+#include <PointProjectionTools.h>
 
 //local
-#include "Delaunay2dMesh.h"
-#include "DistanceComputationTools.h"
-#include "GenericProgressCallback.h"
-#include "Neighbourhood.h"
-#include "ParallelSort.h"
-#include "ChunkedPointCloud.h"
-#include "SimpleMesh.h"
+#include <Delaunay2dMesh.h>
+#include <DistanceComputationTools.h>
+#include <GenericProgressCallback.h>
+#include <Neighbourhood.h>
+#include <ParallelSort.h>
+#include <PointCloud.h>
+#include <SimpleMesh.h>
 
 //system
 #include <set>

@@ -16,21 +16,21 @@
 //#                                                                        #
 //##########################################################################
 
-#include "Neighbourhood.h"
+#include <Neighbourhood.h>
 
 //local
-#include "ChunkedPointCloud.h"
-#include "ConjugateGradient.h"
-#include "Delaunay2dMesh.h"
-#include "DistanceComputationTools.h"
-#include "SimpleMesh.h"
+#include <PointCloud.h>
+#include <ConjugateGradient.h>
+#include <Delaunay2dMesh.h>
+#include <DistanceComputationTools.h>
+#include <SimpleMesh.h>
 
 //Eigenvalues decomposition
 //#define USE_EIGEN
 #ifdef USE_EIGEN
-#include "eigen/Eigen/Eigenvalues"
+#include <eigen/Eigen/Eigenvalues>
 #else
-#include "Jacobi.h"
+#include <Jacobi.h>
 #endif
 
 using namespace CCLib;

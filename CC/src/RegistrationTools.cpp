@@ -16,23 +16,22 @@
 //#                                                                        #
 //##########################################################################
 
-#include "RegistrationTools.h"
+#include <RegistrationTools.h>
 
 //local
-#include "ChunkedPointCloud.h"
-#include "CloudSamplingTools.h"
-#include "DistanceComputationTools.h"
-#include "Garbage.h"
-#include "GenericProgressCallback.h"
-#include "GeometricalAnalysisTools.h"
-#include "Jacobi.h"
-#include "KdTree.h"
-#include "ManualSegmentationTools.h"
-#include "NormalDistribution.h"
-#include "ParallelSort.h"
-#include "ReferenceCloud.h"
-#include "ScalarFieldTools.h"
-#include "ChunkedPointCloud.h"
+#include <PointCloud.h>
+#include <CloudSamplingTools.h>
+#include <DistanceComputationTools.h>
+#include <Garbage.h>
+#include <GenericProgressCallback.h>
+#include <GeometricalAnalysisTools.h>
+#include <Jacobi.h>
+#include <KdTree.h>
+#include <ManualSegmentationTools.h>
+#include <NormalDistribution.h>
+#include <ParallelSort.h>
+#include <ReferenceCloud.h>
+#include <ScalarFieldTools.h>
 
 //system
 #include <ctime>

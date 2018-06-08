@@ -16,12 +16,12 @@
 //#                                                                        #
 //##########################################################################
 
-#include "Delaunay2dMesh.h"
+#include <Delaunay2dMesh.h>
 
 //local
-#include "ChunkedPointCloud.h"
-#include "ManualSegmentationTools.h"
-#include "Polyline.h"
+#include <PointCloud.h>
+#include <ManualSegmentationTools.h>
+#include <Polyline.h>
 
 #if defined(USE_CGAL_LIB)
 //CGAL Lib

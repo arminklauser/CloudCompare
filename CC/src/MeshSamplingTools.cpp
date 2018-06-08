@@ -16,14 +16,14 @@
 //#                                                                        #
 //##########################################################################
 
-#include "MeshSamplingTools.h"
+#include <MeshSamplingTools.h>
 
 //local
-#include "GenericIndexedMesh.h"
-#include "GenericProgressCallback.h"
-#include "GenericTriangle.h"
-#include "ScalarField.h"
-#include "ChunkedPointCloud.h"
+#include <GenericIndexedMesh.h>
+#include <GenericProgressCallback.h>
+#include <GenericTriangle.h>
+#include <ScalarField.h>
+#include <PointCloud.h>
 
 //system
 #include <random>

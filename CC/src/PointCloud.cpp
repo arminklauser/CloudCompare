@@ -16,10 +16,10 @@
 //#                                                                        #
 //##########################################################################
 
-#include "ChunkedPointCloud.h"
+#include <PointCloud.h>
 
 //local
-#include "ScalarField.h"
+#include <ScalarField.h>
 
 
 using namespace CCLib;
@@ -58,7 +58,7 @@ void PointCloud::forEach(genericPointAction action)
 	unsigned n = size();
 	for (unsigned i = 0; i < n; ++i)
 	{
-		action(*getPoint(i), (*currentOutScalarFieldArray)[i]);
+		action(m_points[i], (*currentOutScalarFieldArray)[i]);
 	}
 }
 

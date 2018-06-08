@@ -16,18 +16,18 @@
 //#                                                                        #
 //##########################################################################
 
-#include "CloudSamplingTools.h"
+#include <CloudSamplingTools.h>
 
 //local
-#include "DgmOctreeReferenceCloud.h"
-#include "DistanceComputationTools.h"
-#include "GenericProgressCallback.h"
-#include "Neighbourhood.h"
-#include "ReferenceCloud.h"
-#include "ScalarField.h"
-#include "ScalarFieldTools.h"
-#include "ChunkedPointCloud.h"
-#include "SimpleMesh.h"
+#include <DgmOctreeReferenceCloud.h>
+#include <DistanceComputationTools.h>
+#include <GenericProgressCallback.h>
+#include <Neighbourhood.h>
+#include <ReferenceCloud.h>
+#include <ScalarField.h>
+#include <ScalarFieldTools.h>
+#include <PointCloud.h>
+#include <SimpleMesh.h>
 
 //system
 #include <random>

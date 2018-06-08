@@ -16,18 +16,18 @@
 //#                                                                        #
 //##########################################################################
 
-#include "DistanceComputationTools.h"
+#include <DistanceComputationTools.h>
 
 //local
-#include "ChunkedPointCloud.h"
-#include "DgmOctreeReferenceCloud.h"
-#include "FastMarchingForPropagation.h"
-#include "LocalModel.h"
-#include "ReferenceCloud.h"
-#include "SaitoSquaredDistanceTransform.h"
-#include "ScalarField.h"
-#include "ScalarFieldTools.h"
-#include "SimpleTriangle.h"
+#include <PointCloud.h>
+#include <DgmOctreeReferenceCloud.h>
+#include <FastMarchingForPropagation.h>
+#include <LocalModel.h>
+#include <ReferenceCloud.h>
+#include <SaitoSquaredDistanceTransform.h>
+#include <ScalarField.h>
+#include <ScalarFieldTools.h>
+#include <SimpleTriangle.h>
 
 //system
 #include <cassert>

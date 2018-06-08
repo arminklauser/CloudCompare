@@ -16,13 +16,13 @@
 //#                                                                        #
 //##########################################################################
 
-#include "ManualSegmentationTools.h"
+#include <ManualSegmentationTools.h>
 
 //local
-#include "ChunkedPointCloud.h"
-#include "GenericProgressCallback.h"
-#include "Polyline.h"
-#include "SimpleMesh.h"
+#include <PointCloud.h>
+#include <GenericProgressCallback.h>
+#include <Polyline.h>
+#include <SimpleMesh.h>
 
 //system
 #include <cstdint>
