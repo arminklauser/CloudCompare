@@ -16,14 +16,17 @@
 //#                                                                        #
 //##########################################################################
 
-#include "AutoSegmentationTools.h"
+#include <AutoSegmentationTools.h>
 
 //local
-#include "FastMarchingForPropagation.h"
-#include "GenericProgressCallback.h"
-#include "ReferenceCloud.h"
-#include "ScalarField.h"
-#include "ScalarFieldTools.h"
+#include <FastMarchingForPropagation.h>
+#include <GenericProgressCallback.h>
+#include <ReferenceCloud.h>
+#include <ScalarField.h>
+#include <ScalarFieldTools.h>
+
+//System
+#include <algorithm>
 
 using namespace CCLib;
 
@@ -202,15 +205,14 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		progressCb->start();
 	}
 
-	ScalarField* theDists = new ScalarField("distances");
+	ScalarField theDists("distances");
 	{
 		ScalarType d = theCloud->getPointScalarValue(0);
-		if (!theDists->resize(numberOfPoints, true, d))
+		if (!theDists.resizeSafe(numberOfPoints, true, d))
 		{
 			if (!inputOctree)
 				delete theOctree;
 			return false;
-
 		}
 	}
 
@@ -225,7 +227,7 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		while (begin<numberOfPoints)
 		{
 			const CCVector3 *thePoint = theCloud->getPoint(begin);
-			const ScalarType& theDistance = theDists->getValue(begin);
+			const ScalarType& theDistance = theDists[begin];
 			++begin;
 
 			//FIXME DGM: what happens if SF is negative?!
@@ -248,9 +250,9 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		for (unsigned i = begin; i<numberOfPoints; ++i)
 		{
 			const CCVector3 *thePoint = theCloud->getPoint(i);
-			const ScalarType& theDistance = theDists->getValue(i);
+			const ScalarType& theDistance = theDists[i];
 
-			if ((theCloud->getPointScalarValue(i)>=0.0)&&(theDistance > maxDist))
+			if ((theCloud->getPointScalarValue(i) >= 0.0) && (theDistance > maxDist))
 			{
 				maxDist = theDistance;
 				startPoint = *thePoint;
@@ -313,7 +315,7 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 
 	for (unsigned i = 0; i < numberOfPoints; ++i)
 	{
-		theCloud->setPointScalarValue(i, theDists->getValue(i));
+		theCloud->setPointScalarValue(i, theDists[i]);
 	}
 
 	if (fm)
@@ -322,12 +324,6 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		fm = nullptr;
 	}
 
-	if (theDists)
-	{
-		theDists->release();
-		theDists = nullptr;
-	}
-	
 	if (theOctree && !inputOctree)
 	{
 		delete theOctree;

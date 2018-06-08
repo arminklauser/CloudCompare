@@ -74,20 +74,19 @@ int ScalarFieldTools::computeScalarFieldGradient(	GenericIndexedCloudPersist* th
 		octreeLevel = theOctree->findBestLevelForAGivenNeighbourhoodSizeExtraction(radius);
 	}
 
-	ScalarField* theGradientNorms = new ScalarField("gradient norms");
+	ScalarField theGradientNorms("gradient norms");
 	ScalarField* _theGradientNorms = nullptr;
 
 	//if the IN and OUT scalar fields are the same
 	if (sameInAndOutScalarField)
 	{
-		if (!theGradientNorms->reserve(theCloud->size())) //not enough memory
+		if (!theGradientNorms.reserveSafe(theCloud->size())) //not enough memory
 		{
 			if (!theCloudOctree)
 				delete theOctree;
-			theGradientNorms->release();
 			return -3;
 		}
-		_theGradientNorms = theGradientNorms;
+		_theGradientNorms = &theGradientNorms;
 	}
 	else //different IN and OUT scalar fields (default)
 	{
@@ -96,7 +95,6 @@ int ScalarFieldTools::computeScalarFieldGradient(	GenericIndexedCloudPersist* th
 		{
 			if (!theCloudOctree)
 				delete theOctree;
-			theGradientNorms->release();
 			return -4;
 		}
 	}
@@ -124,9 +122,6 @@ int ScalarFieldTools::computeScalarFieldGradient(	GenericIndexedCloudPersist* th
 	{
 		delete theOctree;
 	}
-
-	theGradientNorms->release();
-	theGradientNorms = nullptr;
 
 	return result;
 }

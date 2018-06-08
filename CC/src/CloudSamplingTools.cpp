@@ -31,6 +31,7 @@
 
 //system
 #include <random>
+#include <algorithm>
 
 using namespace CCLib;
 

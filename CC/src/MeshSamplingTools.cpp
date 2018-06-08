@@ -186,7 +186,7 @@ bool MeshSamplingTools::flagMeshVerticesByType(GenericIndexedMesh* mesh, ScalarF
 
 	//count the number of triangles using each edge
 	EdgeUsageMap edgeCounters;
-	if (!buildMeshEdgeUsageMap(mesh,edgeCounters))
+	if (!buildMeshEdgeUsageMap(mesh, edgeCounters))
 		return false;
 
 	//now scan all the edges and flag their vertices
@@ -224,8 +224,8 @@ bool MeshSamplingTools::flagMeshVerticesByType(GenericIndexedMesh* mesh, ScalarF
 			}
 			//else --> isolated vertex?
 
-			flags->setValue(i1,flag);
-			flags->setValue(i2,flag);
+			flags->setValue(i1, flag);
+			flags->setValue(i2, flag);
 		}
 	}
 

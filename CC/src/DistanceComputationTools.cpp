@@ -30,8 +30,8 @@
 #include <SimpleTriangle.h>
 
 //system
-#include <cassert>
-
+#include <assert.h>
+#include <algorithm>
 
 #ifdef USE_QT
 #ifndef CC_DEBUG

@@ -97,11 +97,11 @@ public:
 		m_items.erase(item);
 	}
 
-	//! Manually deltes an item already the trash
+	//! Manually deltes an item already in the trash
 	inline void destroy(CCLib::ScalarField* item)
 	{
 		m_items.erase(item);
-		item->release();
+		delete item;
 	}
 
 	//! Destructor
@@ -112,7 +112,7 @@ public:
 		//dispose of left over
 		for (std::unordered_set<CCLib::ScalarField*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
 		{
-			(*it)->release();
+			delete (*it);
 		}
 		m_items.clear();
 	}

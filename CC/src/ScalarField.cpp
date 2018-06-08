@@ -18,17 +18,17 @@
 
 #include "ScalarField.h"
 
+//System
+#include <assert.h>
 
 using namespace CCLib;
 
 ScalarField::ScalarField(const char* name/*=0*/)
-	: GenericChunkedArray<1, ScalarType>()
 {
 	setName(name);
 }
 
 ScalarField::ScalarField(const ScalarField& sf)
-	: GenericChunkedArray<1, ScalarType>(sf)
 {
 	setName(sf.m_name);
 }
@@ -36,19 +36,19 @@ ScalarField::ScalarField(const ScalarField& sf)
 void ScalarField::setName(const char* name)
 {
 	if (name)
-		strncpy(m_name,name,255);
+		strncpy(m_name, name, 255);
 	else
-		strcpy(m_name,"Undefined");
+		strcpy(m_name, "Undefined");
 }
 
 void ScalarField::computeMeanAndVariance(ScalarType &mean, ScalarType* variance) const
 {
 	double _mean = 0.0, _std2 = 0.0;
-	unsigned count = 0;
+	size_t count = 0;
 
-	for (unsigned i=0; i<currentSize(); ++i)
+	for (size_t i = 0; i < size(); ++i)
 	{
-		const ScalarType& val = getValue(i);
+		const ScalarType& val = at(i);
 		if (ValidValue(val))
 		{
 			_mean += val;
@@ -64,7 +64,7 @@ void ScalarField::computeMeanAndVariance(ScalarType &mean, ScalarType* variance)
 
 		if (variance)
 		{
-			_std2 = fabs(_std2/count - _mean*_mean);
+			_std2 = fabs(_std2 / count - _mean*_mean);
 			*variance = static_cast<ScalarType>(_std2);
 		}
 	}
@@ -72,18 +72,20 @@ void ScalarField::computeMeanAndVariance(ScalarType &mean, ScalarType* variance)
 	{
 		mean = 0;
 		if (variance)
+		{
 			*variance = 0;
+		}
 	}
 }
 
 void ScalarField::computeMinAndMax()
 {
-	if (currentSize() != 0)
+	if (!empty())
 	{
 		bool minMaxInitialized = false;
-		for (unsigned i=0; i<currentSize(); ++i)
+		for (size_t i = 0; i < size(); ++i)
 		{
-			const ScalarType& val = getValue(i);
+			const ScalarType& val = at(i);
 			if (ValidValue(val))
 			{
 				if (minMaxInitialized)
@@ -106,4 +108,41 @@ void ScalarField::computeMinAndMax()
 	{
 		m_minVal = m_maxVal = 0;
 	}
+}
+
+void ScalarField::swap(size_t i1, size_t i2)
+{
+	assert(i1 < size() && i2 < size());
+	std::swap(at(i1), at(i2));
+}
+
+bool ScalarField::reserveSafe(size_t count)
+{
+	try
+	{
+		reserve(count);
+	}
+	catch (const std::bad_alloc&)
+	{
+		//not enough memory
+		return false;
+	}
+	return true;
+}
+
+bool ScalarField::resizeSafe(size_t count, bool initNewElements/*=false*/, ScalarType valueForNewElements/*=0*/)
+{
+	try
+	{
+		if (initNewElements)
+			resize(count, valueForNewElements);
+		else
+			resize(count);
+	}
+	catch (const std::bad_alloc&)
+	{
+		//not enough memory
+		return false;
+	}
+	return true;
 }

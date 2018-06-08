@@ -28,6 +28,7 @@
 
 //system
 #include <random>
+#include <algorithm>
 
 using namespace CCLib;
 
@@ -700,7 +701,7 @@ CCLib::SquareMatrixd GeometricalAnalysisTools::computeCovarianceMatrix(GenericCl
 	{
 		const CCVector3* Q = theCloud->getNextPoint();
 
-		CCVector3 P = *Q-G;
+		CCVector3 P = *Q - G;
 		mXX += static_cast<double>(P.x*P.x);
 		mYY += static_cast<double>(P.y*P.y);
 		mZZ += static_cast<double>(P.z*P.z);

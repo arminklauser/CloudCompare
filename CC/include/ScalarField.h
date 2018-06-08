@@ -21,19 +21,21 @@
 
 //Local
 #include "CCConst.h"
-#include "GenericChunkedArray.h"
+#include "CCCoreLib.h"
+
+//System
+#include <vector>
 
 namespace CCLib
 {
 
 //! A simple scalar field (to be associated to a point cloud)
-/** Extends the GenericChunkedArray object. It is equivalent to a
-	mono-dimensionnal array of scalar values. It has also specific
+/** A mono-dimensionnal array of scalar values. It has also specific
 	parameters for display purposes.
 
 	Invalid values can be represented by NAN_VALUE.
 **/
-class CC_CORE_LIB_API ScalarField : public GenericChunkedArray<1, ScalarType>
+class CC_CORE_LIB_API ScalarField : public std::vector<ScalarType>
 {
 public:
 
@@ -48,6 +50,9 @@ public:
 		\warning May throw a std::bad_alloc exception
 	**/
 	ScalarField(const ScalarField& sf);
+
+	//! Default destructor
+	virtual ~ScalarField() {}
 
 	//! Sets scalar field name
 	void setName(const char* name);
@@ -64,24 +69,47 @@ public:
 	**/
 	void computeMeanAndVariance(ScalarType &mean, ScalarType* variance = nullptr) const;
 
-	//inherited from GenericChunkedArray
-	virtual void computeMinAndMax();
+	//! Determines the min and max values
+	void computeMinAndMax();
 
 	//! Returns whether a scalar value is valid or not
 	static inline bool ValidValue(ScalarType value) { return value == value; } //'value == value' fails for NaN values
 
 	//! Sets the value as 'invalid' (i.e. NAN_VALUE)
-	inline virtual void flagValueAsInvalid(unsigned index) { setValue(index,NaN()); }
+	inline virtual void flagValueAsInvalid(size_t index) { at(index) = NaN(); }
+
+	//! Returns the minimum value
+	ScalarType min() const { return m_minVal; }
+	//! Returns the maximum value
+	ScalarType max() const { return m_maxVal; }
+
+	//! Fills the array with a particular value
+	void fill(ScalarType fillValue = 0) { std::fill(begin(), end(), fillValue); }
+
+	//! Reserves memory (no exception thrown)
+	bool reserveSafe(size_t count);
+	//! Resizes memory (no exception thrown)
+	bool resizeSafe(size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
+
+	//! Swaps two elements
+	void swap(size_t i1, size_t i2);
+
+	//Shortcuts (for backward compatibility)
+	inline ScalarType& getValue(size_t index) { return at(index); }
+	inline const ScalarType& getValue(size_t index) const { return at(index); }
+	inline void setValue(size_t index, ScalarType value) { at(index) = value; }
+	inline void addElement(ScalarType value) { push_back(value); }
+	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
 
 protected:
 
-	//! Default destructor
-	/** [SHAREABLE] Call 'release' to destroy this object properly.
-	**/
-	virtual ~ScalarField() {}
-
 	//! Scalar field name
 	char m_name[256];
+
+	//! Minimum value
+	ScalarType m_minVal;
+	//! Maximum value
+	ScalarType m_maxVal;
 };
 
 }

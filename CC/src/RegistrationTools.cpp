@@ -190,7 +190,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 				sfGarbage.add(data.weights);
 				
 				unsigned destCount = data.cloud->size();
-				if (data.weights->resize(destCount))
+				if (data.weights->resizeSafe(destCount))
 				{
 					for (unsigned i = 0; i < destCount; ++i)
 					{
@@ -269,7 +269,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 				sfGarbage.add(model.weights);
 
 				unsigned destCount = subModelCloud->size();
-				if (model.weights->resize(destCount))
+				if (model.weights->resizeSafe(destCount))
 				{
 					for (unsigned i = 0; i < destCount; ++i)
 					{
@@ -422,7 +422,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 				if (	!filteredData.cloud->reserve(pointCount)
 					||	(filteredData.CPSetRef && !filteredData.CPSetRef->reserve(pointCount))
 					||	(filteredData.CPSetPlain && !filteredData.CPSetPlain->reserve(pointCount))
-					||	(filteredData.weights && !filteredData.weights->reserve(pointCount)))
+					||	(filteredData.weights && !filteredData.weights->reserveSafe(pointCount)))
 				{
 					//not enough memory
 					result = ICP_ERROR_NOT_ENOUGH_MEMORY;
@@ -506,7 +506,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 			if (	!filteredData.cloud->reserve(pointCount) //should be maxOverlapCount in theory, but there may be several points with the same value as maxOverlapDist!
 				||	(filteredData.CPSetRef && !filteredData.CPSetRef->reserve(pointCount))
 				||	(filteredData.CPSetPlain && !filteredData.CPSetPlain->reserve(pointCount))
-				||	(filteredData.weights && !filteredData.weights->reserve(pointCount)))
+				||	(filteredData.weights && !filteredData.weights->reserveSafe(pointCount)))
 			{
 				//not enough memory
 				result = ICP_ERROR_NOT_ENOUGH_MEMORY;
@@ -550,7 +550,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 			unsigned count = data.cloud->size();
 			assert(!model.weights || (data.CPSetRef && data.CPSetRef->size() == count));
 
-			if (coupleWeights->currentSize() != count && !coupleWeights->resize(count))
+			if (coupleWeights->currentSize() != count && !coupleWeights->resizeSafe(count))
 			{
 				//not enough memory to store weights
 				result = ICP_ERROR_NOT_ENOUGH_MEMORY;
