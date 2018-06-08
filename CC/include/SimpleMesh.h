@@ -36,7 +36,7 @@ class GenericIndexedCloud;
 /** Implements the GenericIndexedMesh interface. This mesh is always associated
 	to a (index based) point cloud that stores the mesh vertexes.
 **/
-class CC_CORE_LIB_API SimpleMesh : virtual public GenericIndexedMesh
+class CC_CORE_LIB_API SimpleMesh : public GenericIndexedMesh
 {
 public: //constructors
 

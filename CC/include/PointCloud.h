@@ -33,7 +33,7 @@ namespace CCLib
 class ScalarField;
 
 //! A storage-efficient point cloud structure that can also handle an unlimited number of scalar fields
-class CC_CORE_LIB_API PointCloud : virtual public GenericIndexedCloudPersist
+class CC_CORE_LIB_API PointCloud : public GenericIndexedCloudPersist
 {
 public:
 
