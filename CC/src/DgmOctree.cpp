@@ -578,7 +578,7 @@ bool DgmOctree::getPointsInCell(CellCode cellCode,
 	}
 	else if (clearOutputCloud)
 	{
-		subset->clear(false);
+		subset->clear();
 	}
 
 	return true;
@@ -2611,7 +2611,9 @@ bool DgmOctree::getPointsInCellByCellIndex(	ReferenceCloud* cloud,
 	CellCode searchCode = (p->theCode >> bitDec);
 
 	if (clearOutputCloud)
-		cloud->clear(false);
+	{
+		cloud->clear();
+	}
 
 	//while the (partial) cell code matches this cell
 	while ((p != m_thePointsAndTheirCellCodes.end()) && ((p->theCode >> bitDec) == searchCode))
@@ -2638,7 +2640,7 @@ ReferenceCloud* DgmOctree::getPointsInCellsWithSortedCellCodes(	cellCodesContain
     cellsContainer::const_iterator p = m_thePointsAndTheirCellCodes.begin();
     CellCode toExtractCode,currentCode = (p->theCode >> bitDec1); //pred value must be different than the first element's
 
-    subset->clear(false);
+    subset->clear();
 
     cellCodesContainer::const_iterator q=cellCodes.begin();
     unsigned ind_p = 0;
@@ -3397,7 +3399,7 @@ unsigned DgmOctree::executeFunctionForAllCellsAtLevel(	unsigned char level,
 
 				//and we start a new cell
 				cell.index += cell.points->size();
-				cell.points->clear(false);
+				cell.points->clear();
 				cell.truncatedCode = nextCode;
 
 				//if (!nprogress.oneStep())
@@ -3789,7 +3791,7 @@ unsigned DgmOctree::executeFunctionForAllCellsStartingAtLevel(unsigned char star
 			}
 
 			//we can now really 'add' the points to the cell descriptor
-			cell.points->clear(false);
+			cell.points->clear();
 			//DGM: already done earlier
 			/*if (!cell.points->reserve(elements)) //not enough memory
 			{

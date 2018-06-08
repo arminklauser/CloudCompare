@@ -281,10 +281,13 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 		return nullptr;
 	}
 
-	GenericChunkedArray<1, char>* markers = new GenericChunkedArray<1, char>(); //DGM: upgraded from vector, as this can be quite huge!
-	if (!markers->resize(cloudSize, true, 1)) //true by default
+	std::vector<char> markers; //DGM: upgraded from vector, as this can be quite huge!
+	try
 	{
-		markers->release();
+		markers.resize(cloudSize, 1); //true by default
+	}
+	catch (const std::bad_alloc&)
+	{
 		if (!inputOctree)
 			delete octree;
 		delete sampledCloud;
@@ -342,7 +345,6 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 	catch (const std::bad_alloc&)
 	{
 		//not enough memory
-		markers->release();
 		if (!inputOctree)
 		{
 			delete octree;
@@ -368,17 +370,16 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 
 	//for each point in the cloud that is still 'marked', we look
 	//for its neighbors and remove their own marks
-	markers->placeIteratorAtBeginning();
 	bool error = false;
 	//default octree level
 	assert(!bestOctreeLevel.empty());
 	unsigned char octreeLevel = bestOctreeLevel.front();
 	//default distance between points
 	PointCoordinateType minDistBetweenPoints = minDistance;
-	for (unsigned i = 0; i < cloudSize; i++, markers->forwardIterator())
+	for (unsigned i = 0; i < cloudSize; i++)
 	{
 		//no mark? we skip this point
-		if (markers->getCurrentValue() != 0)
+		if (markers[i] != 0)
 		{
 			//init neighbor search structure
 			const CCVector3* P = inputCloud->getPoint(i);
@@ -410,7 +411,7 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 				octree->getPointsInSphericalNeighbourhood(*P, minDistBetweenPoints, neighbours, octreeLevel);
 				for (DgmOctree::NeighboursSet::iterator it = neighbours.begin(); it != neighbours.end(); ++it)
 					if (it->pointIndex != i)
-						markers->setValue(it->pointIndex, 0);
+						markers[it->pointIndex] = 0;
 			}
 
 			//At this stage, the ith point is the only one marked in a radius of <minDistance>.
@@ -461,9 +462,6 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 		delete octree;
 		octree = nullptr;
 	}
-
-	markers->release();
-	markers = nullptr;
 
 	return sampledCloud;
 }

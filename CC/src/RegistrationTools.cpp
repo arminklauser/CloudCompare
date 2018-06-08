@@ -750,7 +750,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 			cloudGarbage.add(data.rotatedCloud);
 
 			//update data.cloud
-			data.cloud->clear(false);
+			data.cloud->clear();
 			data.cloud->setAssociatedCloud(data.rotatedCloud);
 			if (!data.cloud->addPointIndex(0, data.rotatedCloud->size()))
 			{

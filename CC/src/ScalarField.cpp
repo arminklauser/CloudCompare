@@ -22,13 +22,13 @@
 using namespace CCLib;
 
 ScalarField::ScalarField(const char* name/*=0*/)
-	: GenericChunkedArray<1,ScalarType>()
+	: GenericChunkedArray<1, ScalarType>()
 {
 	setName(name);
 }
 
 ScalarField::ScalarField(const ScalarField& sf)
-	: GenericChunkedArray<1,ScalarType>(sf)
+	: GenericChunkedArray<1, ScalarType>(sf)
 {
 	setName(sf.m_name);
 }

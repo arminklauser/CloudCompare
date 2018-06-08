@@ -237,7 +237,7 @@ bool MeshSamplingTools::flagMeshVerticesByType(GenericIndexedMesh* mesh, ScalarF
 PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													unsigned numberOfPoints,
 													GenericProgressCallback* progressCb/*=0*/,
-													GenericChunkedArray<1,unsigned>* triIndices/*=0*/)
+													std::vector<unsigned>* triIndices/*=0*/)
 {
 	if (!mesh)
         return nullptr;
@@ -257,7 +257,7 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													double samplingDensity,
 													GenericProgressCallback* progressCb/*=0*/,
-													GenericChunkedArray<1,unsigned>* triIndices/*=0*/)
+													std::vector<unsigned>* triIndices/*=0*/)
 {
 	if (!mesh)
         return 0;
@@ -274,7 +274,7 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													double samplingDensity,
 													unsigned theoreticNumberOfPoints,
 													GenericProgressCallback* progressCb,
-													GenericChunkedArray<1,unsigned>* triIndices/*=0*/)
+													std::vector<unsigned>* triIndices/*=0*/)
 {
 	if (theoreticNumberOfPoints < 1)
         return nullptr;
@@ -294,12 +294,14 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 	if (triIndices)
 	{
 	    triIndices->clear(); //just in case
-
-		if (!triIndices->reserve(theoreticNumberOfPoints) || triIndices->capacity() < theoreticNumberOfPoints)
+		try
+		{
+			triIndices->reserve(theoreticNumberOfPoints);
+		}
+		catch (const std::bad_alloc&)
 		{
 			//not enough memory? DGM TODO: we should warn the caller
 			delete sampledCloud;
-			triIndices->clear();
 			return nullptr;
 		}
 	}
@@ -360,8 +362,8 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 			if (addedPoints + pointsToAdd >= theoreticNumberOfPoints)
 			{
 				theoreticNumberOfPoints += pointsToAdd;
-				if (!sampledCloud->reserve(theoreticNumberOfPoints)
-					|| (triIndices && triIndices->capacity() < theoreticNumberOfPoints && !triIndices->reserve(theoreticNumberOfPoints))) //not enough memory
+				//reserve memory for the cloud
+				if (!sampledCloud->reserve(theoreticNumberOfPoints))
 				{
 					delete sampledCloud;
 					sampledCloud = nullptr;
@@ -370,6 +372,24 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 						triIndices->clear();
 					}
 					break;
+				}
+				//reserve memory for the triangle indexes
+				if (triIndices && triIndices->capacity() < theoreticNumberOfPoints) //not enough memory
+				{
+					try
+					{
+						triIndices->reserve(theoreticNumberOfPoints);
+					}
+					catch (const std::bad_alloc&)
+					{
+						delete sampledCloud;
+						sampledCloud = nullptr;
+						if (triIndices)
+						{
+							triIndices->clear();
+						}
+						break;
+					}
 				}
 			}
 
@@ -391,7 +411,7 @@ PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 
 				sampledCloud->addPoint(P);
 				if (triIndices)
-					triIndices->addElement(n);
+					triIndices->push_back(n);
 				++addedPoints;
 			}
 		}

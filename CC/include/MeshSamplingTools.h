@@ -21,10 +21,10 @@
 
 //Local
 #include "CCToolbox.h"
-#include "GenericChunkedArray.h"
 
 //system
 #include <map>
+#include <vector>
 
 namespace CCLib
 {
@@ -122,7 +122,7 @@ public:
 	static PointCloud* samplePointsOnMesh(	GenericMesh* mesh,
 											double samplingDensity,
 											GenericProgressCallback* progressCb = nullptr,
-											GenericChunkedArray<1, unsigned>* triIndices = nullptr);
+											std::vector<unsigned>* triIndices = nullptr);
 
 	//! Samples points on a mesh
 	/** See the other version of this method. Instead of specifying a
@@ -137,7 +137,7 @@ public:
 	static PointCloud* samplePointsOnMesh(	GenericMesh* mesh,
 											unsigned numberOfPoints,
 											GenericProgressCallback* progressCb = nullptr,
-											GenericChunkedArray<1, unsigned>* triIndices = nullptr);
+											std::vector<unsigned>* triIndices = nullptr);
 
 protected:
 
@@ -154,7 +154,7 @@ protected:
 											double samplingDensity,
 											unsigned theoreticNumberOfPoints,
 											GenericProgressCallback* progressCb = nullptr,
-											GenericChunkedArray<1, unsigned>* triIndices = nullptr);
+											std::vector<unsigned>* triIndices = nullptr);
 
 	//! Map used to count the number of triangles using each edge
 	/** Edges are represented by two 32 bits indexes merged as a 64 integer

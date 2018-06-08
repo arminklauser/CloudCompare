@@ -435,34 +435,34 @@ bool StatisticalTestingTools::computeLocalChi2DistAtLevel(	const DgmOctree::octr
 		return false;
 	}
 
-	for (unsigned i=0; i<n; ++i)
+	for (unsigned i = 0; i < n; ++i)
 	{
-		cell.points->getPoint(i,nNSS.queryPoint);
+		cell.points->getPoint(i, nNSS.queryPoint);
 		ScalarType D = cell.points->getPointScalarValue(i);
 
 		if (ScalarField::ValidValue(D))
 		{
 			//nNSS.theNearestPoints.clear();
 
-			unsigned k = cell.parentOctree->findNearestNeighborsStartingFromCell(nNSS,true);
+			unsigned k = cell.parentOctree->findNearestNeighborsStartingFromCell(nNSS, true);
 			if (k > numberOfNeighbours)
 				k = numberOfNeighbours;
 
-			neighboursCloud.clear(false);
-			for (unsigned j=0; j<k; ++j)
+			neighboursCloud.clear();
+			for (unsigned j = 0; j < k; ++j)
 				neighboursCloud.addPointIndex(nNSS.pointsInNeighbourhood[j].pointIndex);
 
-			unsigned finalNumberOfChi2Classes=0;
-			//VERSION "SYMPA" (test grossier)
-			double Chi2Dist = static_cast<ScalarType>(computeAdaptativeChi2Dist(statModel,&neighboursCloud,numberOfChi2Classes,finalNumberOfChi2Classes,true,histoMin,histoMax,histoValues));
-			//VERSION "SEVERE" (test ultra-precis)
-			//double Chi2Dist = (ScalarType)computeAdaptativeChi2Dist(statModel,&neighboursCloud,numberOfChi2Classes,finalNumberOfChi2Classes,false,histoMin,histoMax,histoValues);
+			unsigned finalNumberOfChi2Classes = 0;
+			//LAZY VERSION (approximate test)
+			double Chi2Dist = static_cast<ScalarType>(computeAdaptativeChi2Dist(statModel, &neighboursCloud, numberOfChi2Classes, finalNumberOfChi2Classes, true, histoMin, histoMax, histoValues));
+			//STRICT VERSION (ultra-precise test)
+			//double Chi2Dist = static_cast<ScalarType>(computeAdaptativeChi2Dist(statModel, &neighboursCloud, numberOfChi2Classes, finalNumberOfChi2Classes, false, histoMin, histoMax, histoValues));
 
 			D = (Chi2Dist >= 0.0 ? static_cast<ScalarType>(sqrt(Chi2Dist)) : NAN_VALUE);
 		}
 
 		//We assume that "IN" and "OUT" scalar fields are different!
-		cell.points->setPointScalarValue(i,D);
+		cell.points->setPointScalarValue(i, D);
 
 		if (nProgress && !nProgress->oneStep())
 			return false;
