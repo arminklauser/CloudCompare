@@ -66,6 +66,7 @@ void PointCloud::getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
 {
 	if (!m_bbox.isValid())
 	{
+		m_bbox.clear();
 		for (const CCVector3& P : m_points)
 		{
 			m_bbox.add(P);

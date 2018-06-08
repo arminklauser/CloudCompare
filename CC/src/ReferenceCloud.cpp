@@ -50,6 +50,7 @@ void ReferenceCloud::getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
 {
 	if (!m_bbox.isValid())
 	{
+		m_bbox.clear();
 		for (unsigned index : m_theIndexes)
 		{
 			m_bbox.add(*m_theAssociatedCloud->getPoint(index));

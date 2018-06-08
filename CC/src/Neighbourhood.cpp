@@ -25,6 +25,9 @@
 #include <DistanceComputationTools.h>
 #include <SimpleMesh.h>
 
+//System
+#include <algorithm>
+
 //Eigenvalues decomposition
 //#define USE_EIGEN
 #ifdef USE_EIGEN
