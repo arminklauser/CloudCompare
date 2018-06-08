@@ -32,7 +32,7 @@
 #include "ParallelSort.h"
 #include "ReferenceCloud.h"
 #include "ScalarFieldTools.h"
-#include "SimpleCloud.h"
+#include "ChunkedPointCloud.h"
 
 //system
 #include <ctime>
@@ -140,7 +140,7 @@ struct DataCloud
 	DataCloud() : cloud(nullptr), rotatedCloud(nullptr), weights(nullptr), CPSetRef(nullptr), CPSetPlain(nullptr) {}
 	
 	ReferenceCloud* cloud;
-	SimpleCloud* rotatedCloud;
+	PointCloud* rotatedCloud;
 	ScalarField* weights;
 	ReferenceCloud* CPSetRef;
 	PointCloud* CPSetPlain;
@@ -737,7 +737,7 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 		if (!data.rotatedCloud || pointOrderHasBeenChanged)
 		{
 			//we create a new structure, with rotated points
-			SimpleCloud* rotatedDataCloud = PointProjectionTools::applyTransformation(data.cloud, currentTrans);
+			PointCloud* rotatedDataCloud = PointProjectionTools::applyTransformation(data.cloud, currentTrans);
 			if (!rotatedDataCloud)
 			{
 				//not enough memory
@@ -1494,12 +1494,12 @@ int FPCSRegistrationTools::FindCongruentBases(KDTree* tree,
 	//Select among the pairs the ones that can be congruent to the base "base"
 	std::vector<IndexPair> match;
 	{
-		SimpleCloud tmpCloud1,tmpCloud2;
+		PointCloud tmpCloud1, tmpCloud2;
 		{
 			unsigned count = static_cast<unsigned>(pairs1.size());
-			if (!tmpCloud1.reserve(count*2)) //not enough memory
+			if (!tmpCloud1.reserve(count * 2)) //not enough memory
 				return -2;
-			for(unsigned i=0; i<count; i++)
+			for (unsigned i = 0; i < count; i++)
 			{
 				//generate the two intermediate points from r1 in pairs1[i]
 				const CCVector3 *q0 = cloud->getPoint(pairs1[i].first);
@@ -1651,7 +1651,7 @@ bool FPCSRegistrationTools::FilterCandidates(	GenericIndexedCloud *modelCloud,
 	const CCVector3* p[4];
 	ScaledTransformation t;
 	std::vector<ScaledTransformation> tarray;
-	SimpleCloud referenceBaseCloud, dataBaseCloud;
+	PointCloud referenceBaseCloud, dataBaseCloud;
 
 	unsigned candidatesCount = static_cast<unsigned>(candidates.size());
 	if (candidatesCount == 0)

@@ -24,7 +24,7 @@
 #include "GenericProgressCallback.h"
 #include "Neighbourhood.h"
 #include "ParallelSort.h"
-#include "SimpleCloud.h"
+#include "ChunkedPointCloud.h"
 #include "SimpleMesh.h"
 
 //system
@@ -32,7 +32,7 @@
 
 using namespace CCLib;
 
-SimpleCloud* PointProjectionTools::developCloudOnCylinder(GenericCloud* cloud,
+PointCloud* PointProjectionTools::developCloudOnCylinder(	GenericCloud* cloud,
 															PointCoordinateType radius,
 															unsigned char dim,
 															CCVector3* center,
@@ -46,8 +46,8 @@ SimpleCloud* PointProjectionTools::developCloudOnCylinder(GenericCloud* cloud,
 
 	unsigned count = cloud->size();
 
-	SimpleCloud* newList = new SimpleCloud();
-	if (!newList->reserve(count)) //not enough memory
+	PointCloud* newCloud = new PointCloud();
+	if (!newCloud->reserve(count)) //not enough memory
 		return nullptr;
 
 	//we compute cloud bounding box center if no center is specified
@@ -82,7 +82,7 @@ SimpleCloud* PointProjectionTools::developCloudOnCylinder(GenericCloud* cloud,
 		PointCoordinateType u = sqrt(P.u[dim1] * P.u[dim1] + P.u[dim2] * P.u[dim2]);
 		PointCoordinateType lon = atan2(P.u[dim1],P.u[dim2]);
 
-		newList->addPoint(CCVector3(lon*radius,P.u[dim],u-radius));
+		newCloud->addPoint(CCVector3(lon*radius,P.u[dim],u-radius));
 
 		if (progressCb && !nprogress.oneStep())
 		{
@@ -96,18 +96,18 @@ SimpleCloud* PointProjectionTools::developCloudOnCylinder(GenericCloud* cloud,
 		progressCb->stop();
 	}
 
-	return newList;
+	return newCloud;
 }
 
 //deroule la liste sur un cone dont le centre est "center" et d'angle alpha en degres
-SimpleCloud* PointProjectionTools::developCloudOnCone(GenericCloud* cloud, unsigned char dim, PointCoordinateType baseRadius, float alpha, const CCVector3& center, GenericProgressCallback* progressCb)
+PointCloud* PointProjectionTools::developCloudOnCone(GenericCloud* cloud, unsigned char dim, PointCoordinateType baseRadius, float alpha, const CCVector3& center, GenericProgressCallback* progressCb)
 {
 	if (!cloud)
 		return nullptr;
 
 	unsigned count = cloud->size();
 
-	SimpleCloud* outCloud = new SimpleCloud();
+	PointCloud* outCloud = new PointCloud();
 	if (!outCloud->reserve(count)) //not enough memory
 		return nullptr;
 
@@ -179,13 +179,13 @@ SimpleCloud* PointProjectionTools::developCloudOnCone(GenericCloud* cloud, unsig
 	return outCloud;
 }
 
-SimpleCloud* PointProjectionTools::applyTransformation(GenericCloud* cloud, Transformation& trans, GenericProgressCallback* progressCb)
+PointCloud* PointProjectionTools::applyTransformation(GenericCloud* cloud, Transformation& trans, GenericProgressCallback* progressCb)
 {
 	assert(cloud);
 
 	unsigned count = cloud->size();
 
-	SimpleCloud* transformedCloud = new SimpleCloud();
+	PointCloud* transformedCloud = new PointCloud();
 	if (!transformedCloud->reserve(count))
 		return nullptr; //not enough memory
 

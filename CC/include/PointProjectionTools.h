@@ -40,7 +40,7 @@ class GenericProgressCallback;
 class GenericIndexedCloud;
 class GenericIndexedCloudPersist;
 class GenericCloud;
-class SimpleCloud;
+class PointCloud;
 
 //! Several point cloud re-projection algorithms ("developpee", translation, rotation, etc.)
 class CC_CORE_LIB_API PointProjectionTools : public CCToolbox
@@ -76,7 +76,7 @@ public:
 		\param progressCb the client application can get some notification of the process progress through this callback mechanism (see GenericProgressCallback)
 		\return the "developed" cloud
 	**/
-	static SimpleCloud* developCloudOnCylinder(	GenericCloud* cloud,
+	static PointCloud* developCloudOnCylinder(	GenericCloud* cloud,
 												PointCoordinateType radius,
 												unsigned char dim = 2,
 												CCVector3* center = nullptr,
@@ -93,7 +93,7 @@ public:
 		\param progressCb the client application can get some notification of the process progress through this callback mechanism (see GenericProgressCallback)
 		\return the "developed" cloud
 	**/
-	static SimpleCloud* developCloudOnCone(	GenericCloud* cloud,
+	static PointCloud* developCloudOnCone(	GenericCloud* cloud,
 											unsigned char dim,
 											PointCoordinateType baseRadius,
 											float alpha,
@@ -106,7 +106,7 @@ public:
 		\param progressCb the client application can get some notification of the process progress through this callback mechanism (see GenericProgressCallback)
 		\return the "transformed" cloud
 	**/
-	static SimpleCloud* applyTransformation(GenericCloud* cloud,
+	static PointCloud* applyTransformation(	GenericCloud* cloud,
 											Transformation& trans,
 											GenericProgressCallback* progressCb = nullptr);
 

@@ -23,7 +23,7 @@
 #include "GenericProgressCallback.h"
 #include "GenericTriangle.h"
 #include "ScalarField.h"
-#include "SimpleCloud.h"
+#include "ChunkedPointCloud.h"
 
 //system
 #include <random>
@@ -234,7 +234,7 @@ bool MeshSamplingTools::flagMeshVerticesByType(GenericIndexedMesh* mesh, ScalarF
 	return true;
 }
 
-SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
+PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													unsigned numberOfPoints,
 													GenericProgressCallback* progressCb/*=0*/,
 													GenericChunkedArray<1,unsigned>* triIndices/*=0*/)
@@ -254,7 +254,7 @@ SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 	return samplePointsOnMesh(mesh, samplingDensity, numberOfPoints, progressCb, triIndices);
 }
 
-SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
+PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													double samplingDensity,
 													GenericProgressCallback* progressCb/*=0*/,
 													GenericChunkedArray<1,unsigned>* triIndices/*=0*/)
@@ -270,7 +270,7 @@ SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 	return samplePointsOnMesh(mesh, samplingDensity, theoreticNumberOfPoints, progressCb, triIndices);
 }
 
-SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
+PointCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 													double samplingDensity,
 													unsigned theoreticNumberOfPoints,
 													GenericProgressCallback* progressCb,
@@ -284,7 +284,7 @@ SimpleCloud* MeshSamplingTools::samplePointsOnMesh(	GenericMesh* mesh,
 	if (triCount == 0)
 		return nullptr;
 
-	SimpleCloud* sampledCloud = new SimpleCloud();
+	PointCloud* sampledCloud = new PointCloud();
 	if (!sampledCloud->reserve(theoreticNumberOfPoints)) //not enough memory
 	{
 		delete sampledCloud;

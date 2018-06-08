@@ -26,7 +26,7 @@
 #include "ReferenceCloud.h"
 #include "ScalarField.h"
 #include "ScalarFieldTools.h"
-#include "SimpleCloud.h"
+#include "ChunkedPointCloud.h"
 #include "SimpleMesh.h"
 
 //system
@@ -61,7 +61,7 @@ GenericIndexedCloud* CloudSamplingTools::resampleCloudWithOctree(	GenericIndexed
 	return sampledCloud;
 }
 
-SimpleCloud* CloudSamplingTools::resampleCloudWithOctreeAtLevel(GenericIndexedCloudPersist* inputCloud,
+PointCloud* CloudSamplingTools::resampleCloudWithOctreeAtLevel(GenericIndexedCloudPersist* inputCloud,
 																unsigned char octreeLevel,
 																RESAMPLING_CELL_METHOD resamplingMethod,
 																GenericProgressCallback* progressCb/*=0*/,
@@ -80,7 +80,7 @@ SimpleCloud* CloudSamplingTools::resampleCloudWithOctreeAtLevel(GenericIndexedCl
 		}
 	}
 
-	SimpleCloud* cloud = new SimpleCloud();
+	PointCloud* cloud = new PointCloud();
 
 	unsigned nCells = octree->getCellNumber(octreeLevel);
 	if (!cloud->reserve(nCells))
@@ -667,7 +667,7 @@ bool CloudSamplingTools::resampleCellAtLevel(	const DgmOctree::octreeCell& cell,
 												void** additionalParameters,
 												NormalizedProgress* nProgress/*=0*/)
 {
-	SimpleCloud* cloud						= static_cast<SimpleCloud*>(additionalParameters[0]);
+	PointCloud* cloud						= static_cast<PointCloud*>(additionalParameters[0]);
 	RESAMPLING_CELL_METHOD resamplingMethod	= *static_cast<RESAMPLING_CELL_METHOD*>(additionalParameters[1]);
 
 	if (resamplingMethod == CELL_GRAVITY_CENTER)
