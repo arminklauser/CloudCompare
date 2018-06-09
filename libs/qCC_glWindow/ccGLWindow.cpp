@@ -1963,7 +1963,7 @@ void ccGLWindow::fullRenderingPass(CC_DRAW_CONTEXT& CONTEXT, RenderingParams& re
 		//draw black background
 		{
 			int height = (diagStrings.size() + 1) * 10;
-			glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::black.rgba);
+			glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::black.rgb);
 			glFunc->glBegin(GL_QUADS);
 			glFunc->glVertex2i(x, m_glViewport.height() - y);
 			glFunc->glVertex2i(x, m_glViewport.height() - (y + height));
@@ -1972,7 +1972,7 @@ void ccGLWindow::fullRenderingPass(CC_DRAW_CONTEXT& CONTEXT, RenderingParams& re
 			glFunc->glEnd();
 		}
 
-		glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::yellow.rgba);
+		glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::yellow.rgb);
 		for (const QString &str : diagStrings)
 		{
 			renderText(x + 10, y + 10, str);
@@ -2471,7 +2471,7 @@ void ccGLWindow::drawForeground(CC_DRAW_CONTEXT& CONTEXT, RenderingParams& rende
 
 				glFunc->glPopAttrib(); //GL_COLOR_BUFFER_BIT
 
-				glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::black.rgba);
+				glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::black.rgb);
 				renderText(	10,
 							borderHeight - CC_GL_FILTER_BANNER_MARGIN - CC_GL_FILTER_BANNER_MARGIN / 2,
 							QString("[GL filter] ") + m_activeGLFilter->getDescription()
@@ -2948,7 +2948,7 @@ void ccGLWindow::drawCross()
 	glFunc->glLineWidth(1.0f);
 
 	//cross OpenGL drawing
-	glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::lightGrey.rgba);
+	glColor3ubv_safe<ccQOpenGLFunctions>(glFunc, ccColor::lightGrey.rgb);
 	glFunc->glBegin(GL_LINES);
 	glFunc->glVertex3f(0.0f, -CC_DISPLAYED_CENTER_CROSS_LENGTH, 0.0f);
 	glFunc->glVertex3f(0.0f, CC_DISPLAYED_CENTER_CROSS_LENGTH, 0.0f);
@@ -5241,7 +5241,7 @@ void ccGLWindow::drawCustomLight()
 	ccQOpenGLFunctions* glFunc = functions();
 	assert(glFunc);
 
-	glFunc->glColor4ubv(ccColor::yellow.rgba);
+	glFunc->glColor4ubv(ccColor::yellow.rgb);
 	//ensure that the star size is constant (in pixels)
 	GLfloat d = static_cast<GLfloat>(CC_DISPLAYED_CUSTOM_LIGHT_LENGTH * computeActualPixelSize());
 
