@@ -40,9 +40,13 @@ ReferenceCloud::~ReferenceCloud()
 {
 }
 
-void ReferenceCloud::clear()
+void ReferenceCloud::clear(bool releaseMemory/*=false*/)
 {
-	m_theIndexes.clear();
+	if (releaseMemory)
+		m_theIndexes.resize(0);
+	else
+		m_theIndexes.clear();
+
 	invalidateBoundingBox();
 }
 

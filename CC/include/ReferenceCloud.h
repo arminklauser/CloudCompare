@@ -89,7 +89,7 @@ public:
 	inline virtual void forwardIterator() { ++m_globalIterator; }
 
 	//! Clears the cloud
-	virtual void clear();
+	virtual void clear(bool releaseMemory = false);
 
 	//! Point global index insertion mechanism
 	/** \param globalIndex a point global index
