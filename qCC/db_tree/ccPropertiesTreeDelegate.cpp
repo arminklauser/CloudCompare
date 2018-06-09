@@ -955,7 +955,7 @@ void ccPropertiesTreeDelegate::fillWithShareable(CCShareable* _obj)
 	appendRow(ITEM("Shared"), ITEM(linkCount < 3 ? QString("No") : QString("Yes (%1)").arg(linkCount - 1)));
 }
 
-template<int N, class ElementType> void ccPropertiesTreeDelegate::fillWithChunkedArray(ccChunkedArray<N, ElementType>* _obj)
+template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::fillWithChunkedArray(ccChunkedArray<Type, N, ComponentType>* _obj)
 {
 	assert(_obj && m_model);
 
@@ -965,15 +965,15 @@ template<int N, class ElementType> void ccPropertiesTreeDelegate::fillWithChunke
 	appendRow(ITEM("Name"), ITEM(_obj->getName().isEmpty() ? "undefined" : _obj->getName()));
 
 	//Count
-	appendRow(ITEM("Elements"), ITEM(QLocale(QLocale::English).toString(_obj->currentSize())));
+	appendRow(ITEM("Elements"), ITEM(QLocale(QLocale::English).toString(_obj->size())));
 
 	//Capacity
 	appendRow(ITEM("Capacity"), ITEM(QLocale(QLocale::English).toString(_obj->capacity())));
 
 	//Memory
-	appendRow(ITEM("Memory"), ITEM(QString("%1 Mb").arg((double)_obj->memory() / 1048576.0, 0, 'f', 2)));
+	appendRow(ITEM("Memory"), ITEM(QString("%1 Mb").arg((_obj->capacity() * sizeof(Type)) / 1048576.0, 0, 'f', 2)));
 
-	//ccChunkedArray objects are 'shareable'
+	//ccChunkedArray objects are 'Shareable'
 	fillWithShareable(_obj);
 }
 

@@ -25,7 +25,7 @@
 #include <NormalDistribution.h>
 #include <ParallelSort.h>
 #include <ScalarFieldTools.h>
-#include <SimpleCloud.h>
+#include <PointCloud.h>
 #include <StatisticalTestingTools.h>
 #include <WeibullDistribution.h>
 
@@ -2314,7 +2314,7 @@ void MainWindow::doActionShowDepthBuffer()
 				{
 					//force depth buffer computation
 					int errorCode;
-					if (!sensor->computeDepthBuffer(cloud,errorCode))
+					if (!sensor->computeDepthBuffer(cloud, errorCode))
 					{
 						ccConsole::Error(ccGBLSensor::GetErrorString(errorCode));
 					}
@@ -2326,7 +2326,7 @@ void MainWindow::doActionShowDepthBuffer()
 				}
 			}
 
-			ccRenderingTools::ShowDepthBuffer(sensor,this);
+			ccRenderingTools::ShowDepthBuffer(sensor, this);
 		}
 	}
 }
@@ -2434,9 +2434,9 @@ void MainWindow::doActionComputePointsVisibility()
 			}
 
 			int errorCode;
-			if (sensor->computeDepthBuffer(static_cast<ccPointCloud*>(defaultCloud),errorCode))
+			if (sensor->computeDepthBuffer(static_cast<ccPointCloud*>(defaultCloud), errorCode))
 			{
-				ccRenderingTools::ShowDepthBuffer(sensor,this);
+				ccRenderingTools::ShowDepthBuffer(sensor, this);
 			}
 			else
 			{
@@ -4756,7 +4756,7 @@ void MainWindow::doActionComputeDistanceMap()
 			}
 
 			ccScalarField* sf = new ccScalarField("DT values");
-			if (!sf->reserve(pointCount))
+			if (!sf->reserveSafe(pointCount))
 			{
 				ccLog::Error("Not enough memory!");
 				delete gridCloud;

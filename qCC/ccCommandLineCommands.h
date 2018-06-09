@@ -3045,7 +3045,7 @@ struct CommandStatTest : public ccCommandLineInterface::Command
 			CCLib::ScalarField* outSF = pc->getCurrentOutScalarField();
 			if (outSF)
 			{
-				assert(outSF->isAllocated());
+				assert(outSF->capacity() != 0);
 
 				//force Chi2 Distances field as 'IN' field (create it by the way if necessary)
 				int chi2SfIdx = pc->getScalarFieldIndexByName(CC_CHI2_DISTANCES_DEFAULT_SF_NAME);

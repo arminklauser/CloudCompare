@@ -723,9 +723,8 @@ bool ccComparisonDlg::computeDistances()
 			for (unsigned j = 0; j < 3; ++j)
 			{
 				ccScalarField* sfDim = new ccScalarField();
-				if (sfDim->resize(count))
+				if (sfDim->resizeSafe(count))
 				{
-					sfDim->link();
 					c2cParams.splitDistances[j] = sfDim;
 				}
 				else
@@ -743,8 +742,8 @@ bool ccComparisonDlg::computeDistances()
 				{
 					if (c2cParams.splitDistances[j])
 					{
-						c2cParams.splitDistances[j]->release();
-						c2cParams.splitDistances[j] = 0;
+						delete c2cParams.splitDistances[j];
+						c2cParams.splitDistances[j] = nullptr;
 					}
 				}
 			}
@@ -760,7 +759,7 @@ bool ccComparisonDlg::computeDistances()
 			{
 				size_t validDB = 0;
 				//we also make sure that the sensors have valid depth buffer!
-				for (unsigned i=0; i<pc->getChildrenNumber(); ++i)
+				for (unsigned i = 0; i < pc->getChildrenNumber(); ++i)
 				{
 					ccHObject* child = pc->getChild(i);
 					if (child && child->isA(CC_TYPES::GBL_SENSOR))
@@ -938,10 +937,11 @@ bool ccComparisonDlg::computeDistances()
 
 	for (unsigned j = 0; j < 3; ++j)
 	{
-		CCLib::ScalarField* sf = c2cParams.splitDistances[j];
+		CCLib::ScalarField* &sf = c2cParams.splitDistances[j];
 		if (sf)
 		{
-			sf->release();
+			delete sf;
+			sf = nullptr;
 		}
 	}
 			

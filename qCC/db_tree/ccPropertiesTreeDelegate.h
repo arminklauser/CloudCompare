@@ -184,7 +184,7 @@ protected:
 	void fillWithShareable(CCShareable*);
 	void fillWithMetaData(ccObject*);
 	void fillWithShifted(ccShiftedObject*);
-	template<int N, class ElementType> void fillWithChunkedArray(ccChunkedArray<N,ElementType>*);
+	template<class Type, int N, class ComponentType> void fillWithChunkedArray(ccChunkedArray<Type, N, ComponentType>*);
 
 	//! Returns whether the editor is wide (i.e. spans on two columns) or not
 	bool isWideEditor(int itemData) const;
