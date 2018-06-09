@@ -55,7 +55,7 @@ public:
 	virtual int getTriangleMtlIndex(unsigned triangleIndex) const override;
 	virtual bool hasTextures() const override;
 	virtual TextureCoordsContainer* getTexCoordinatesTable() const override;
-	virtual void getTriangleTexCoordinates(unsigned triIndex, float* &tx1, float* &tx2, float* &tx3) const override;
+	virtual void getTriangleTexCoordinates(unsigned triIndex, TexCoords2D* &tx1, TexCoords2D* &tx2, TexCoords2D* &tx3) const override;
 	virtual bool hasPerTriangleTexCoordIndexes() const override;
 	virtual void getTriangleTexCoordinatesIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
 	virtual bool hasTriNormals() const override;
@@ -138,7 +138,7 @@ public:
 	void setAssociatedMesh(ccMesh* mesh, bool unlinkPreviousOne = true);
 
 	//! Indexes map for createNewSubMeshFromSelection
-	typedef GenericChunkedArray<1,unsigned> IndexMap;
+	typedef ccChunkedArray<unsigned, 1,unsigned> IndexMap;
 
 	//! Creates a new sub mesh with the selected vertices only
 	/** This method is called after a graphical segmentation
@@ -164,7 +164,7 @@ protected:
 	ccMesh* m_associatedMesh;
 
 	//! Container of 3D triangles indexes
-	typedef GenericChunkedArray<1,unsigned> ReferencesContainer;
+	typedef ccChunkedArray<unsigned, 1, unsigned> ReferencesContainer;
 
 	//! Indexes of (some of) the associated mesh triangles
 	ReferencesContainer* m_triIndexes;

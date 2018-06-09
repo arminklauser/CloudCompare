@@ -43,6 +43,9 @@ public:
 	**/
 	ccScalarField(const ccScalarField& sf);
 
+	//! Default destructor
+	virtual ~ccScalarField() {}
+
 	/*** Scalar values display handling ***/
 
 	//! Scalar field range structure
@@ -133,14 +136,14 @@ public:
 	//! Returns the color corresponding to a given value (wrt to the current display parameters)
 	/** Warning: must no be called if the SF is not associated to a color scale!
 	**/
-	inline const ColorCompType* getColor(ScalarType value) const
+	inline const ccColor::Rgb* getColor(ScalarType value) const
 	{
 		assert(m_colorScale);
-		return m_colorScale->getColorByRelativePos(normalize(value), m_colorRampSteps, m_showNaNValuesInGrey ? ccColor::lightGrey.rgba : 0);
+		return m_colorScale->getColorByRelativePos(normalize(value), m_colorRampSteps, m_showNaNValuesInGrey ? &ccColor::lightGrey : nullptr);
 	}
 
 	//! Shortcut to getColor
-	inline const ColorCompType* getValueColor(unsigned index) const { return getColor(getValue(index)); }
+	inline const ccColor::Rgb* getValueColor(unsigned index) const { return getColor(getValue(index)); }
 
 	//! Sets whether NaN/out of displayed range values should be displayed in grey or hidden
 	void showNaNValuesInGrey(bool state);
@@ -226,11 +229,6 @@ public:
 	inline void setGlobalShift(double shift) { m_globalShift = shift; }
 
 protected:
-
-	//! Default destructor
-	/** [SHAREABLE] Call 'release' to destroy this object properly.
-	**/
-	virtual ~ccScalarField() {}
 
 	//! Updates saturation values
 	void updateSaturationBounds();

@@ -20,6 +20,7 @@
 
 //Local
 #include "ccHObject.h"
+#include "CCShareable.h"
 
 class ccGenericGLDisplay;
 

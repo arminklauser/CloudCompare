@@ -57,7 +57,7 @@ bool ccGriddedTools::DetectParameters(	const ccPointCloud* cloud,
 			std::vector< AngleAndSpan > anglesShifted;
 
 			//for each ROW we determine the min and max valid grid point (i.e. index >= 0)
-			const int* _indexGrid = &(grid->indexes[0]);
+			const int* _indexGrid = grid->indexes.data();
 			for (unsigned j=0; j<grid->h; ++j)
 			{
 				unsigned minIndex = grid->w;

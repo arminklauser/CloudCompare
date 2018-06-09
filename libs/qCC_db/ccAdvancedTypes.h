@@ -21,17 +21,18 @@
 //Local
 #include "ccChunkedArray.h"
 #include "ccNormalCompressor.h"
+#include "ccColorTypes.h"
 
 /***************************************************
 	  Advanced cloudCompare types (containers)
 ***************************************************/
 
 //! Array of compressed 3D normals (single index)
-class QCC_DB_LIB_API NormsIndexesTableType : public ccChunkedArray<1,CompressedNormType>
+class QCC_DB_LIB_API NormsIndexesTableType : public ccChunkedArray<CompressedNormType, 1, CompressedNormType>
 {
 public:
 	//! Default constructor
-	NormsIndexesTableType() : ccChunkedArray<1,CompressedNormType>("Compressed normals") {}
+	NormsIndexesTableType() : ccChunkedArray<CompressedNormType, 1, CompressedNormType>("Compressed normals") {}
 
 	//inherited from ccChunkedArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::NORMAL_INDEXES_ARRAY; }
@@ -42,7 +43,7 @@ public:
 		NormsIndexesTableType* cloneArray = new NormsIndexesTableType();
 		if (!copy(*cloneArray))
 		{
-			ccLog::Error("[NormsIndexesTableType::clone] Failed to clone array (not enough memory?)");
+			ccLog::Warning("[NormsIndexesTableType::clone] Failed to clone array (not enough memory)");
 			cloneArray->release();
 			return 0;
 		}
@@ -55,11 +56,11 @@ public:
 };
 
 //! Array of (uncompressed) 3D normals (Nx,Ny,Nz)
-class QCC_DB_LIB_API NormsTableType : public ccChunkedArray<3,PointCoordinateType>
+class QCC_DB_LIB_API NormsTableType : public ccChunkedArray<CCVector3, 3,PointCoordinateType>
 {
 public:
 	//! Default constructor
-	NormsTableType() : ccChunkedArray<3,PointCoordinateType>("Normals") {}
+	NormsTableType() : ccChunkedArray<CCVector3, 3, PointCoordinateType>("Normals") {}
 
 	//inherited from ccChunkedArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::NORMALS_ARRAY; }
@@ -70,7 +71,7 @@ public:
 		NormsTableType* cloneArray = new NormsTableType();
 		if (!copy(*cloneArray))
 		{
-			ccLog::Error("[NormsTableType::clone] Failed to clone array (not enough memory?)");
+			ccLog::Warning("[NormsTableType::clone] Failed to clone array (not enough memory)");
 			cloneArray->release();
 			return 0;
 		}
@@ -80,11 +81,11 @@ public:
 };
 
 //! Array of RGB colors for each point
-class QCC_DB_LIB_API ColorsTableType : public ccChunkedArray<3,ColorCompType>
+class QCC_DB_LIB_API ColorsTableType : public ccChunkedArray<ccColor::Rgb, 3, ColorCompType>
 {
 public:
 	//! Default constructor
-	ColorsTableType() : ccChunkedArray<3,ColorCompType>("RGB colors") {}
+	ColorsTableType() : ccChunkedArray<ccColor::Rgb, 3, ColorCompType>("RGB colors") {}
 
 	//inherited from ccChunkedArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::RGB_COLOR_ARRAY; }
@@ -95,7 +96,7 @@ public:
 		ColorsTableType* cloneArray = new ColorsTableType();
 		if (!copy(*cloneArray))
 		{
-			ccLog::Error("[ColorsTableType::clone] Failed to clone array (not enough memory?)");
+			ccLog::Warning("[ColorsTableType::clone] Failed to clone array (not enough memory)");
 			cloneArray->release();
 			return 0;
 		}
@@ -104,12 +105,28 @@ public:
 	}
 };
 
+//! 2D texture coordinates
+struct TexCoords2D
+{
+	TexCoords2D() : tx(-1.0f), ty(-1.0f) {}
+	TexCoords2D(float x, float y) : tx(x), ty(y) {}
+
+	union
+	{
+		struct
+		{
+			float tx, ty;
+		};
+		float t[2];
+	};
+};
+
 //! Array of 2D texture coordinates
-class QCC_DB_LIB_API TextureCoordsContainer : public ccChunkedArray<2,float>
+class QCC_DB_LIB_API TextureCoordsContainer : public ccChunkedArray<TexCoords2D, 2, float>
 {
 public:
 	//! Default constructor
-	TextureCoordsContainer() : ccChunkedArray<2,float>("Texture coordinates") {}
+	TextureCoordsContainer() : ccChunkedArray<TexCoords2D, 2, float>("Texture coordinates") {}
 
 	//inherited from ccChunkedArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::TEX_COORDS_ARRAY; }
@@ -120,7 +137,7 @@ public:
 		TextureCoordsContainer* cloneArray = new TextureCoordsContainer();
 		if (!copy(*cloneArray))
 		{
-			ccLog::Error("[TextureCoordsContainer::clone] Failed to clone array (not enough memory?)");
+			ccLog::Warning("[TextureCoordsContainer::clone] Failed to clone array (not enough memory)");
 			cloneArray->release();
 			return 0;
 		}

@@ -81,12 +81,10 @@ void ccSubMesh::forEach(genericTriangleAction action)
 	if (!m_associatedMesh)
 		return;
 
-	m_triIndexes->placeIteratorAtBeginning();
-	for (unsigned i=0; i<m_triIndexes->currentSize(); ++i)
+	for (size_t i = 0; i < m_triIndexes->size(); ++i)
 	{
-		CCLib::GenericTriangle* tri = m_associatedMesh->_getTriangle(m_triIndexes->getCurrentValue());
+		CCLib::GenericTriangle* tri = m_associatedMesh->_getTriangle(m_triIndexes->at(i));
 		action(*tri);
-		m_triIndexes->forwardIterator();
 	}
 }
 
@@ -187,8 +185,8 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 		return NULL;
 	}
 
-	ccGenericPointCloud::VisibilityTableType* verticesVisibility = vertices->getTheVisibilityArray();
-	if (!verticesVisibility || !verticesVisibility->isAllocated())
+	const ccGenericPointCloud::VisibilityTableType& verticesVisibility = vertices->getTheVisibilityArray();
+	if (verticesVisibility.size() < vertices->size())
 	{
 		ccLog::Error(QString("[Sub-mesh %1] Internal error: vertex visibility table not instantiated!").arg(getName()));
 		return NULL;
@@ -198,14 +196,14 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 	unsigned triNum = m_triIndexes->currentSize();
 	unsigned visibleFaces = 0;
 	{
-		for (unsigned i=0; i<triNum; ++i)
+		for (unsigned i = 0; i < triNum; ++i)
 		{
 			const unsigned& globalIndex = m_triIndexes->getValue(i);
 			const CCLib::VerticesIndexes* tsi = m_associatedMesh->getTriangleVertIndexes(globalIndex);
 			//triangle is visible?
-			if (   verticesVisibility->getValue(tsi->i1) == POINT_VISIBLE
-				&& verticesVisibility->getValue(tsi->i2) == POINT_VISIBLE
-				&& verticesVisibility->getValue(tsi->i3) == POINT_VISIBLE)
+			if (   verticesVisibility[tsi->i1] == POINT_VISIBLE
+				&& verticesVisibility[tsi->i2] == POINT_VISIBLE
+				&& verticesVisibility[tsi->i3] == POINT_VISIBLE)
 			{
 				++visibleFaces;
 			}
@@ -217,11 +215,11 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 	{
 		if (indexMap) //we still have to translate global indexes!
 		{
-			for (unsigned i=0; i<triNum; ++i)
+			for (unsigned i = 0; i < triNum; ++i)
 			{
 				unsigned globalIndex = m_triIndexes->getValue(i);
 				globalIndex = indexMap->getValue(globalIndex);
-				m_triIndexes->setValue(i,globalIndex);
+				m_triIndexes->setValue(i, globalIndex);
 			}
 		}
 		return 0;
@@ -237,7 +235,7 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 	//create sub-mesh
 	{
 		unsigned lastTri = 0;
-		for (unsigned i=0; i<triNum; ++i)
+		for (unsigned i = 0; i < triNum; ++i)
 		{
 			unsigned globalIndex = m_triIndexes->getValue(i);
 			const CCLib::VerticesIndexes* tsi = m_associatedMesh->getTriangleVertIndexes(globalIndex);
@@ -246,9 +244,9 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 				globalIndex = indexMap->getValue(globalIndex);
 
 			//triangle is visible?
-			if (   verticesVisibility->getValue(tsi->i1) == POINT_VISIBLE
-				&& verticesVisibility->getValue(tsi->i2) == POINT_VISIBLE
-				&& verticesVisibility->getValue(tsi->i3) == POINT_VISIBLE)
+			if (	verticesVisibility[tsi->i1] == POINT_VISIBLE
+				&&	verticesVisibility[tsi->i2] == POINT_VISIBLE
+				&&	verticesVisibility[tsi->i3] == POINT_VISIBLE)
 			{
 				newSubMesh->addTriangleIndex(globalIndex);
 			}
@@ -256,7 +254,7 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 			{
 				//we replace the current triangle by the 'last' valid one
 				assert(lastTri <= i);
-				m_triIndexes->setValue(lastTri++,globalIndex);
+				m_triIndexes->setValue(lastTri++, globalIndex);
 			}
 		}
 
@@ -325,7 +323,7 @@ TextureCoordsContainer* ccSubMesh::getTexCoordinatesTable() const
 	return m_associatedMesh ? m_associatedMesh->getTexCoordinatesTable() : 0;
 }
 
-void ccSubMesh::getTriangleTexCoordinates(unsigned triIndex, float* &tx1, float* &tx2, float* &tx3) const
+void ccSubMesh::getTriangleTexCoordinates(unsigned triIndex, TexCoords2D* &tx1, TexCoords2D* &tx2, TexCoords2D* &tx3) const
 {
 	if (m_associatedMesh && triIndex < size())
 	{
@@ -334,7 +332,7 @@ void ccSubMesh::getTriangleTexCoordinates(unsigned triIndex, float* &tx1, float*
 	else
 	{
 		//shouldn't happen
-		tx1 = tx2 = tx3;
+		tx1 = tx2 = tx3 = nullptr;
 		assert(false);
 	}
 }
@@ -387,7 +385,7 @@ void ccSubMesh::clear(bool releaseMemory)
 bool ccSubMesh::addTriangleIndex(unsigned globalIndex)
 {
 	if (m_triIndexes->capacity() == m_triIndexes->currentSize())
-		if (!m_triIndexes->reserve(m_triIndexes->capacity() + std::min<unsigned>(std::max<unsigned>(1, m_triIndexes->capacity() / 2), 1024))) //not enough space --> +50% (or 1024)
+		if (!m_triIndexes->reserveSafe(m_triIndexes->capacity() + std::min<size_t>(std::max<size_t>(1, m_triIndexes->capacity() / 2), 1024))) //not enough space --> +50% (or 1024)
 			return false;
 
 	m_triIndexes->addElement(globalIndex);
@@ -407,7 +405,7 @@ bool ccSubMesh::addTriangleIndex(unsigned firstIndex, unsigned lastIndex)
 	unsigned range = lastIndex-firstIndex; //lastIndex is excluded
 	unsigned pos = size();
 
-	if (size()<pos+range && !m_triIndexes->resize(pos+range))
+	if (size() < pos + range && !m_triIndexes->resizeSafe(pos + range))
 		return false;
 	
 	for (unsigned i = 0; i < range; ++i, ++firstIndex)
@@ -427,17 +425,17 @@ void ccSubMesh::setTriangleIndex(unsigned localIndex, unsigned globalIndex)
 
 bool ccSubMesh::reserve(unsigned n)
 {
-	return m_triIndexes->reserve(n);
+	return m_triIndexes->reserveSafe(n);
 }
 
 bool ccSubMesh::resize(unsigned n)
 {
-	return m_triIndexes->resize(n);
+	return m_triIndexes->resizeSafe(n);
 }
 
 unsigned ccSubMesh::capacity() const
 {
-	return m_triIndexes->capacity();
+	return static_cast<unsigned>(m_triIndexes->capacity());
 }
 
 void ccSubMesh::refreshBB()
@@ -491,7 +489,7 @@ bool ccSubMesh::toFile_MeOnly(QFile& out) const
 		return WriteError();
 
 	//references (dataVersion>=29)
-	if (!ccSerializationHelper::GenericArrayToFile(*m_triIndexes,out))
+	if (!ccSerializationHelper::GenericArrayToFile<unsigned, 1, unsigned>(*m_triIndexes, out))
 		return WriteError();
 
 	return true;
@@ -506,13 +504,13 @@ bool ccSubMesh::fromFile_MeOnly(QFile& in, short dataVersion, int flags)
 	//we only store its unique ID (dataVersion>=29) --> we hope we will find it at loading time (i.e. this
 	//is the responsibility of the caller to make sure that all dependencies are saved together)
 	uint32_t meshUniqueID = 0;
-	if (in.read((char*)&meshUniqueID,4) < 0)
+	if (in.read((char*)&meshUniqueID, 4) < 0)
 		return ReadError();
 	//[DIRTY] WARNING: temporarily, we set the mesh unique ID in the 'm_associatedMesh' pointer!!!
 	*(uint32_t*)(&m_associatedMesh) = meshUniqueID;
 
 	//references (dataVersion>=29)
-	if (!ccSerializationHelper::GenericArrayFromFile(*m_triIndexes, in, dataVersion))
+	if (!ccSerializationHelper::GenericArrayFromFile<unsigned, 1, unsigned>(*m_triIndexes, in, dataVersion))
 		return ReadError();
 
 	return true;

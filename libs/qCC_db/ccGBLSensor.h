@@ -20,11 +20,9 @@
 
 //Local
 #include "ccSensor.h"
-#include "ccAdvancedTypes.h"
 
 //CCLib
 #include <GenericCloud.h>
-
 
 class ccPointCloud;
 
@@ -66,7 +64,7 @@ public:
 	virtual ccBBox getOwnFitBB(ccGLMatrix& trans) override;
 
 	//inherited from ccSensor
-	virtual bool applyViewport(ccGenericGLDisplay* win = 0) override;
+	virtual bool applyViewport(ccGenericGLDisplay* win = nullptr) override;
 
 	//! Determines a 3D point "visibility" relatively to the sensor field of view
 	/** Relies on the sensor associated depth map (see ccGBLSensor::computeDepthBuffer).
@@ -177,7 +175,7 @@ public: //projection tools
 						double posIndex = 0 ) const;
 
 	//! 2D grid of normals
-	typedef GenericChunkedArray<3,PointCoordinateType> NormalGrid;
+	typedef std::vector<CCVector3> NormalGrid;
 
 	//! Projects a set of point cloud normals in the sensor world
 	/** WARNING: this method uses the cloud global iterator
@@ -191,7 +189,7 @@ public: //projection tools
 								double posIndex = 0 ) const;
 
 	//! 2D grid of colors
-	typedef GenericChunkedArray<3,ColorCompType> ColorGrid;
+	typedef std::vector<ccColor::Rgb> ColorGrid;
 
 	//! Projects a set of point cloud colors in the sensor frame defined by this instance
 	/** WARNING: this method uses the cloud global iterator
@@ -244,7 +242,7 @@ public: //depth buffer management
 		\param projectedCloud optional (empty) cloud to store the projected points
 		\return whether the depth buffer was successfully created or not
 	**/
-	bool computeDepthBuffer(CCLib::GenericCloud* cloud, int& errorCode, ccPointCloud* projectedCloud = 0);
+	bool computeDepthBuffer(CCLib::GenericCloud* cloud, int& errorCode, ccPointCloud* projectedCloud = nullptr);
 
 	//! Returns the associated depth buffer
 	/** Call ccGBLSensor::computeDepthBuffer first otherwise the returned buffer will be 0.
