@@ -1,4 +1,22 @@
-#pragma once
+//##########################################################################
+//#                                                                        #
+//#                              CLOUDCOMPARE                              #
+//#                                                                        #
+//#  This program is free software; you can redistribute it and/or modify  #
+//#  it under the terms of the GNU General Public License as published by  #
+//#  the Free Software Foundation; version 2 or later of the License.      #
+//#                                                                        #
+//#  This program is distributed in the hope that it will be useful,       #
+//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+//#  GNU General Public License for more details.                          #
+//#                                                                        #
+//#                  COPYRIGHT: Daniel Girardeau-Montaut                   #
+//#                                                                        #
+//##########################################################################
+
+#ifndef CC_CHUNK_HEADER
+#define CC_CHUNK_HEADER
 
 //System
 #include <vector>
@@ -19,3 +37,5 @@ public:
 	template<typename T> inline static size_t Count(const std::vector<T>& buffer) { return Count(buffer.size()); }
 	template<typename T> inline static size_t Size(size_t chunkIndex, const std::vector<T>& buffer) { return Size(chunkIndex, buffer.size()); }
 };
+
+#endif //CC_CHUNK_HEADER
