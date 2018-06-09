@@ -89,7 +89,6 @@ ccGBLSensor::ccGBLSensor(const ccGBLSensor &sensor)
 	, m_rotationOrder(sensor.m_rotationOrder)
 	, m_sensorRange(sensor.m_sensorRange)
 	, m_uncertainty(sensor.m_uncertainty)
-	, m_depthBuffer() //we cannot simply copy the depth buffer (it must be recomputed)
 {
 }
 
@@ -657,6 +656,7 @@ bool ccGBLSensor::computeDepthBuffer(CCLib::GenericCloud* theCloud, int& errorCo
 		unsigned zBuffSize = width*height;
 		try
 		{
+			assert(m_depthBuffer.zBuff.empty());
 			m_depthBuffer.zBuff.resize(zBuffSize, 0);
 		}
 		catch (const std::bad_alloc&)
@@ -1069,97 +1069,4 @@ bool ccGBLSensor::fromFile_MeOnly(QFile& in, short dataVersion, int flags)
 	}
 
 	return true;
-}
-
-/**** DEPTH BUFFER ****/
-
-ccGBLSensor::DepthBuffer::DepthBuffer()
-	: zBuff(0)
-	, deltaPhi(0)
-	, deltaTheta(0)
-	, width(0)
-	, height(0)
-{}
-
-void ccGBLSensor::DepthBuffer::clear()
-{
-	zBuff.clear();
-	width = height = 0;
-	deltaPhi = deltaTheta = 0;
-}
-
-ccGBLSensor::DepthBuffer::~DepthBuffer()
-{
-	clear();
-}
-
-int ccGBLSensor::DepthBuffer::fillHoles()
-{
-	if (zBuff.empty())
-	{
-		//z-buffer not initialized!
-		return ERROR_BAD_INPUT;
-	}
-
-	//new temp buffer
-	int dx = width+2;
-	int dy = height+2;
-	unsigned tempZBuffSize = dx*dy;
-	std::vector<PointCoordinateType> zBuffTemp;
-	try
-	{
-		zBuffTemp.resize(tempZBuffSize, 0);
-	}
-	catch (const std::bad_alloc&)
-	{
-		//not enough memory
-		return ERROR_MEMORY;
-	}
-
-	//copy old zBuffer in temp one (with 1 pixel border)
-	{
-		PointCoordinateType *_zBuffTemp = zBuffTemp.data() + (dx + 1); //2nd line, 2nd column
-		const PointCoordinateType *_zBuff = zBuff.data(); //first line, first column of the true buffer
-		for (unsigned y = 0; y < height; ++y)
-		{
-			memcpy(_zBuffTemp, _zBuff, width * sizeof(PointCoordinateType));
-			_zBuffTemp += dx;
-			_zBuff += width;
-		}
-	}
-
-	//fill holes with their neighbor's mean value
-	{
-		for (unsigned y = 0; y < height; ++y)
-		{
-			const PointCoordinateType* zu = zBuffTemp.data() + y*dx;
-			const PointCoordinateType* z = zu + dx;
-			const PointCoordinateType* zd = z + dx;
-			for (unsigned x = 0; x < width; ++x, ++zu, ++z, ++zd)
-			{
-				if (z[1] == 0) //hole
-				{
-					unsigned char nsup = 0; //non empty holes
-					//upper line
-					nsup += (zu[0] > 0);
-					nsup += (zu[1] > 0);
-					nsup += (zu[2] > 0);
-					//current line
-					nsup += ( z[0] > 0);
-					nsup += ( z[2] > 0);
-					//next line
-					nsup += (zd[0] > 0);
-					nsup += (zd[1] > 0);
-					nsup += (zd[2] > 0);
-
-					if (nsup > 3)
-					{
-						zBuff[x + y*width] = (zu[0] + zu[1] + zu[2] + z[0] + z[2] + zd[0] + zd[1] + zd[2]) / nsup;
-					}
-				}
-			}
-		}
-	}
-
-	return 0;
 }
