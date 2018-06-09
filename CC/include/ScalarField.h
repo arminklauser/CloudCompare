@@ -35,7 +35,7 @@ namespace CCLib
 
 	Invalid values can be represented by NAN_VALUE.
 **/
-class CC_CORE_LIB_API ScalarField : public std::vector<ScalarType>
+class ScalarField : public std::vector<ScalarType>
 {
 public:
 
@@ -43,19 +43,19 @@ public:
 	/** [SHAREABLE] Call 'link' when associating this structure to an object.
 		\param name scalar field name
 	**/
-	explicit ScalarField(const char* name = nullptr);
+	CC_CORE_LIB_API explicit ScalarField(const char* name = nullptr);
 
 	//! Copy constructor
 	/** \param sf scalar field to copy
 		\warning May throw a std::bad_alloc exception
 	**/
-	ScalarField(const ScalarField& sf);
+	CC_CORE_LIB_API ScalarField(const ScalarField& sf);
 
 	//! Default destructor
 	virtual ~ScalarField() {}
 
 	//! Sets scalar field name
-	void setName(const char* name);
+	CC_CORE_LIB_API void setName(const char* name);
 
 	//! Returns scalar field name
 	inline const char* getName() const { return m_name; }
@@ -67,10 +67,10 @@ public:
 	/** \param mean a field to store the mean value
 		\param variance if not void, the variance will be computed and stored here
 	**/
-	void computeMeanAndVariance(ScalarType &mean, ScalarType* variance = nullptr) const;
+	CC_CORE_LIB_API void computeMeanAndVariance(ScalarType &mean, ScalarType* variance = nullptr) const;
 
 	//! Determines the min and max values
-	void computeMinAndMax();
+	CC_CORE_LIB_API void computeMinAndMax();
 
 	//! Returns whether a scalar value is valid or not
 	static inline bool ValidValue(ScalarType value) { return value == value; } //'value == value' fails for NaN values
@@ -87,15 +87,15 @@ public:
 	void fill(ScalarType fillValue = 0) { std::fill(begin(), end(), fillValue); }
 
 	//! Reserves memory (no exception thrown)
-	bool reserveSafe(size_t count);
+	CC_CORE_LIB_API bool reserveSafe(size_t count);
 	//! Resizes memory (no exception thrown)
-	bool resizeSafe(size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
+	CC_CORE_LIB_API bool resizeSafe(size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
 
 	//Shortcuts (for backward compatibility)
 	inline ScalarType& getValue(size_t index) { return at(index); }
 	inline const ScalarType& getValue(size_t index) const { return at(index); }
 	inline void setValue(size_t index, ScalarType value) { at(index) = value; }
-	inline void addElement(ScalarType value) { push_back(value); }
+	inline void addElement(ScalarType value) { emplace_back(value); }
 	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
 	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
 

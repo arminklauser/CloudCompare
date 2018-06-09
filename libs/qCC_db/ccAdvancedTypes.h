@@ -28,7 +28,7 @@
 ***************************************************/
 
 //! Array of compressed 3D normals (single index)
-class QCC_DB_LIB_API NormsIndexesTableType : public ccChunkedArray<CompressedNormType, 1, CompressedNormType>
+class NormsIndexesTableType : public ccChunkedArray<CompressedNormType, 1, CompressedNormType>
 {
 public:
 	//! Default constructor
@@ -52,11 +52,11 @@ public:
 	}
 
 	//inherited from ccHObject/ccChunkedArray
-	virtual bool fromFile_MeOnly(QFile& in, short dataVersion, int flags) override;
+	QCC_DB_LIB_API virtual bool fromFile_MeOnly(QFile& in, short dataVersion, int flags) override;
 };
 
 //! Array of (uncompressed) 3D normals (Nx,Ny,Nz)
-class QCC_DB_LIB_API NormsTableType : public ccChunkedArray<CCVector3, 3,PointCoordinateType>
+class NormsTableType : public ccChunkedArray<CCVector3, 3,PointCoordinateType>
 {
 public:
 	//! Default constructor
@@ -81,7 +81,7 @@ public:
 };
 
 //! Array of RGB colors for each point
-class QCC_DB_LIB_API ColorsTableType : public ccChunkedArray<ccColor::Rgb, 3, ColorCompType>
+class ColorsTableType : public ccChunkedArray<ccColor::Rgb, 3, ColorCompType>
 {
 public:
 	//! Default constructor
@@ -122,7 +122,7 @@ struct TexCoords2D
 };
 
 //! Array of 2D texture coordinates
-class QCC_DB_LIB_API TextureCoordsContainer : public ccChunkedArray<TexCoords2D, 2, float>
+class TextureCoordsContainer : public ccChunkedArray<TexCoords2D, 2, float>
 {
 public:
 	//! Default constructor
