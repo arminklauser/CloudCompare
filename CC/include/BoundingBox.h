@@ -21,6 +21,7 @@
 
 //Local
 #include "CCGeom.h"
+#include "SquareMatrix.h"
 
 namespace CCLib
 {
@@ -44,6 +45,8 @@ namespace CCLib
 		const BoundingBox& operator -= (const CCVector3& aVector);
 		//! Scales the bounding box
 		const BoundingBox& operator *= (PointCoordinateType scaleFactor);
+		//! Rotates the bounding box
+		const BoundingBox& operator *= (const SquareMatrix& aMatrix);
 
 		//! Resets the bounding box
 		/** (0,0,0) --> (0,0,0)

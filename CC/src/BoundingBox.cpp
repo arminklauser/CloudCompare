@@ -184,3 +184,30 @@ PointCoordinateType BoundingBox::minDistTo(const BoundingBox& box) const
 		return std::numeric_limits<PointCoordinateType>::quiet_NaN();
 	}
 }
+
+const BoundingBox& BoundingBox::operator *= (const SquareMatrix& mat)
+{
+	if (m_valid)
+	{
+		CCVector3 boxCorners[8];
+
+		boxCorners[0] = m_bbMin;
+		boxCorners[1] = CCVector3(m_bbMin.x, m_bbMin.y, m_bbMax.z);
+		boxCorners[2] = CCVector3(m_bbMin.x, m_bbMax.y, m_bbMin.z);
+		boxCorners[3] = CCVector3(m_bbMax.x, m_bbMin.y, m_bbMin.z);
+		boxCorners[4] = m_bbMax;
+		boxCorners[5] = CCVector3(m_bbMin.x, m_bbMax.y, m_bbMax.z);
+		boxCorners[6] = CCVector3(m_bbMax.x, m_bbMax.y, m_bbMin.z);
+		boxCorners[7] = CCVector3(m_bbMax.x, m_bbMin.y, m_bbMax.z);
+
+		clear();
+
+		for (int i = 0; i < 8; ++i)
+		{
+			add(mat*boxCorners[i]);
+		}
+	}
+
+	return *this;
+}
+
