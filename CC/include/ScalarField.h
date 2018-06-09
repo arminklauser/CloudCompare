@@ -79,9 +79,9 @@ public:
 	inline virtual void flagValueAsInvalid(size_t index) { at(index) = NaN(); }
 
 	//! Returns the minimum value
-	ScalarType min() const { return m_minVal; }
+	ScalarType getMin() const { return m_minVal; }
 	//! Returns the maximum value
-	ScalarType max() const { return m_maxVal; }
+	ScalarType getMax() const { return m_maxVal; }
 
 	//! Fills the array with a particular value
 	void fill(ScalarType fillValue = 0) { std::fill(begin(), end(), fillValue); }
@@ -91,15 +91,13 @@ public:
 	//! Resizes memory (no exception thrown)
 	bool resizeSafe(size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
 
-	//! Swaps two elements
-	void swap(size_t i1, size_t i2);
-
 	//Shortcuts (for backward compatibility)
 	inline ScalarType& getValue(size_t index) { return at(index); }
 	inline const ScalarType& getValue(size_t index) const { return at(index); }
 	inline void setValue(size_t index, ScalarType value) { at(index) = value; }
 	inline void addElement(ScalarType value) { push_back(value); }
 	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
+	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
 
 protected:
 

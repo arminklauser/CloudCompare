@@ -110,12 +110,6 @@ void ScalarField::computeMinAndMax()
 	}
 }
 
-void ScalarField::swap(size_t i1, size_t i2)
-{
-	assert(i1 < size() && i2 < size());
-	std::swap(at(i1), at(i2));
-}
-
 bool ScalarField::reserveSafe(size_t count)
 {
 	try
