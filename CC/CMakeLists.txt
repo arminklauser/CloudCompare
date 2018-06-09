@@ -7,6 +7,7 @@ option( COMPILE_CC_CORE_LIB_WITH_QT "Check to compile CC_CORE_LIB with Qt (to en
 option( COMPILE_CC_CORE_LIB_WITH_CGAL "Check to compile CC_CORE_LIB with CGAL lib. (to enable Delaunay 2.5D triangulation with a GPL compliant licence)" OFF )
 option( COMPILE_CC_CORE_LIB_WITH_TBB " Check to compile CC_CORE_LIB with Intel Threading Building Blocks lib (enables some parallel processing )" OFF )
 option( COMPILE_CC_CORE_LIB_SHARED "Check to compile CC_CORE_LIB as a shared library (DLL/so)" ON )
+option( COMPILE_CC_NO_PC_VIRTUAL_HERITAGE "Check to avoid using virtual heritage for CCLib::PointCloud (may be necessary when using CC_CORE_LIB in other projects)" OFF )
 
 # to compile CCLib only! (CMake implicitly imposes to declare a project before anything...)
 project( CC_CORE_LIB VERSION 1.0 )
@@ -58,6 +59,10 @@ if ( COMPILE_CC_CORE_LIB_WITH_QT )
 	include_directories( ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} )
 	target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets Qt5::Concurrent)
 	set_property( TARGET ${PROJECT_NAME} APPEND PROPERTY COMPILE_DEFINITIONS USE_QT )
+endif()
+
+if ( COMPILE_CC_NO_PC_VIRTUAL_HERITAGE )
+	set_property( TARGET ${PROJECT_NAME} APPEND PROPERTY COMPILE_DEFINITIONS NO_CCLIB_PC_VIRTUAL_HERITAGE )
 endif()
 
 # Load advanced scripts
