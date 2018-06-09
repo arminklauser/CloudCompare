@@ -16,15 +16,15 @@
 //#                                                                        #
 //##########################################################################
 
-#include "GeometricalAnalysisTools.h"
+#include <GeometricalAnalysisTools.h>
 
 //local
-#include "DgmOctreeReferenceCloud.h"
-#include "DistanceComputationTools.h"
-#include "GenericProgressCallback.h"
-#include "ReferenceCloud.h"
-#include "ScalarField.h"
-#include "ScalarFieldTools.h"
+#include <DgmOctreeReferenceCloud.h>
+#include <DistanceComputationTools.h>
+#include <GenericProgressCallback.h>
+#include <ReferenceCloud.h>
+#include <ScalarField.h>
+#include <ScalarFieldTools.h>
 
 //system
 #include <random>

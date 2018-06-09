@@ -21,7 +21,6 @@
 //local
 #include <ScalarField.h>
 
-
 using namespace CCLib;
 
 PointCloud::PointCloud()

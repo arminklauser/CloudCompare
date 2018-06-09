@@ -16,12 +16,12 @@
 //#                                                                        #
 //##########################################################################
 
-#include "ScalarFieldTools.h"
+#include <ScalarFieldTools.h>
 
 //local
-#include "GenericProgressCallback.h"
-#include "ReferenceCloud.h"
-#include "ScalarField.h"
+#include <GenericProgressCallback.h>
+#include <ReferenceCloud.h>
+#include <ScalarField.h>
 
 //system
 #include <cstdio>
@@ -430,15 +430,15 @@ void ScalarFieldTools::multiplyScalarFields(GenericIndexedCloud* firstCloud, Gen
 		return;
 
 	unsigned n1 = firstCloud->size();
-	if (n1 != secondCloud->size() || n1==0)
+	if (n1 != secondCloud->size() || n1 == 0)
 		return;
 
-	for (unsigned i=0;i<n1;++i)
+	for (unsigned i = 0; i < n1; ++i)
 	{
 		ScalarType V1 = firstCloud->getPointScalarValue(i);
 		ScalarType V2 = secondCloud->getPointScalarValue(i);
 
-		firstCloud->setPointScalarValue(i,ScalarField::ValidValue(V1) && ScalarField::ValidValue(V2) ? V1*V2 : NAN_VALUE);
+		firstCloud->setPointScalarValue(i, ScalarField::ValidValue(V1) && ScalarField::ValidValue(V2) ? V1*V2 : NAN_VALUE);
 	}
 }
 
@@ -454,7 +454,7 @@ void ScalarFieldTools::computeScalarFieldExtremas(const GenericCloud* theCloud, 
 
 	bool firstValidValue = true;
 
-	for (unsigned i=0;i<numberOfPoints;++i)
+	for (unsigned i = 0; i < numberOfPoints; ++i)
 	{
 		ScalarType V = theCloud->getPointScalarValue(i);
 		if (ScalarField::ValidValue(V))
@@ -484,7 +484,7 @@ unsigned ScalarFieldTools::countScalarFieldValidValues(const GenericCloud* theCl
 	if (theCloud)
 	{
 		unsigned n = theCloud->size();
-		for (unsigned i=0; i<n; ++i)
+		for (unsigned i = 0; i < n; ++i)
 		{
 			ScalarType V = theCloud->getPointScalarValue(i);
 			if (ScalarField::ValidValue(V))
@@ -528,7 +528,7 @@ void ScalarFieldTools::computeScalarFieldHistogram(const GenericCloud* theCloud,
 	//compute the min and max sf values
 	ScalarType minV,maxV;
 	{
-		computeScalarFieldExtremas(theCloud,minV,maxV);
+		computeScalarFieldExtremas(theCloud, minV, maxV);
 
 		if (!ScalarField::ValidValue(minV))
 		{
@@ -538,17 +538,17 @@ void ScalarFieldTools::computeScalarFieldHistogram(const GenericCloud* theCloud,
 	}
 
 	//historgram step
-	ScalarType invStep = (maxV > minV ? numberOfClasses / (maxV-minV) : 0);
+	ScalarType invStep = (maxV > minV ? numberOfClasses / (maxV - minV) : 0);
 
 	//histogram computation
 	{
 		int iNumberOfClasses = static_cast<int>(numberOfClasses);
-		for (unsigned i=0; i<pointCount; ++i)
+		for (unsigned i = 0; i < pointCount; ++i)
 		{
 			ScalarType V = theCloud->getPointScalarValue(i);
 			if (ScalarField::ValidValue(V))
 			{
-				int aimClass = static_cast<int>((V-minV) * invStep);
+				int aimClass = static_cast<int>((V - minV) * invStep);
 				if (aimClass == iNumberOfClasses)
 					--aimClass; //sepcific case: V == maxV
 

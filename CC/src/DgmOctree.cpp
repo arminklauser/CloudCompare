@@ -16,15 +16,15 @@
 //#                                                                        #
 //##########################################################################
 
-#include "DgmOctree.h"
+#include <DgmOctree.h>
 
 //local
-#include "CCMiscTools.h"
-#include "GenericProgressCallback.h"
-#include "ParallelSort.h"
-#include "RayAndBox.h"
-#include "ReferenceCloud.h"
-#include "ScalarField.h"
+#include <CCMiscTools.h>
+#include <GenericProgressCallback.h>
+#include <ParallelSort.h>
+#include <RayAndBox.h>
+#include <ReferenceCloud.h>
+#include <ScalarField.h>
 
 //system
 #include <stdio.h>

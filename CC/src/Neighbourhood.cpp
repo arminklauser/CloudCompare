@@ -394,8 +394,7 @@ bool Neighbourhood::computeQuadric()
 	}
 
 	//compute the A matrix and b vector
-	std::vector<float> A;
-	std::vector<float> b;
+	std::vector<float> A, b;
 	try
 	{
 		A.resize(6 * count, 0);
