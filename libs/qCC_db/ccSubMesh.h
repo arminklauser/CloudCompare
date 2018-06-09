@@ -138,7 +138,7 @@ public:
 	void setAssociatedMesh(ccMesh* mesh, bool unlinkPreviousOne = true);
 
 	//! Indexes map for createNewSubMeshFromSelection
-	typedef ccChunkedArray<unsigned, 1,unsigned> IndexMap;
+	typedef ccChunkedArray<unsigned, 1, unsigned> IndexMap;
 
 	//! Creates a new sub mesh with the selected vertices only
 	/** This method is called after a graphical segmentation

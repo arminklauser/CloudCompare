@@ -252,7 +252,7 @@ public:
 	void addTriangleMtlIndex(int mtlIndex);
 
 	//! Container of per-triangle material descriptors
-	typedef ccChunkedArray<int, 1,int> triangleMaterialIndexesSet;
+	typedef ccChunkedArray<int, 1, int> triangleMaterialIndexesSet;
 
 	//! Sets per-triangle material indexes array
 	void setTriangleMtlIndexesTable(triangleMaterialIndexesSet* matIndexesTable, bool autoReleaseOldTable = true);

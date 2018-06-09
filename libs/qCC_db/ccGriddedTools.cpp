@@ -85,7 +85,7 @@ bool ccGriddedTools::DetectParameters(	const ccPointCloud* cloud,
 							CCVector3 P = *(cloud->getPoint(static_cast<unsigned>(index)));
 							if (cloudToSensorTrans)
 								cloudToSensorTrans->apply(P);
-							PointCoordinateType p = atan2(P.z,sqrt(P.x*P.x + P.y*P.y)); //see ccGBLSensor::projectPoint
+							PointCoordinateType p = atan2(P.z, sqrt(P.x*P.x + P.y*P.y)); //see ccGBLSensor::projectPoint
 							PointCoordinateType pShifted = (p < 0 ? p + static_cast<PointCoordinateType>(2.0*M_PI) : p);
 							if (k != minIndex)
 							{
@@ -206,7 +206,7 @@ bool ccGriddedTools::DetectParameters(	const ccPointCloud* cloud,
 							CCVector3 P = *(cloud->getPoint(static_cast<unsigned>(index)));
 							if (cloudToSensorTrans)
 								cloudToSensorTrans->apply(P);
-							PointCoordinateType t = atan2(P.y,P.x); //see ccGBLSensor::projectPoint
+							PointCoordinateType t = atan2(P.y, P.x); //see ccGBLSensor::projectPoint
 							PointCoordinateType tShifted = (t < 0 ? t + static_cast<PointCoordinateType>(2.0*M_PI) : t);
 							if (k != minIndex)
 							{
