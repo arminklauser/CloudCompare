@@ -845,7 +845,7 @@ const ccPointCloud& ccPointCloud::append(ccPointCloud* addedCloud, unsigned poin
 					}
 					else
 					{
-						delete newSF;
+						newSF->release();
 						newSF = nullptr;
 						ccLog::Warning("[ccPointCloud::fusion] Not enough memory: failed to allocate a copy of scalar field '%s'",sf->getName());
 					}
@@ -854,7 +854,7 @@ const ccPointCloud& ccPointCloud::append(ccPointCloud* addedCloud, unsigned poin
 		}
 
 		//let's check if there are non-updated fields
-		for (unsigned j=0; j<sfCount; ++j)
+		for (unsigned j = 0; j < sfCount; ++j)
 		{
 			if (!sfUpdated[j])
 			{
@@ -4048,7 +4048,6 @@ int ccPointCloud::addScalarField(const char* uniqueName)
 	//failure?
 	if (sfIdx < 0)
 	{
-		delete sf;
 		return -1;
 	}
 
@@ -4091,9 +4090,11 @@ int ccPointCloud::addScalarField(ccScalarField* sf)
 	catch (const std::bad_alloc&)
 	{
 		ccLog::Warning("[ccPointCloud::addScalarField] Not enough memory!");
-		delete sf;
+		sf->release();
 		return -1;
 	}
+
+	sf->link();
 
 	return static_cast<int>(m_scalarFields.size()) - 1;
 }
@@ -4380,7 +4381,7 @@ bool ccPointCloud::fromFile_MeOnly(QFile& in, short dataVersion, int flags)
 			ccScalarField* sf = new ccScalarField();
 			if (!sf->fromFile(in, dataVersion, flags))
 			{
-				delete sf;
+				sf->release();
 				return false;
 			}
 			addScalarField(sf);
