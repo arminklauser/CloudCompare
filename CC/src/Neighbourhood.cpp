@@ -398,7 +398,7 @@ bool Neighbourhood::computeQuadric()
 	std::vector<float> b;
 	try
 	{
-		A.resize(6*count,0);
+		A.resize(6 * count, 0);
 		b.resize(count, 0);
 	}
 	catch (const std::bad_alloc&)
@@ -411,9 +411,9 @@ bool Neighbourhood::computeQuadric()
 
     //for all points
 	{
-		float* _A = &(A[0]);
-		float* _b = &(b[0]);
-		for (unsigned i=0; i<count; ++i)
+		float* _A = A.data();
+		float* _b = b.data();
+		for (unsigned i = 0; i < count; ++i)
 		{
 			CCVector3 P = *m_associatedCloud->getPoint(i) - *G;
 
@@ -460,7 +460,7 @@ bool Neighbourhood::computeQuadric()
 				double tmp = 0;
 				float* _Ai = &(A[i]);
 				float* _Aj = &(A[j]);
-				for (unsigned k = 0; k<count; ++k, _Ai += 6, _Aj += 6)
+				for (unsigned k = 0; k < count; ++k, _Ai += 6, _Aj += 6)
 				{
 					//tmp += A[(6*k)+i] * A[(6*k)+j];
 					tmp += static_cast<double>(*_Ai) * static_cast<double>(*_Aj);
@@ -611,8 +611,8 @@ bool Neighbourhood::compute3DQuadric(double quadricEquation[10])
 			return false;
 		}
 
-		PointCoordinateType* _M = &(M[0]);
-		for (unsigned i=0; i<count; ++i)
+		PointCoordinateType* _M = M.data();
+		for (unsigned i = 0; i < count; ++i)
 		{
 			const CCVector3 P = *m_associatedCloud->getPoint(i) - *G;
 
@@ -637,7 +637,7 @@ bool Neighbourhood::compute3DQuadric(double quadricEquation[10])
 		for (unsigned c = 0; c < 10; ++c)
 		{
 			double sum = 0;
-			const PointCoordinateType* _M = &(M[0]);
+			const PointCoordinateType* _M = M.data();
 			for (unsigned i = 0; i < count; ++i, _M += 10)
 				sum += static_cast<double>(_M[l] * _M[c]);
 
