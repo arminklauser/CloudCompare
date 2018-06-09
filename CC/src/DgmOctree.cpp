@@ -997,7 +997,7 @@ void DgmOctree::getPointsInNeighbourCellsAround(NearestNeighboursSearchStruct &n
 						{
 							if (!getOnlyPointsWithValidScalar || ScalarField::ValidValue(m_theAssociatedCloud->getPointScalarValue(p->theIndex)))
 							{
-								nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex),p->theIndex);
+								nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex), p->theIndex);
 							}
 						}
 					}
@@ -1024,7 +1024,7 @@ void DgmOctree::getPointsInNeighbourCellsAround(NearestNeighboursSearchStruct &n
 						{
 							if (!getOnlyPointsWithValidScalar || ScalarField::ValidValue(m_theAssociatedCloud->getPointScalarValue(p->theIndex)))
 							{
-								nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex),p->theIndex);
+								nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex), p->theIndex);
 							}
 						}
 					}
@@ -1531,7 +1531,7 @@ unsigned DgmOctree::findNearestNeighborsStartingFromCell(	NearestNeighboursSearc
 			{
 				if (!getOnlyPointsWithValidScalar || ScalarField::ValidValue(m_theAssociatedCloud->getPointScalarValue(p->theIndex)))
 				{
-					nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex),p->theIndex);
+					nNSS.pointsInNeighbourhood.emplace_back(m_theAssociatedCloud->getPointPersistentPtr(p->theIndex), p->theIndex);
 					++p;
 				}
 			}
@@ -1737,7 +1737,7 @@ int DgmOctree::getPointsInSphericalNeighbourhood(	const CCVector3& sphereCenter,
 							//we keep the points falling inside the sphere
 							if (d2 <= squareRadius)
 							{
-								neighbours.emplace_back(P,p->theIndex,d2);
+								neighbours.emplace_back(P, p->theIndex, d2);
 							}
 						}
 					}
@@ -2030,7 +2030,7 @@ size_t DgmOctree::getPointsInCylindricalNeighbourhood(CylindricalNeighbourhood& 
 							d2 = (OP - params.dir * dot).norm2d();
 							if (d2 <= squareRadius && dot >= minHalfLength && dot <= params.maxHalfLength)
 							{
-								params.neighbours.emplace_back(P,p->theIndex,dot); //we save the distance relatively to the center projected on the axis!
+								params.neighbours.emplace_back(P, p->theIndex, dot); //we save the distance relatively to the center projected on the axis!
 							}
 						}
 					}
@@ -2191,12 +2191,12 @@ size_t DgmOctree::getPointsInCylindricalNeighbourhoodProgressive(ProgressiveCyli
 									//potential candidate?
 									if (dot >= currentHalfLengthMinus && dot <= params.currentHalfLength)
 									{
-										params.neighbours.emplace_back(P,p->theIndex,dot); //we save the distance relatively to the center projected on the axis!
+										params.neighbours.emplace_back(P, p->theIndex, dot); //we save the distance relatively to the center projected on the axis!
 									}
 									else if (params.currentHalfLength < params.maxHalfLength)
 									{
 										//we still keep it in the 'potential candidates' list
-										params.potentialCandidates.emplace_back(P,p->theIndex,dot); //we save the distance relatively to the center projected on the axis!
+										params.potentialCandidates.emplace_back(P, p->theIndex, dot); //we save the distance relatively to the center projected on the axis!
 									}
 								}
 							}
@@ -2517,12 +2517,12 @@ bool DgmOctree::getCellCodesAndIndexes(unsigned char level, cellsContainer& vec,
 
 		CellCode predCode = (p->theCode >> bitDec)+1; //pred value must be different than the first element's
 
-		for (unsigned i=0; i<m_numberOfProjectedPoints; ++i,++p)
+		for (unsigned i = 0; i < m_numberOfProjectedPoints; ++i, ++p)
 		{
 			CellCode currentCode = (p->theCode >> bitDec);
 
 			if (predCode != currentCode)
-				vec.emplace_back(i,truncatedCodes ? currentCode : p->theCode);
+				vec.emplace_back(i, truncatedCodes ? currentCode : p->theCode);
 
 			predCode = currentCode;
 		}
@@ -2671,30 +2671,30 @@ ReferenceCloud* DgmOctree::getPointsInCellsWithSortedCellCodes(	cellCodesContain
 
 void DgmOctree::diff(const cellCodesContainer& codesA, const cellCodesContainer& codesB, cellCodesContainer& diffA, cellCodesContainer& diffB) const
 {
-    if (codesA.empty() && codesB.empty())
-        return;
+	if (codesA.empty() && codesB.empty())
+		return;
 
-    cellCodesContainer::const_iterator pA = codesA.begin();
-    cellCodesContainer::const_iterator pB = codesB.begin();
+	cellCodesContainer::const_iterator pA = codesA.begin();
+	cellCodesContainer::const_iterator pB = codesB.begin();
 
-    //cell codes should already be sorted!
-    while (pA != codesA.end() && pB != codesB.end())
-    {
-        if (*pA < *pB)
-            diffA.push_back(*pA++);
-        else if (*pA > *pB)
-            diffB.push_back(*pB++);
-        else
-        {
-            ++pA;
-            ++pB;
-        }
-    }
+	//cell codes should already be sorted!
+	while (pA != codesA.end() && pB != codesB.end())
+	{
+		if (*pA < *pB)
+			diffA.push_back(*pA++);
+		else if (*pA > *pB)
+			diffB.push_back(*pB++);
+		else
+		{
+			++pA;
+			++pB;
+		}
+	}
 
-    while (pA!=codesA.end())
-        diffA.push_back(*pA++);
-    while (pB!=codesB.end())
-        diffB.push_back(*pB++);
+	while (pA != codesA.end())
+		diffA.push_back(*pA++);
+	while (pB != codesB.end())
+		diffB.push_back(*pB++);
 }
 
 void DgmOctree::diff(unsigned char octreeLevel, const cellsContainer &codesA, const cellsContainer &codesB, int &diffA, int &diffB, int &cellsA, int &cellsB) const
@@ -2717,46 +2717,46 @@ void DgmOctree::diff(unsigned char octreeLevel, const cellsContainer &codesA, co
 	cellsA = cellsB = 0;
 
 	//cell codes should already be sorted!
-	while ((pA != codesA.end())&&(pB != codesB.end()))
+	while ((pA != codesA.end()) && (pB != codesB.end()))
 	{
 		if (predCodeA < predCodeB)
 		{
 			++diffA;
 			++cellsA;
-			while ((pA!=codesA.end())&&((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
-			predCodeA=currentCodeA;
+			while ((pA != codesA.end()) && ((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
+			predCodeA = currentCodeA;
 		}
 		else if (predCodeA > predCodeB)
 		{
 			++diffB;
 			++cellsB;
-			while ((pB!=codesB.end())&&((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
-			predCodeB=currentCodeB;
+			while ((pB != codesB.end()) && ((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
+			predCodeB = currentCodeB;
 		}
 		else
 		{
-			while ((pA!=codesA.end())&&((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
-			predCodeA=currentCodeA;
+			while ((pA != codesA.end()) && ((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
+			predCodeA = currentCodeA;
 			++cellsA;
-			while ((pB!=codesB.end())&&((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
-			predCodeB=currentCodeB;
+			while ((pB != codesB.end()) && ((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
+			predCodeB = currentCodeB;
 			++cellsB;
 		}
 	}
 
-	while (pA!=codesA.end())
+	while (pA != codesA.end())
 	{
 		++diffA;
 		++cellsA;
-		while ((pA!=codesA.end())&&((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
-		predCodeA=currentCodeA;
+		while ((pA != codesA.end()) && ((currentCodeA = (pA->theCode >> bitDec)) == predCodeA)) ++pA;
+		predCodeA = currentCodeA;
 	}
-	while (pB!=codesB.end())
+	while (pB != codesB.end())
 	{
 		++diffB;
 		++cellsB;
-		while ((pB!=codesB.end())&&((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
-		predCodeB=currentCodeB;
+		while ((pB != codesB.end()) && ((currentCodeB = (pB->theCode >> bitDec)) == predCodeB)) ++pB;
+		predCodeB = currentCodeB;
 	}
 }
 
