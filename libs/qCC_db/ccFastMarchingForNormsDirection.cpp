@@ -22,9 +22,11 @@
 #include "ccGenericPointCloud.h"
 #include "ccPointCloud.h"
 #include "ccOctree.h"
-#include "ccScalarField.h"
 #include "ccLog.h"
 #include "ccProgressDialog.h"
+#ifdef QT_DEBUG
+#include "ccScalarField.h"
+#endif
 
 //system
 #include <assert.h>
