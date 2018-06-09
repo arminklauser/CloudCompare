@@ -388,10 +388,10 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 
 		if (hasColors)
 		{
-			const ColorCompType* col = vertices->getPointColor(i);
-			ply_write(ply,static_cast<double>(col[0]));
-			ply_write(ply,static_cast<double>(col[1]));
-			ply_write(ply,static_cast<double>(col[2]));
+			const ccColor::Rgb& col = vertices->getPointColor(i);
+			ply_write(ply, static_cast<double>(col.r));
+			ply_write(ply, static_cast<double>(col.g));
+			ply_write(ply, static_cast<double>(col.b));
 		}
 		else if (hasUniqueColor)
 		{
@@ -418,28 +418,28 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	if (mesh)
 	{
 		mesh->placeIteratorAtBeginning();
-		for (unsigned i=0;i<triNum;++i)
+		for (unsigned i = 0; i < triNum; ++i)
 		{
 			const CCLib::VerticesIndexes* tsi = mesh->getNextTriangleVertIndexes(); //DGM: getNextTriangleVertIndexes is faster for mesh groups!
-			ply_write(ply,double(3));
-			assert(tsi->i1<vertCount);
-			assert(tsi->i2<vertCount);
-			assert(tsi->i3<vertCount);
-			ply_write(ply,double(tsi->i1));
-			ply_write(ply,double(tsi->i2));
-			ply_write(ply,double(tsi->i3));
+			ply_write(ply, double(3));
+			assert(tsi->i1 < vertCount);
+			assert(tsi->i2 < vertCount);
+			assert(tsi->i3 < vertCount);
+			ply_write(ply, double(tsi->i1));
+			ply_write(ply, double(tsi->i2));
+			ply_write(ply, double(tsi->i3));
 
 			if (material) //texture coordinates
 			{
-				ply_write(ply,double(6));
-				float *tx1=0,*tx2=0,*tx3=0;
-				mesh->getTriangleTexCoordinates(i,tx1,tx2,tx3);
-				ply_write(ply,tx1 ? (double)tx1[0] : -1.0);
-				ply_write(ply,tx1 ? (double)tx1[1] : -1.0);
-				ply_write(ply,tx2 ? (double)tx2[0] : -1.0);
-				ply_write(ply,tx2 ? (double)tx2[1] : -1.0);
-				ply_write(ply,tx3 ? (double)tx3[0] : -1.0);
-				ply_write(ply,tx3 ? (double)tx3[1] : -1.0);
+				ply_write(ply, 6.0);
+				TexCoords2D *tx1 = nullptr, *tx2 = nullptr, *tx3 = nullptr;
+				mesh->getTriangleTexCoordinates(i, tx1, tx2, tx3);
+				ply_write(ply, tx1 ? tx1->tx : -1.0);
+				ply_write(ply, tx1 ? tx1->ty : -1.0);
+				ply_write(ply, tx2 ? tx2->tx : -1.0);
+				ply_write(ply, tx2 ? tx2->ty : -1.0);
+				ply_write(ply, tx3 ? tx3->tx : -1.0);
+				ply_write(ply, tx3 ? tx3->ty : -1.0);
 			}
 		}
 	}
@@ -571,7 +571,7 @@ static int rgb_cb(p_ply_argument argument)
 	e_ply_type type;
 	ply_get_property_info(prop, NULL, &type, NULL, NULL);
 
-	static ColorCompType s_color[3] = { 0, 0, 0 };
+	static ccColor::Rgb s_color(0, 0, 0);
 
 	switch(type)
 	{
@@ -579,16 +579,16 @@ static int rgb_cb(p_ply_argument argument)
 	case PLY_DOUBLE:
 	case PLY_FLOAT32:
 	case PLY_FLOAT64:
-		s_color[flags & POS_MASK] = static_cast<ColorCompType>(std::min(std::max(0.0, ply_get_argument_value(argument)), 1.0) * ccColor::MAX);
+		s_color.rgb[flags & POS_MASK] = static_cast<ColorCompType>(std::min(std::max(0.0, ply_get_argument_value(argument)), 1.0) * ccColor::MAX);
 		break;
 	case PLY_INT8:
 	case PLY_UINT8:
 	case PLY_CHAR:
 	case PLY_UCHAR:
-		s_color[flags & POS_MASK] = static_cast<ColorCompType>(ply_get_argument_value(argument));
+		s_color.rgb[flags & POS_MASK] = static_cast<ColorCompType>(ply_get_argument_value(argument));
 		break;
 	default:
-		s_color[flags & POS_MASK] = static_cast<ColorCompType>(ply_get_argument_value(argument));
+		s_color.rgb[flags & POS_MASK] = static_cast<ColorCompType>(ply_get_argument_value(argument));
 		break;
 	}
 
@@ -796,13 +796,13 @@ static int texCoords_cb(p_ply_argument argument)
 
 		if (texCoords->currentSize() == texCoords->capacity())
 		{
-			if (!texCoords->reserve(texCoords->currentSize() + 1024))
+			if (!texCoords->reserveSafe(texCoords->currentSize() + 1024))
 			{
 				s_NotEnoughMemory = true;
 				return 0;
 			}
 		}
-		texCoords->addElement(s_texCoord + value_index - 1);
+		texCoords->addElement(TexCoords2D(s_texCoord[value_index - 1], s_texCoord[value_index]));
 		++s_texCoordCount;
 
 		if ((s_texCoordCount % PROCESS_EVENTS_FREQ) == 0)
@@ -1557,7 +1557,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 				{
 					CCLib::ScalarField* sf = cloud->getScalarField(sfIdx);
 					assert(sf);
-					if (sf->resize(numberOfScalars))
+					if (sf->resizeSafe(numberOfScalars))
 					{
 						ply_set_read_cb(ply, pointElements[pp.elemIndex].elementName, pp.propName, scalar_cb, sf, 1);
 					}
@@ -1616,7 +1616,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 		long numberOfCoordinates = meshElements[pp.elemIndex].elementInstances;
 		assert(numberOfCoordinates == numberOfFacets);
 
-		if (!texCoords->reserve(numberOfCoordinates * 3))
+		if (!texCoords->reserveSafe(numberOfCoordinates * 3))
 		{
 			ccLog::Error("Not enough memory to load texture coordinates (they will be ignored)!");
 			ccLog::Warning("[PLY] Texture coordinates ignored!");
@@ -1640,7 +1640,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 		long numberOfCoordinates = meshElements[pp.elemIndex].elementInstances;
 		assert(numberOfCoordinates == numberOfFacets);
 
-		if (!texIndexes->reserve(numberOfCoordinates))
+		if (!texIndexes->reserveSafe(numberOfCoordinates))
 		{
 			ccLog::Error("Not enough memory to load texture indexes (they will be ignored)!");
 			ccLog::Warning("[PLY] Texture indexes ignored!");
@@ -1742,7 +1742,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 			else
 			{
 				//for quads, we must resize the texture indexes table (as we have more triangles than input 'faces')
-				if (!texIndexes->resize(mesh->size(), false))
+				if (!texIndexes->resizeSafe(mesh->size()))
 				{
 					ccLog::Warning("Not enough memory to store texture indexes");
 					texIndexes->release();
