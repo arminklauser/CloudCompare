@@ -254,19 +254,19 @@ void ccPropertiesTreeDelegate::fillModel(ccHObject* hObject)
 	}
 	else if (m_currentObject->isA(CC_TYPES::NORMAL_INDEXES_ARRAY))
 	{
-		fillWithChunkedArray(static_cast<NormsIndexesTableType*>(m_currentObject));
+		fillWithCCArray(static_cast<NormsIndexesTableType*>(m_currentObject));
 	}
 	else if (m_currentObject->isA(CC_TYPES::TEX_COORDS_ARRAY))
 	{
-		fillWithChunkedArray(static_cast<TextureCoordsContainer*>(m_currentObject));
+		fillWithCCArray(static_cast<TextureCoordsContainer*>(m_currentObject));
 	}
 	else if (m_currentObject->isA(CC_TYPES::NORMALS_ARRAY))
 	{
-		fillWithChunkedArray(static_cast<NormsTableType*>(m_currentObject));
+		fillWithCCArray(static_cast<NormsTableType*>(m_currentObject));
 	}
 	else if (m_currentObject->isA(CC_TYPES::RGB_COLOR_ARRAY))
 	{
-		fillWithChunkedArray(static_cast<ColorsTableType*>(m_currentObject));
+		fillWithCCArray(static_cast<ColorsTableType*>(m_currentObject));
 	}
 	else if (m_currentObject->isA(CC_TYPES::TRANS_BUFFER))
 	{
@@ -955,7 +955,7 @@ void ccPropertiesTreeDelegate::fillWithShareable(CCShareable* _obj)
 	appendRow(ITEM("Shared"), ITEM(linkCount < 3 ? QString("No") : QString("Yes (%1)").arg(linkCount - 1)));
 }
 
-template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::fillWithChunkedArray(ccChunkedArray<Type, N, ComponentType>* _obj)
+template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::fillWithCCArray(ccArray<Type, N, ComponentType>* _obj)
 {
 	assert(_obj && m_model);
 
@@ -973,7 +973,7 @@ template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::
 	//Memory
 	appendRow(ITEM("Memory"), ITEM(QString("%1 Mb").arg((_obj->capacity() * sizeof(Type)) / 1048576.0, 0, 'f', 2)));
 
-	//ccChunkedArray objects are 'Shareable'
+	//ccArray objects are 'Shareable'
 	fillWithShareable(_obj);
 }
 

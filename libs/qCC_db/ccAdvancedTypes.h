@@ -19,7 +19,7 @@
 #define CC_ADVANCED_TYPES_HEADER
 
 //Local
-#include "ccChunkedArray.h"
+#include "ccArray.h"
 #include "ccNormalCompressor.h"
 #include "ccColorTypes.h"
 
@@ -28,16 +28,16 @@
 ***************************************************/
 
 //! Array of compressed 3D normals (single index)
-class NormsIndexesTableType : public ccChunkedArray<CompressedNormType, 1, CompressedNormType>
+class NormsIndexesTableType : public ccArray<CompressedNormType, 1, CompressedNormType>
 {
 public:
 	//! Default constructor
-	NormsIndexesTableType() : ccChunkedArray<CompressedNormType, 1, CompressedNormType>("Compressed normals") {}
+	NormsIndexesTableType() : ccArray<CompressedNormType, 1, CompressedNormType>("Compressed normals") {}
 
-	//inherited from ccChunkedArray/ccHObject
+	//inherited from ccArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::NORMAL_INDEXES_ARRAY; }
 
-	//! Duplicates array (overloaded from ccChunkedArray::clone)
+	//! Duplicates array (overloaded from ccArray::clone)
 	virtual NormsIndexesTableType* clone() override
 	{
 		NormsIndexesTableType* cloneArray = new NormsIndexesTableType();
@@ -51,21 +51,21 @@ public:
 		return cloneArray;
 	}
 
-	//inherited from ccHObject/ccChunkedArray
+	//inherited from ccHObject/ccArray
 	QCC_DB_LIB_API virtual bool fromFile_MeOnly(QFile& in, short dataVersion, int flags) override;
 };
 
 //! Array of (uncompressed) 3D normals (Nx,Ny,Nz)
-class NormsTableType : public ccChunkedArray<CCVector3, 3,PointCoordinateType>
+class NormsTableType : public ccArray<CCVector3, 3,PointCoordinateType>
 {
 public:
 	//! Default constructor
-	NormsTableType() : ccChunkedArray<CCVector3, 3, PointCoordinateType>("Normals") {}
+	NormsTableType() : ccArray<CCVector3, 3, PointCoordinateType>("Normals") {}
 
-	//inherited from ccChunkedArray/ccHObject
+	//inherited from ccArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::NORMALS_ARRAY; }
 
-	//! Duplicates array (overloaded from ccChunkedArray::clone)
+	//! Duplicates array (overloaded from ccArray::clone)
 	virtual NormsTableType* clone() override
 	{
 		NormsTableType* cloneArray = new NormsTableType();
@@ -81,16 +81,16 @@ public:
 };
 
 //! Array of RGB colors for each point
-class ColorsTableType : public ccChunkedArray<ccColor::Rgb, 3, ColorCompType>
+class ColorsTableType : public ccArray<ccColor::Rgb, 3, ColorCompType>
 {
 public:
 	//! Default constructor
-	ColorsTableType() : ccChunkedArray<ccColor::Rgb, 3, ColorCompType>("RGB colors") {}
+	ColorsTableType() : ccArray<ccColor::Rgb, 3, ColorCompType>("RGB colors") {}
 
-	//inherited from ccChunkedArray/ccHObject
+	//inherited from ccArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::RGB_COLOR_ARRAY; }
 
-	//! Duplicates array (overloaded from ccChunkedArray::clone)
+	//! Duplicates array (overloaded from ccArray::clone)
 	virtual ColorsTableType* clone() override
 	{
 		ColorsTableType* cloneArray = new ColorsTableType();
@@ -122,16 +122,16 @@ struct TexCoords2D
 };
 
 //! Array of 2D texture coordinates
-class TextureCoordsContainer : public ccChunkedArray<TexCoords2D, 2, float>
+class TextureCoordsContainer : public ccArray<TexCoords2D, 2, float>
 {
 public:
 	//! Default constructor
-	TextureCoordsContainer() : ccChunkedArray<TexCoords2D, 2, float>("Texture coordinates") {}
+	TextureCoordsContainer() : ccArray<TexCoords2D, 2, float>("Texture coordinates") {}
 
-	//inherited from ccChunkedArray/ccHObject
+	//inherited from ccArray/ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override { return CC_TYPES::TEX_COORDS_ARRAY; }
 
-	//! Duplicates array (overloaded from ccChunkedArray::clone)
+	//! Duplicates array (overloaded from ccArray::clone)
 	virtual TextureCoordsContainer* clone() override
 	{
 		TextureCoordsContainer* cloneArray = new TextureCoordsContainer();

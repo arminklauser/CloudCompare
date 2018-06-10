@@ -70,7 +70,7 @@ bool BinFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 
 	//these entities shouldn't be saved alone (but it's possible!)
 	case CC_TYPES::MATERIAL_SET:
-	case CC_TYPES::CHUNKED_ARRAY:
+	case CC_TYPES::ARRAY:
 	case CC_TYPES::NORMALS_ARRAY:
 	case CC_TYPES::NORMAL_INDEXES_ARRAY:
 	case CC_TYPES::RGB_COLOR_ARRAY:

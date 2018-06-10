@@ -2468,20 +2468,11 @@ ccMesh* ccMesh::createNewMeshFromSelection(bool removeSelectedFaces)
 	if (filterChildren(subMeshes, false, CC_TYPES::SUB_MESH) != 0)
 	{
 		//create index map
-		ccSubMesh::IndexMap* indexMap = new ccSubMesh::IndexMap;
-		if (!indexMap->reserveSafe(triNum))
+		ccSubMesh::IndexMap indexMap;
+		try
 		{
-			ccLog::Error("Not enough memory! Sub-meshes will be lost...");
-			if (newMesh)
-			{
-				newMesh->setVisible(true); //force parent mesh visibility in this case!
-			}
+			indexMap.reserve(triNum);
 
-			for (size_t i = 0; i < subMeshes.size(); ++i)
-				removeChild(subMeshes[i]);
-		}
-		else
-		{
 			//finish index map creation
 			{
 				unsigned newVisibleIndex = 0;
@@ -2496,11 +2487,11 @@ ccMesh* ccMesh::createNewMeshFromSelection(bool removeSelectedFaces)
 						verticesVisibility[tsi.i2] != POINT_VISIBLE ||
 						verticesVisibility[tsi.i3] != POINT_VISIBLE)
 					{
-						indexMap->emplace_back(removeSelectedFaces ? newInvisibleIndex++ : static_cast<unsigned>(i));
+						indexMap.emplace_back(removeSelectedFaces ? newInvisibleIndex++ : static_cast<unsigned>(i));
 					}
 					else
 					{
-						indexMap->emplace_back(newVisibleIndex++);
+						indexMap.emplace_back(newVisibleIndex++);
 					}
 				}
 			}
@@ -2508,7 +2499,7 @@ ccMesh* ccMesh::createNewMeshFromSelection(bool removeSelectedFaces)
 			for (size_t i = 0; i < subMeshes.size(); ++i)
 			{
 				ccSubMesh* subMesh = static_cast<ccSubMesh*>(subMeshes[i]);
-				ccSubMesh* subMesh2 = subMesh->createNewSubMeshFromSelection(removeSelectedFaces, indexMap);
+				ccSubMesh* subMesh2 = subMesh->createNewSubMeshFromSelection(removeSelectedFaces, &indexMap);
 
 				if (subMesh->size() == 0) //no more faces in current sub-mesh?
 				{
@@ -2523,9 +2514,19 @@ ccMesh* ccMesh::createNewMeshFromSelection(bool removeSelectedFaces)
 				}
 			}
 		}
+		catch (const std::bad_alloc&)
+		{
+			ccLog::Error("Not enough memory! Sub-meshes will be lost...");
+			if (newMesh)
+			{
+				newMesh->setVisible(true); //force parent mesh visibility in this case!
+			}
 
-		indexMap->release();
-		indexMap = nullptr;
+			for (size_t i = 0; i < subMeshes.size(); ++i)
+			{
+				removeChild(subMeshes[i]);
+			}
+		}
 	}
 
 	//shall we remove the selected faces from this mesh?

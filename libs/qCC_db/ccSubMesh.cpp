@@ -208,7 +208,7 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 		{
 			for (unsigned& globalIndex : m_triIndexes)
 			{
-				globalIndex = indexMap->getValue(globalIndex);
+				globalIndex = indexMap->at(globalIndex);
 			}
 		}
 		return nullptr;
@@ -230,7 +230,7 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedFaces, In
 			const CCLib::VerticesIndexes* tsi = m_associatedMesh->getTriangleVertIndexes(globalIndex);
 
 			if (indexMap) //translate global index?
-				globalIndex = indexMap->getValue(globalIndex);
+				globalIndex = indexMap->at(globalIndex);
 
 			//triangle is visible?
 			if (	verticesVisibility[tsi->i1] == POINT_VISIBLE

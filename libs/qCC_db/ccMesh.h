@@ -252,7 +252,7 @@ public:
 	void addTriangleMtlIndex(int mtlIndex);
 
 	//! Container of per-triangle material descriptors
-	typedef ccChunkedArray<int, 1, int> triangleMaterialIndexesSet;
+	typedef ccArray<int, 1, int> triangleMaterialIndexesSet;
 
 	//! Sets per-triangle material indexes array
 	void setTriangleMtlIndexesTable(triangleMaterialIndexesSet* matIndexesTable, bool autoReleaseOldTable = true);
@@ -436,7 +436,7 @@ protected:
 	ccMaterialSet* m_materials;
 
 	//! Container of per-triangle vertices indexes (3)
-	typedef ccChunkedArray<CCLib::VerticesIndexes, 3, unsigned> triangleIndexesContainer;
+	typedef ccArray<CCLib::VerticesIndexes, 3, unsigned> triangleIndexesContainer;
 	//! Triangles' vertices indexes (3 per triangle)
 	triangleIndexesContainer* m_triVertIndexes;
 
@@ -452,12 +452,12 @@ protected:
 	triangleMaterialIndexesSet* m_triMtlIndexes;
 
 	//! Set of triplets of indexes referring to mesh texture coordinates
-	typedef ccChunkedArray<Tuple3i, 3, int> triangleTexCoordIndexesSet;
+	typedef ccArray<Tuple3i, 3, int> triangleTexCoordIndexesSet;
 	//! Mesh tex coords indexes (per-triangle)
 	triangleTexCoordIndexesSet* m_texCoordIndexes;
 
 	//! Set of triplets of indexes referring to mesh normals
-	typedef ccChunkedArray<Tuple3i, 3, int> triangleNormalsIndexesSet;
+	typedef ccArray<Tuple3i, 3, int> triangleNormalsIndexesSet;
 	//! Mesh normals indexes (per-triangle)
 	triangleNormalsIndexesSet* m_triNormalIndexes;
 };
