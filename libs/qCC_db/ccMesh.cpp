@@ -1848,6 +1848,9 @@ void ccMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 					CCVector3* _vertices = GetVertexBuffer();
 					for (n = 0; n < chunkSize; n += decimStep, _vertIndexes += decimStep)
 					{
+						assert(_vertIndexes->i1 < m_associatedCloud->size());
+						assert(_vertIndexes->i2 < m_associatedCloud->size());
+						assert(_vertIndexes->i3 < m_associatedCloud->size());
 						*_vertices++ = *m_associatedCloud->getPoint(_vertIndexes->i1);
 						*_vertices++ = *m_associatedCloud->getPoint(_vertIndexes->i2);
 						*_vertices++ = *m_associatedCloud->getPoint(_vertIndexes->i3);
@@ -1863,6 +1866,9 @@ void ccMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 					for (n = 0; n < chunkSize; n += decimStep, _vertIndexes += decimStep)
 					{
+						assert(_vertIndexes->i1 < currentDisplayedScalarField->size());
+						assert(_vertIndexes->i2 < currentDisplayedScalarField->size());
+						assert(_vertIndexes->i3 < currentDisplayedScalarField->size());
 						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(_vertIndexes->i1);
 						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(_vertIndexes->i2);
 						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(_vertIndexes->i3);
@@ -1875,6 +1881,9 @@ void ccMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 					ccColor::Rgb* _rgbColors = GetColorsBuffer();
 					for (n = 0; n < chunkSize; n += decimStep, _vertIndexes += decimStep)
 					{
+						assert(_vertIndexes->i1 < rgbColorsTable->size());
+						assert(_vertIndexes->i2 < rgbColorsTable->size());
+						assert(_vertIndexes->i3 < rgbColorsTable->size());
 						*(_rgbColors)++ = rgbColorsTable->at(_vertIndexes->i1);
 						*(_rgbColors)++ = rgbColorsTable->at(_vertIndexes->i2);
 						*(_rgbColors)++ = rgbColorsTable->at(_vertIndexes->i3);
@@ -1905,6 +1914,9 @@ void ccMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 						const CCLib::VerticesIndexes* _vertIndexes = _vertIndexesChunkOrigin;
 						for (n = 0; n < chunkSize; n += decimStep, _vertIndexes += decimStep)
 						{
+							assert(_vertIndexes->i1 < normalsIndexesTable->size());
+							assert(_vertIndexes->i2 < normalsIndexesTable->size());
+							assert(_vertIndexes->i3 < normalsIndexesTable->size());
 							*_normals++ = compressedNormals->getNormal(normalsIndexesTable->at(_vertIndexes->i1));
 							*_normals++ = compressedNormals->getNormal(normalsIndexesTable->at(_vertIndexes->i2));
 							*_normals++ = compressedNormals->getNormal(normalsIndexesTable->at(_vertIndexes->i3));
