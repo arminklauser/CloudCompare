@@ -968,7 +968,7 @@ template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::
 	appendRow(ITEM("Elements"), ITEM(QLocale(QLocale::English).toString(static_cast<qulonglong>(_obj->size()))));
 
 	//Capacity
-	appendRow(ITEM("Capacity"), ITEM(QLocale(QLocale::English).toString(_obj->capacity())));
+	appendRow(ITEM("Capacity"), ITEM(QLocale(QLocale::English).toString(static_cast<qulonglong>(_obj->capacity()))));
 
 	//Memory
 	appendRow(ITEM("Memory"), ITEM(QString("%1 Mb").arg((_obj->capacity() * sizeof(Type)) / 1048576.0, 0, 'f', 2)));
