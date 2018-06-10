@@ -72,7 +72,7 @@ public:
 	virtual bool normalsShown() const override;
 
 	//inherited methods (GenericIndexedMesh)
-	inline virtual unsigned size() const override { return m_triIndexes->currentSize(); }
+	inline virtual unsigned size() const override { return static_cast<unsigned>(m_triIndexes.size()); }
 	virtual void forEach(genericTriangleAction action) override;
 	inline virtual void placeIteratorAtBeginning() override { m_globalIterator = 0; }
 	virtual CCLib::GenericTriangle* _getNextTriangle() override; //temporary object
@@ -85,10 +85,10 @@ public:
 	//! Returns global index (i.e. relative to the associated mesh) of a given element
 	/** \param localIndex local index (i.e. relative to the internal index container)
 	**/
-	inline unsigned getTriGlobalIndex(unsigned localIndex) const { return m_triIndexes->getValue(localIndex); }
+	inline unsigned getTriGlobalIndex(unsigned localIndex) const { return m_triIndexes[localIndex]; }
 
 	//! Returns the global index of the triangle pointed by the current element
-	inline unsigned getCurrentTriGlobalIndex() const { assert(m_globalIterator < size()); return m_triIndexes->getValue(m_globalIterator); }
+	inline unsigned getCurrentTriGlobalIndex() const { assert(m_globalIterator < size()); return m_triIndexes[m_globalIterator]; }
 
 	//! Forwards the local element iterator
 	inline void forwardIterator() { ++m_globalIterator; }
@@ -118,12 +118,12 @@ public:
 	//! Reserves some memory for hosting the triangle references
 	/** \param n the number of triangles (references)
 	**/
-	bool reserve(unsigned n);
+	bool reserve(size_t n);
 
 	//! Presets the size of the vector used to store triangle references
 	/** \param n the number of triangles (references)
 	**/
-	bool resize(unsigned n);
+	bool resize(size_t n);
 
 	//! Returns the associated mesh
 	inline ccMesh* getAssociatedMesh() { return m_associatedMesh; }
@@ -164,10 +164,10 @@ protected:
 	ccMesh* m_associatedMesh;
 
 	//! Container of 3D triangles indexes
-	typedef ccChunkedArray<unsigned, 1, unsigned> ReferencesContainer;
+	typedef std::vector<unsigned> ReferencesContainer;
 
 	//! Indexes of (some of) the associated mesh triangles
-	ReferencesContainer* m_triIndexes;
+	ReferencesContainer m_triIndexes;
 
 	//! Iterator on the triangles references container
 	unsigned m_globalIterator;
