@@ -19,6 +19,7 @@
 
 //algorithm
 #include <vector>
+#include <string.h>
 
 ccDepthBuffer::ccDepthBuffer()
 	: deltaPhi(0)
