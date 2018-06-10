@@ -343,7 +343,7 @@ MainWindow::~MainWindow()
 	delete m_UI;
 	m_UI = nullptr;
 	
-	ccConsole::ReleaseInstance();
+	ccConsole::ReleaseInstance(false); //if we flush the console, it will try to display the console window while we are destroying everything!
 }
 
 void MainWindow::initPlugins( )
