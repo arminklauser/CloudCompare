@@ -109,7 +109,6 @@ static int s_GlWindowNumber = 0;
 template<class QOpenGLFunctions> inline static void glColor3ubv_safe(QOpenGLFunctions* glFunc, const unsigned char* rgb)
 {
 	assert(glFunc);
-	//glColor3ubv(rgb);
 	glFunc->glColor3f(	rgb[0] / 255.0f,
 						rgb[1] / 255.0f,
 						rgb[2] / 255.0f);
@@ -117,7 +116,6 @@ template<class QOpenGLFunctions> inline static void glColor3ubv_safe(QOpenGLFunc
 template<class QOpenGLFunctions> inline static void glColor4ubv_safe(QOpenGLFunctions* glFunc, const unsigned char* rgb)
 {
 	assert(glFunc);
-	//glColor4ubv(rgb);
 	glFunc->glColor4f(	rgb[0] / 255.0f,
 						rgb[1] / 255.0f,
 						rgb[2] / 255.0f,
@@ -5241,7 +5239,7 @@ void ccGLWindow::drawCustomLight()
 	ccQOpenGLFunctions* glFunc = functions();
 	assert(glFunc);
 
-	glFunc->glColor4ubv(ccColor::yellow.rgb);
+	glFunc->glColor3ubv(ccColor::yellow.rgb);
 	//ensure that the star size is constant (in pixels)
 	GLfloat d = static_cast<GLfloat>(CC_DISPLAYED_CUSTOM_LIGHT_LENGTH * computeActualPixelSize());
 
