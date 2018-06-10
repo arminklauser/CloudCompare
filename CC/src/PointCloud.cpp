@@ -294,7 +294,7 @@ int PointCloud::addScalarField(const char* uniqueName)
 	{
 		//Not enough memory!
 		if (sf)
-			delete sf;
+			sf->release();
 		return -1;
 	}
 
@@ -337,7 +337,7 @@ void PointCloud::deleteScalarField(int index)
 	}
 
 	//we can always delete the last element (and the vector stays consistent)
-	delete m_scalarFields.back();
+	m_scalarFields.back()->release();
 	m_scalarFields.pop_back();
 }
 
@@ -347,7 +347,7 @@ void PointCloud::deleteAllScalarFields()
 
 	while (!m_scalarFields.empty())
 	{
-		delete m_scalarFields.back();
+		m_scalarFields.back()->release();
 		m_scalarFields.pop_back();
 	}
 }

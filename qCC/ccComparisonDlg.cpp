@@ -743,7 +743,7 @@ bool ccComparisonDlg::computeDistances()
 				{
 					if (c2cParams.splitDistances[j])
 					{
-						delete c2cParams.splitDistances[j];
+						c2cParams.splitDistances[j]->release();
 						c2cParams.splitDistances[j] = nullptr;
 					}
 				}
@@ -941,7 +941,7 @@ bool ccComparisonDlg::computeDistances()
 		CCLib::ScalarField* &sf = c2cParams.splitDistances[j];
 		if (sf)
 		{
-			delete sf;
+			sf->release();
 			sf = nullptr;
 		}
 	}

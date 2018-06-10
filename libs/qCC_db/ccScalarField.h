@@ -20,7 +20,6 @@
 
 //CCLib
 #include <ScalarField.h>
-#include <CCShareable.h>
 
 //qCC_db
 #include "ccColorScale.h"
@@ -28,7 +27,7 @@
 //! A scalar field associated to display-related parameters
 /** Extends the CCLib::ScalarField object.
 **/
-class ccScalarField : public CCLib::ScalarField, public ccSerializableObject, public CCShareable
+class ccScalarField : public CCLib::ScalarField, public ccSerializableObject
 {
 public:
 

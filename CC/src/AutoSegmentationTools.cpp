@@ -205,13 +205,14 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		progressCb->start();
 	}
 
-	ScalarField theDists("distances");
+	ScalarField* theDists = new ScalarField("distances");
 	{
 		ScalarType d = theCloud->getPointScalarValue(0);
-		if (!theDists.resizeSafe(numberOfPoints, true, d))
+		if (!theDists->resizeSafe(numberOfPoints, true, d))
 		{
 			if (!inputOctree)
 				delete theOctree;
+			theDists->release();
 			return false;
 		}
 	}
@@ -227,7 +228,7 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		while (begin<numberOfPoints)
 		{
 			const CCVector3 *thePoint = theCloud->getPoint(begin);
-			const ScalarType& theDistance = theDists[begin];
+			const ScalarType& theDistance = theDists->at(begin);
 			++begin;
 
 			//FIXME DGM: what happens if SF is negative?!
@@ -250,7 +251,7 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 		for (unsigned i = begin; i<numberOfPoints; ++i)
 		{
 			const CCVector3 *thePoint = theCloud->getPoint(i);
-			const ScalarType& theDistance = theDists[i];
+			const ScalarType& theDistance = theDists->at(i);
 
 			if ((theCloud->getPointScalarValue(i) >= 0.0) && (theDistance > maxDist))
 			{
@@ -315,8 +316,11 @@ bool AutoSegmentationTools::frontPropagationBasedSegmentation(	GenericIndexedClo
 
 	for (unsigned i = 0; i < numberOfPoints; ++i)
 	{
-		theCloud->setPointScalarValue(i, theDists[i]);
+		theCloud->setPointScalarValue(i, theDists->at(i));
 	}
+
+	theDists->release();
+	theDists = nullptr;
 
 	if (fm)
 	{

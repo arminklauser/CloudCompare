@@ -101,7 +101,7 @@ public:
 	inline void destroy(CCLib::ScalarField* item)
 	{
 		m_items.erase(item);
-		delete item;
+		item->release();
 	}
 
 	//! Destructor
@@ -112,7 +112,7 @@ public:
 		//dispose of left over
 		for (std::unordered_set<CCLib::ScalarField*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
 		{
-			delete (*it);
+			(*it)->release();
 		}
 		m_items.clear();
 	}

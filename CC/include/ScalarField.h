@@ -21,7 +21,7 @@
 
 //Local
 #include "CCConst.h"
-#include "CCCoreLib.h"
+#include "CCShareable.h"
 
 //System
 #include <vector>
@@ -35,7 +35,7 @@ namespace CCLib
 
 	Invalid values can be represented by NAN_VALUE.
 **/
-class ScalarField : public std::vector<ScalarType>
+class ScalarField : public std::vector<ScalarType>, public CCShareable
 {
 public:
 
@@ -50,9 +50,6 @@ public:
 		\warning May throw a std::bad_alloc exception
 	**/
 	CC_CORE_LIB_API ScalarField(const ScalarField& sf);
-
-	//! Default destructor
-	virtual ~ScalarField() {}
 
 	//! Sets scalar field name
 	CC_CORE_LIB_API void setName(const char* name);
@@ -99,7 +96,14 @@ public:
 	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
 	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
 
-protected:
+protected: //methods
+
+	//! Default destructor
+	/** Call release instead.
+	**/
+	virtual ~ScalarField() {}
+
+protected: //members
 
 	//! Scalar field name
 	char m_name[256];
