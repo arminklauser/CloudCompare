@@ -935,8 +935,8 @@ bool ManualSegmentationTools::segmentMeshWitAABox(GenericIndexedMesh* origMesh,
 	SimpleMesh* insideMesh2 = new SimpleMesh(insideVertices2, true);
 	
 	//outside mesh (output)
-	PointCloud* outsideVertices = 0;
-	SimpleMesh* outsideMesh = 0;
+	PointCloud* outsideVertices = nullptr;
+	SimpleMesh* outsideMesh = nullptr;
 	if (ioParams.generateOutsideMesh)
 	{
 		outsideVertices = new PointCloud;

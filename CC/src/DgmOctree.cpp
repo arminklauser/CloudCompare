@@ -4027,7 +4027,7 @@ unsigned DgmOctree::executeFunctionForAllCellsStartingAtLevel(unsigned char star
 		s_cellFunc_MT_success = true;
 		if (s_normProgressCb_MT)
 			delete s_normProgressCb_MT;
-		s_normProgressCb_MT = 0;
+		s_normProgressCb_MT = nullptr;
 
 		//progress notification
 		if (progressCb)

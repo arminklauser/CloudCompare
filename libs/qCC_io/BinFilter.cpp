@@ -820,7 +820,7 @@ CC_FILE_ERROR BinFilter::LoadFileV2(QFile& in, ccHObject& container, int flags)
 
 					ccLog::Warning(QString("[BIN] Couldn't find trans. buffer (ID=%1) for sensor '%2' in the file!").arg(bufferID).arg(sensor->getName()));
 
-					//positions are optional, so we can simply set them to NULL and go ahead, we do not need to return.
+					//positions are optional, so we can simply set them to nullptr and go ahead, we do not need to return.
 					//return CC_FERR_MALFORMED_FILE;
 				}
 			}

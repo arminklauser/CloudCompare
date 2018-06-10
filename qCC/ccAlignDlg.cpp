@@ -128,7 +128,7 @@ CCLib::ReferenceCloud *ccAlignDlg::getSampledModel()
 			sampledCloud = CCLib::CloudSamplingTools::subsampleCloudWithOctreeAtLevel(	modelObject,
 																						static_cast<unsigned char>(modelSamplingRate->value()),
 																						CCLib::CloudSamplingTools::NEAREST_POINT_TO_CELL_CENTER,
-																						NULL,
+																						nullptr,
 																						modelObject->getOctree().data());
 		}
 		else
@@ -176,7 +176,7 @@ CCLib::ReferenceCloud *ccAlignDlg::getSampledData()
 			sampledCloud = CCLib::CloudSamplingTools::subsampleCloudWithOctreeAtLevel(	dataObject,
 																						static_cast<unsigned char>(dataSamplingRate->value()),
 																						CCLib::CloudSamplingTools::NEAREST_POINT_TO_CELL_CENTER,
-																						NULL,
+																						nullptr,
 																						dataObject->getOctree().data());
 		}
 		else

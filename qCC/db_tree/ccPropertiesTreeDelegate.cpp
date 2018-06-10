@@ -999,18 +999,18 @@ QWidget* ccPropertiesTreeDelegate::createEditor(QWidget *parent,
 	const QModelIndex &index) const
 {
 	if (!m_model || !m_currentObject)
-		return NULL;
+		return nullptr;
 
 	QStandardItem* item = m_model->itemFromIndex(index);
 
 	if (!item || !item->data().isValid())
-		return NULL;
+		return nullptr;
 
 	int itemData = item->data().toInt();
 	if (item->column() == 0 && !isWideEditor(itemData))
 	{
 		//on the first column, only editors spanning on 2 columns are allowed
-		return NULL;
+		return nullptr;
 	}
 
 	QWidget* outputWidget = nullptr;

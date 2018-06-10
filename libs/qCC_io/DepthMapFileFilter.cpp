@@ -144,9 +144,9 @@ CC_FILE_ERROR DepthMapFileFilter::saveToFile(const QString& filename, ccGBLSenso
 	fprintf(fp, "/////////////////////////\n");
 
 	//an array of projected normals (same size a depth map)
-	ccGBLSensor::NormalGrid* theNorms = NULL;
+	ccGBLSensor::NormalGrid* theNorms = nullptr;
 	//an array of projected colors (same size a depth map)
-	ccGBLSensor::ColorGrid* theColors = NULL;
+	ccGBLSensor::ColorGrid* theColors = nullptr;
 
 	//if the sensor is associated to a "ccPointCloud", we may also extract
 	//normals and color!

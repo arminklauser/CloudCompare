@@ -294,7 +294,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 				if (currentEdgeIndex < 0) //create a new edge
 				{
 					edge* newEdge = new edge;
-					newEdge->nextEdge = NULL;
+					newEdge->nextEdge = nullptr;
 					newEdge->theOtherPoint = b;
 					newEdge->positif = (a == ind[k]);
 					//newEdge->edgeIndex = ++lastEdgeIndexPushed; //don't write the edge right now
@@ -470,7 +470,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 					{
 						faceIndexes* f = new faceIndexes;
 						f->faceIndex = i;
-						f->nextFace = NULL;
+						f->nextFace = nullptr;
 						theFacesIndexes[ind[j]] = f;
 					}
 					else
@@ -480,7 +480,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 							f = f->nextFace;
 						f->nextFace = new faceIndexes;
 						f->nextFace->faceIndex = i;
-						f->nextFace->nextFace = NULL;
+						f->nextFace->nextFace = nullptr;
 					}
 				}
 
@@ -532,7 +532,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 						f = f->nextFace;
 						delete oldf;
 					}
-					theFacesIndexes[i] = NULL;
+					theFacesIndexes[i] = nullptr;
 				}
 
 				if (pDlg)

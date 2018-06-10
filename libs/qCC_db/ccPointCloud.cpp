@@ -403,7 +403,7 @@ ccPointCloud* ccPointCloud::partialClone(const CCLib::ReferenceCloud* selection,
 	if (theMesh)
 	{
 	//REVOIR --> on pourrait le faire pour chaque sous-mesh non ?
-	CCLib::GenericIndexedMesh* newTri = CCLib::ManualSegmentationTools::segmentMesh(theMesh,selection,true,NULL,this);
+	CCLib::GenericIndexedMesh* newTri = CCLib::ManualSegmentationTools::segmentMesh(theMesh,selection,true,nullptr,this);
 	setMesh(newTri);
 	if (source->areMeshesDisplayed()) showTri();
 	}
@@ -3436,7 +3436,7 @@ bool ccPointCloud::setRGBColorWithCurrentScalarField(bool mixWithExistingColor/*
 }
 
 QSharedPointer<CCLib::ReferenceCloud> ccPointCloud::computeCPSet(	ccGenericPointCloud& otherCloud,
-																	CCLib::GenericProgressCallback* progressCb/*=NULL*/,
+																	CCLib::GenericProgressCallback* progressCb/*=nullptr*/,
 																	unsigned char octreeLevel/*=0*/)
 {
 	int result = 0;
@@ -3482,7 +3482,7 @@ QSharedPointer<CCLib::ReferenceCloud> ccPointCloud::computeCPSet(	ccGenericPoint
 }
 
 bool ccPointCloud::interpolateColorsFrom(	ccGenericPointCloud* otherCloud,
-											CCLib::GenericProgressCallback* progressCb/*=NULL*/,
+											CCLib::GenericProgressCallback* progressCb/*=nullptr*/,
 											unsigned char octreeLevel/*=0*/)
 {
 if (!otherCloud || otherCloud->size() == 0)
@@ -3540,7 +3540,7 @@ ccPointCloud* ccPointCloud::unrollOnCylinder(PointCoordinateType radius,
 	bool exportDeviationSF/*=false*/,
 	double startAngle_deg/*=0.0*/,
 	double stopAngle_deg/*=360.0*/,
-	CCLib::GenericProgressCallback* progressCb/*=NULL*/) const
+	CCLib::GenericProgressCallback* progressCb/*=nullptr*/) const
 {
 
 	if (startAngle_deg >= stopAngle_deg)
@@ -3812,7 +3812,7 @@ ccPointCloud* ccPointCloud::unrollOnCone(	double coneAngle_deg,
 											bool developStraightenedCone,
 											PointCoordinateType baseRadius,
 											bool exportDeviationSF/*=false*/,
-											CCLib::GenericProgressCallback* progressCb/*=NULL*/) const
+											CCLib::GenericProgressCallback* progressCb/*=nullptr*/) const
 {
 	if (coneAxisDim > 2)
 	{
@@ -3967,7 +3967,7 @@ ccPointCloud* ccPointCloud::unrollOnCone(	double coneAngle_deg,
 //	double alpha_deg,
 //	const CCVector3& apex,
 //	unsigned char Z/*=2*/,
-//	CCLib::GenericProgressCallback* progressCb/*=NULL*/)
+//	CCLib::GenericProgressCallback* progressCb/*=nullptr*/)
 //{
 //	assert(Z < 3);
 //	unsigned char X = (Z < 2 ? Z + 1 : 0);

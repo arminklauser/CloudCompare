@@ -93,8 +93,8 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	if (!entity || filename.isEmpty())
 		return CC_FERR_BAD_ARGUMENT;
 
-	ccGenericPointCloud* vertices = NULL;
-	ccGenericMesh* mesh = NULL;
+	ccGenericPointCloud* vertices = nullptr;
+	ccGenericMesh* mesh = nullptr;
 	if (entity->isKindOf(CC_TYPES::MESH))
 	{
 		mesh = ccHObjectCaster::ToGenericMesh(entity);
@@ -108,7 +108,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	if (!vertices)
 		return CC_FERR_BAD_ENTITY_TYPE;
 
-	p_ply ply = ply_create(qPrintable(filename), storageType, NULL, 0, NULL);
+	p_ply ply = ply_create(qPrintable(filename), storageType, nullptr, 0, nullptr);
 	if (!ply)
 		return CC_FERR_WRITING;
 
@@ -567,9 +567,9 @@ static int rgb_cb(p_ply_argument argument)
 	ply_get_argument_user_data(argument, (void**)(&cloud), &flags);
 
 	p_ply_property prop;
-	ply_get_argument_property(argument, &prop, NULL, NULL);
+	ply_get_argument_property(argument, &prop, nullptr, nullptr);
 	e_ply_type type;
-	ply_get_property_info(prop, NULL, &type, NULL, NULL);
+	ply_get_property_info(prop, nullptr, &type, nullptr, nullptr);
 
 	static ccColor::Rgb s_color(0, 0, 0);
 
@@ -612,12 +612,12 @@ static int grey_cb(p_ply_argument argument)
 		return 1;
 	}
 	ccPointCloud* cloud;
-	ply_get_argument_user_data(argument, (void**)(&cloud), NULL);
+	ply_get_argument_user_data(argument, (void**)(&cloud), nullptr);
 
 	p_ply_property prop;
-	ply_get_argument_property(argument, &prop, NULL, NULL);
+	ply_get_argument_property(argument, &prop, nullptr, nullptr);
 	e_ply_type type;
-	ply_get_property_info(prop, NULL, &type, NULL, NULL);
+	ply_get_property_info(prop, nullptr, &type, nullptr, nullptr);
 
 	ColorCompType G;
 
@@ -657,7 +657,7 @@ static int scalar_cb(p_ply_argument argument)
 		return 1;
 	}
 	CCLib::ScalarField* sf = 0;
-	ply_get_argument_user_data(argument, (void**)(&sf), NULL);
+	ply_get_argument_user_data(argument, (void**)(&sf), nullptr);
 
 	p_ply_element element;
 	long instance_index;
@@ -681,7 +681,7 @@ static int face_cb(p_ply_argument argument)
 		return 1;
 	}
 	ccMesh* mesh = 0;
-	ply_get_argument_user_data(argument, (void**)(&mesh), NULL);
+	ply_get_argument_user_data(argument, (void**)(&mesh), nullptr);
 	if (!mesh)
 	{
 		assert(false);
@@ -689,7 +689,7 @@ static int face_cb(p_ply_argument argument)
 	}
 
 	long length, value_index;
-	ply_get_argument_property(argument, NULL, &length, &value_index);
+	ply_get_argument_property(argument, nullptr, &length, &value_index);
 	//unsupported polygon type!
 	if (length != 3 && length != 4)
 	{
@@ -771,7 +771,7 @@ static int texCoords_cb(p_ply_argument argument)
 	}
 
 	long length, value_index;
-	ply_get_argument_property(argument, NULL, &length, &value_index);
+	ply_get_argument_property(argument, nullptr, &length, &value_index);
 	//unsupported/invalid coordinates!
 	if (length != 6 && length != 8)
 	{
@@ -789,7 +789,7 @@ static int texCoords_cb(p_ply_argument argument)
 	if (((value_index + 1) % 2) == 0)
 	{
 		TextureCoordsContainer* texCoords = 0;
-		ply_get_argument_user_data(argument, (void**)(&texCoords), NULL);
+		ply_get_argument_user_data(argument, (void**)(&texCoords), nullptr);
 		assert(texCoords);
 		if (!texCoords)
 			return 1;
@@ -826,7 +826,7 @@ static int texIndexes_cb(p_ply_argument argument)
 	}
 
 	ccMesh::triangleMaterialIndexesSet* texIndexes = 0;
-	ply_get_argument_user_data(argument, (void**)(&texIndexes), NULL);
+	ply_get_argument_user_data(argument, (void**)(&texIndexes), nullptr);
 	assert(texIndexes);
 	if (!texIndexes)
 	{
@@ -870,7 +870,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	/****************/
 
 	//open a PLY file for reading
-	p_ply ply = ply_open(qPrintable(filename), NULL, 0, NULL);
+	p_ply ply = ply_open(qPrintable(filename), nullptr, 0, nullptr);
 	if (!ply)
 		return CC_FERR_READING;
 
@@ -901,7 +901,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	/******************/
 	{
 		//display comments
-		const char* lastComment = NULL;
+		const char* lastComment = nullptr;
 		while ((lastComment = ply_get_next_comment(ply, lastComment)))
 		{
 			ccLog::Print("[PLY][Comment] %s", lastComment);
@@ -1033,7 +1033,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	/***  Objects info  ***/
 	/**********************/
 	{
-		const char* lastObjInfo = NULL;
+		const char* lastObjInfo = nullptr;
 		while ((lastObjInfo = ply_get_next_obj_info(ply, lastObjInfo)))
 		{
 			ccLog::Print("[PLY][Info] %s", lastObjInfo);

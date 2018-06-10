@@ -456,7 +456,7 @@ void FastMarchingForFacetExtraction::initTrialCells()
 		unsigned index = m_activeCells.front();
 		PlanarCell* seedCell = static_cast<PlanarCell*>(m_theGrid[index]);
 
-		assert(seedCell != NULL);
+		assert(seedCell != nullptr);
 		assert(seedCell->T == 0);
 
 		//add all its neighbour cells to the TRIAL set

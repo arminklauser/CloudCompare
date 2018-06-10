@@ -482,7 +482,7 @@ bool Neighbourhood::computeQuadric()
 
 #if 0
 		//trace tA.A and tA.b to a file
-		FILE* f = 0;
+		FILE* f = nullptr;
 		fopen_s(&f, "CG_trace.txt", "wt");
 		if (f)
 		{

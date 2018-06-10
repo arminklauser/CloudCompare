@@ -54,7 +54,7 @@ CC_FILE_ERROR SoiFilter::loadFile(const QString& filename, ccHObject& container,
 	char* pEnd;
 
 	//header
-	while ((strcmp((char*)line.substr(0, 4).c_str(), "#CC#") != 0) && (eof != NULL))
+	while ((strcmp((char*)line.substr(0, 4).c_str(), "#CC#") != 0) && (eof != nullptr))
 	{
 		if (strcmp(line.substr(0, 4).c_str(), "#NP#") == 0)
 		{
@@ -96,7 +96,7 @@ CC_FILE_ERROR SoiFilter::loadFile(const QString& filename, ccHObject& container,
 		char* eof = fgets((char*)line.c_str(), MAX_ASCII_FILE_LINE_LENGTH, fp);
 
 		//we only look for points (we ignore the rest)
-		while ((strcmp(line.substr(0, 4).c_str(), "#pt#") != 0) && (eof != NULL))
+		while ((strcmp(line.substr(0, 4).c_str(), "#pt#") != 0) && (eof != nullptr))
 			eof = fgets((char*)line.c_str(), MAX_ASCII_FILE_LINE_LENGTH, fp);
 
 		unsigned nbOfPoints = 0;

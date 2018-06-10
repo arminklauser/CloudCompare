@@ -743,7 +743,7 @@ void ccHObject::applyGLTransformation(const ccGLMatrix& trans)
 	m_glTransHistory = trans * m_glTransHistory;
 }
 
-void ccHObject::applyGLTransformation_recursive(const ccGLMatrix* transInput/*=NULL*/)
+void ccHObject::applyGLTransformation_recursive(const ccGLMatrix* transInput/*=nullptr*/)
 {
 	ccGLMatrix transTemp;
 	const ccGLMatrix* transToApply = transInput;

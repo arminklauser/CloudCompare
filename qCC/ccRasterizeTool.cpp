@@ -1124,7 +1124,7 @@ bool ccRasterizeTool::ExportGeoTiff(QString outputFilename,
 		return false;
 	}
 
-	char **papszOptions = NULL;
+	char **papszOptions = nullptr;
 	GDALDataset* poDstDS = poDriver->Create(qPrintable(outputFilename),
 											static_cast<int>(grid.width),
 											static_cast<int>(grid.height),
@@ -1153,7 +1153,7 @@ bool ccRasterizeTool::ExportGeoTiff(QString outputFilename,
 	//OGRSpatialReference oSRS;
 	//oSRS.SetUTM( 11, TRUE );
 	//oSRS.SetWellKnownGeogCS( "NAD27" );
-	//char *pszSRS_WKT = NULL;
+	//char *pszSRS_WKT = nullptr;
 	//oSRS.exportToWkt( &pszSRS_WKT );
 	//poDstDS->SetProjection( pszSRS_WKT );
 	//CPLFree( pszSRS_WKT );

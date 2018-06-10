@@ -340,12 +340,12 @@ void ccFastMarchingForNormsDirection::initTrialCells()
 		unsigned index = m_activeCells.front();
 		DirectionCell* seedCell = static_cast<DirectionCell*>(m_theGrid[index]);
 
-		assert(seedCell != NULL);
+		assert(seedCell != nullptr);
 		assert(seedCell->T == 0);
 		assert(seedCell->signConfidence == 1);
 
 		//add all its neighbour cells to the TRIAL set
-		for (unsigned i=0; i<m_numberOfNeighbours; ++i)
+		for (unsigned i = 0; i < m_numberOfNeighbours; ++i)
 		{
 			unsigned nIndex = index + m_neighboursIndexShift[i];
 			DirectionCell* nCell = static_cast<DirectionCell*>(m_theGrid[nIndex]);
@@ -356,7 +356,7 @@ void ccFastMarchingForNormsDirection::initTrialCells()
 				addTrialCell(nIndex);
 
 				//compute its approximate arrival time
-				nCell->T = seedCell->T + m_neighboursDistance[i] * computeTCoefApprox(seedCell,nCell);
+				nCell->T = seedCell->T + m_neighboursDistance[i] * computeTCoefApprox(seedCell, nCell);
 			}
 		}
 	}

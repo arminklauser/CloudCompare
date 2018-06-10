@@ -57,7 +57,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 	{
 		GDALDataset* poDataset = static_cast<GDALDataset*>(GDALOpen( qPrintable(filename), GA_ReadOnly ));
 
-		if( poDataset != NULL )
+		if( poDataset != nullptr )
 		{
 			ccLog::Print(QString("Raster file: '%1'").arg(filename));
 			ccLog::Print( "Driver: %s/%s",
@@ -69,7 +69,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 			int rasterY = poDataset->GetRasterYSize();
 			ccLog::Print( "Size is %dx%dx%d", rasterX, rasterY, rasterCount );
 
-			if( poDataset->GetProjectionRef() != NULL )
+			if( poDataset->GetProjectionRef() != nullptr )
 				ccLog::Print( "Projection is `%s'", poDataset->GetProjectionRef() );
 
 			double adfGeoTransform[6] = {	 0, //top left x
@@ -241,7 +241,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 				ccLog::Print( "[GDAL] Min=%.3fd, Max=%.3f", adfMinMax[0], adfMinMax[1] );
 
 				GDALColorTable* colTable = poBand->GetColorTable();
-				if( colTable != NULL )
+				if( colTable != nullptr )
 					printf( "[GDAL] Band has a color table with %d entries", colTable->GetColorEntryCount() );
 
 				if( poBand->GetOverviewCount() > 0 )
