@@ -725,6 +725,7 @@ bool ccComparisonDlg::computeDistances()
 				ccScalarField* sfDim = new ccScalarField();
 				if (sfDim->resizeSafe(count))
 				{
+					sfDim->link();
 					c2cParams.splitDistances[j] = sfDim;
 				}
 				else
