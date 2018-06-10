@@ -22,7 +22,7 @@
 #include "ccHObject.h"
 
 //CCLib
-#include "CCShareable.h"
+#include <CCShareable.h>
 
 //System
 #include <vector>
@@ -76,7 +76,7 @@ public:
 	{
 		try
 		{
-			reserve(count);
+			this->reserve(count);
 		}
 		catch (const std::bad_alloc&)
 		{
@@ -87,7 +87,7 @@ public:
 	}
 
 	//! Returns whether some memory has been allocated or not
-	inline bool isAllocated() const { return capacity() != 0; }
+	inline bool isAllocated() const { return this->capacity() != 0; }
 	
 	//! Resizes memory (no exception thrown)
 	bool resizeSafe(size_t count, bool initNewElements = false, const Type* valueForNewElements = nullptr)
@@ -101,11 +101,11 @@ public:
 					ccLog::Warning("[ccArray::resizeSafe] Internal error: no new element specified");
 					return false;
 				}
-				resize(count, *valueForNewElements);
+				this->resize(count, *valueForNewElements);
 			}
 			else
 			{
-				resize(count);
+				this->resize(count);
 			}
 		}
 		catch (const std::bad_alloc&)
@@ -122,14 +122,14 @@ public:
 	inline virtual bool isSerializable() const override { return true; }
 
 	//Shortcuts (for backward compatibility)
-	inline Type& getValue(size_t index) { return at(index); }
-	inline const Type& getValue(size_t index) const { return at(index); }
-	inline void setValue(size_t index, const Type& value) { at(index) = value; }
-	inline void addElement(const Type& value) { emplace_back(value); }
-	inline void fill(const Type& value) { if (empty()) resize(capacity(), value); else std::fill(begin(), end(), value); }
-	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
-	inline void clear(bool releaseMemory = false) { if (releaseMemory) resize(0); else std::vector<Type>::clear(); }
-	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
+	inline Type& getValue(size_t index) { return this->at(index); }
+	inline const Type& getValue(size_t index) const { return this->at(index); }
+	inline void setValue(size_t index, const Type& value) { this->at(index) = value; }
+	inline void addElement(const Type& value) { this->emplace_back(value); }
+	inline void fill(const Type& value) { if (this->empty()) this->resize(this->capacity(), value); else std::fill(this->begin(), this->end(), value); }
+	inline unsigned currentSize() const { return static_cast<unsigned>(this->size()); }
+	inline void clear(bool releaseMemory = false) { if (releaseMemory) this->resize(0); else this->std::vector<Type>::clear(); }
+	inline void swap(size_t i1, size_t i2) { std::swap(this->at(i1), this->at(i2)); }
 
 protected:
 
