@@ -23,6 +23,7 @@
 #include "CCConst.h"
 #include "CCToolbox.h"
 #include "SquareMatrix.h"
+#include "PointCloud.h"
 
 //System
 #include <list>
@@ -37,10 +38,6 @@ namespace CCLib
 
 class GenericIndexedMesh;
 class GenericProgressCallback;
-class GenericIndexedCloud;
-class GenericIndexedCloudPersist;
-class GenericCloud;
-class PointCloud;
 
 //! Several point cloud re-projection algorithms ("developpee", translation, rotation, etc.)
 class CC_CORE_LIB_API PointProjectionTools : public CCToolbox
@@ -62,8 +59,13 @@ public:
 		//! Default constructor
 		Transformation() : s(PC_ONE) {}
 
-		//! Applies transformation to a point
+		//! Applies the transformation to a point
 		inline CCVector3 apply(const CCVector3& P) const { return s * (R * P) + T; }
+
+		//! Applies the transformation to a cloud
+		/** WARNING: THIS METHOD IS NOT COMPATIBLE WITH PARALLEL STRATEGIES
+		**/
+		CC_CORE_LIB_API void apply(PointCloud& cloud) const;
 	};
 
 	//! Develops a cylinder-shaped point cloud around its main axis
@@ -115,7 +117,7 @@ public:
 		\param trans the geometrical transformation
 		\return the "transformed" point
 	**/
-	static CCVector3 applyTransformation(const CCVector3& P, Transformation& trans);
+	//static CCVector3 applyTransformation(const CCVector3& P, Transformation& trans);
 
 	//! Computes a 2.5D Delaunay triangulation
 	/** The triangulation can be either computed on the points projected

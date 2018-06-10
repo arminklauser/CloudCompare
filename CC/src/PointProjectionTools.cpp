@@ -512,25 +512,24 @@ struct Edge
 	float nearestPointSquareDist;
 };
 
-
 //! Finds the nearest (available) point to an edge
 /** \return The nearest point distance (or -1 if no point was found!)
 **/
-PointCoordinateType FindNearestCandidate(	unsigned& minIndex,
-											const VertexIterator& itA,
-											const VertexIterator& itB,
-											const std::vector<Vertex2D>& points,
-											const std::vector<HullPointFlags>& pointFlags,
-											PointCoordinateType minSquareEdgeLength,
-											PointCoordinateType maxSquareEdgeLength,
-											bool allowLongerChunks = false)
+static PointCoordinateType FindNearestCandidate(	unsigned& minIndex,
+													const VertexIterator& itA,
+													const VertexIterator& itB,
+													const std::vector<Vertex2D>& points,
+													const std::vector<HullPointFlags>& pointFlags,
+													PointCoordinateType minSquareEdgeLength,
+													PointCoordinateType maxSquareEdgeLength,
+													bool allowLongerChunks = false)
 {
 	//look for the nearest point in the input set
 	PointCoordinateType minDist2 = -1;
-	CCVector2 AB = **itB-**itA;
+	CCVector2 AB = **itB - **itA;
 	PointCoordinateType squareLengthAB = AB.norm2();
 	unsigned pointCount = static_cast<unsigned>(points.size());
-	for (unsigned i=0; i<pointCount; ++i)
+	for (unsigned i = 0; i < pointCount; ++i)
 	{
 		const Vertex2D& P = points[i];
 		if (pointFlags[P.index] != POINT_NOT_USED)
@@ -541,7 +540,7 @@ PointCoordinateType FindNearestCandidate(	unsigned& minIndex,
 			continue;
 
 		//we only consider 'inner' points
-		CCVector2 AP = P-**itA;
+		CCVector2 AP = P - **itA;
 		if (AB.x * AP.y - AB.y * AP.x < 0)
 		{
 			continue;
@@ -558,7 +557,7 @@ PointCoordinateType FindNearestCandidate(	unsigned& minIndex,
 				//(i.e. at least one of the created edges is smaller than the original one
 				//and we don't create too small edges!)
 				PointCoordinateType squareLengthAP = AP.norm2();
-				PointCoordinateType squareLengthBP = (P-**itB).norm2();
+				PointCoordinateType squareLengthBP = (P - **itB).norm2();
 				if (	squareLengthAP >= minSquareEdgeLength
 					&&	squareLengthBP >= minSquareEdgeLength
 					&&	(allowLongerChunks || (squareLengthAP < squareLengthAB || squareLengthBP < squareLengthAB))
@@ -854,4 +853,40 @@ bool PointProjectionTools::extractConcaveHull2D(std::vector<IndexedCCVector2>& p
 	}
 
 	return true;
+}
+
+void PointProjectionTools::Transformation::apply(PointCloud& cloud) const
+{
+	unsigned count = cloud.size();
+
+	//always apply the scale before everything (applying before or after rotation does not changes anything)
+	if (fabs(static_cast<double>(s) - 1.0) > ZERO_TOLERANCE)
+	{
+		for (unsigned i = 0; i< cloud.size(); ++i)
+		{
+			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
+			*P *= s;
+		}
+		cloud.invalidateBoundingBox(); //invalidate bb
+	}
+
+	if (R.isValid())
+	{
+		for (unsigned i = 0; i< cloud.size(); ++i)
+		{
+			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
+			(*P) = R * (*P);
+		}
+		cloud.invalidateBoundingBox(); //invalidate bb
+	}
+
+	if (T.norm() > ZERO_TOLERANCE) //T applied only if it makes sense
+	{
+		for (unsigned i = 0; i< cloud.size(); ++i)
+		{
+			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
+			(*P) += T;
+		}
+		cloud.invalidateBoundingBox(); //invalidate bb
+	}
 }

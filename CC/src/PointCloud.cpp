@@ -165,38 +165,38 @@ void PointCloud::addPoint(const CCVector3 &P)
 	m_bbox.setValidity(false);
 }
 
-void PointCloud::applyTransformation(PointProjectionTools::Transformation& trans)
-{
-	unsigned count = size();
-
-	//always apply the scale before everything (applying before or after rotation does not changes anything)
-	if (fabs(static_cast<double>(trans.s) - 1.0) > ZERO_TOLERANCE)
-	{
-		for (CCVector3& P : m_points)
-		{
-			P *= trans.s;
-		}
-		m_bbox.setValidity(false); //invalidate bb
-	}
-
-	if (trans.R.isValid())
-	{
-		for (CCVector3& P : m_points)
-		{
-			P = trans.R * P;
-		}
-		m_bbox.setValidity(false); //invalidate bb
-	}
-
-	if (trans.T.norm() > ZERO_TOLERANCE) //T applied only if it makes sense
-	{
-		for (CCVector3& P : m_points)
-		{
-			P += trans.T;
-		}
-		m_bbox.setValidity(false); //invalidate bb
-	}
-}
+//void PointCloud::applyTransformation(PointProjectionTools::Transformation& trans)
+//{
+//	unsigned count = size();
+//
+//	//always apply the scale before everything (applying before or after rotation does not changes anything)
+//	if (fabs(static_cast<double>(trans.s) - 1.0) > ZERO_TOLERANCE)
+//	{
+//		for (CCVector3& P : m_points)
+//		{
+//			P *= trans.s;
+//		}
+//		m_bbox.setValidity(false); //invalidate bb
+//	}
+//
+//	if (trans.R.isValid())
+//	{
+//		for (CCVector3& P : m_points)
+//		{
+//			P = trans.R * P;
+//		}
+//		m_bbox.setValidity(false); //invalidate bb
+//	}
+//
+//	if (trans.T.norm() > ZERO_TOLERANCE) //T applied only if it makes sense
+//	{
+//		for (CCVector3& P : m_points)
+//		{
+//			P += trans.T;
+//		}
+//		m_bbox.setValidity(false); //invalidate bb
+//	}
+//}
 
 /***********************/
 /***                 ***/

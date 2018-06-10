@@ -3647,19 +3647,19 @@ void MainWindow::doAction4pcsRegister()
 	{
 		//output resulting transformation matrix
 		{
-			ccGLMatrix transMat = FromCCLibMatrix<PointCoordinateType,float>(transform.R,transform.T);
+			ccGLMatrix transMat = FromCCLibMatrix<PointCoordinateType, float>(transform.R, transform.T);
 			forceConsoleDisplay();
 			ccConsole::Print("[Align] Resulting matrix:");
-			ccConsole::Print(transMat.toString(12,' ')); //full precision
+			ccConsole::Print(transMat.toString(12, ' ')); //full precision
 			ccConsole::Print("Hint: copy it (CTRL+C) and apply it - or its inverse - on any entity with the 'Edit > Apply transformation' tool");
 		}
 
-		ccPointCloud *newDataCloud = data->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(data)->cloneThis() : ccPointCloud::From(data,data);
+		ccPointCloud *newDataCloud = data->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(data)->cloneThis() : ccPointCloud::From(data, data);
 
 		if (data->getParent())
 			data->getParent()->addChild(newDataCloud);
-		newDataCloud->setName(data->getName()+QString(".registered"));
-		newDataCloud->applyTransformation(transform);
+		newDataCloud->setName(data->getName() + QString(".registered"));
+		transform.apply(*newDataCloud);
 		newDataCloud->setDisplay(data->getDisplay());
 		newDataCloud->prepareDisplayForRefresh();
 		zoomOn(newDataCloud);

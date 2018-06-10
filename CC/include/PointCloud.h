@@ -21,7 +21,6 @@
 
 //Local
 #include "GenericIndexedCloudPersist.h"
-#include "PointProjectionTools.h"
 #include "BoundingBox.h"
 #include "ScalarField.h"
 
@@ -30,8 +29,6 @@
 
 namespace CCLib
 {
-
-//class ScalarField;
 
 //! A storage-efficient point cloud structure that can also handle an unlimited number of scalar fields
 #ifdef NO_CCLIB_PC_VIRTUAL_HERITAGE
@@ -77,7 +74,7 @@ public:
 		/** WARNING: THIS METHOD IS NOT COMPATIBLE WITH PARALLEL STRATEGIES
 			\param trans transformation (scale * rotation matrix + translation vector)
 		**/
-		virtual void applyTransformation(PointProjectionTools::Transformation& trans);
+		//virtual void applyTransformation(PointProjectionTools::Transformation& trans);
 
 		//! Resizes the point database
 		/** The cloud database is resized with the specified size. If the new size

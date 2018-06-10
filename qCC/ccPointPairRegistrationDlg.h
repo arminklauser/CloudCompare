@@ -22,6 +22,9 @@
 #include "ccOverlayDialog.h"
 #include "ccPickingListener.h"
 
+//CCLib
+#include <PointProjectionTools.h>
+
 //qCC_db
 #include <ccPointCloud.h>
 
