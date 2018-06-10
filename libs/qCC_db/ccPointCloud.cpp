@@ -4090,7 +4090,6 @@ int ccPointCloud::addScalarField(ccScalarField* sf)
 	catch (const std::bad_alloc&)
 	{
 		ccLog::Warning("[ccPointCloud::addScalarField] Not enough memory!");
-		sf->release();
 		return -1;
 	}
 
