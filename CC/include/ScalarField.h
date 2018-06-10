@@ -70,21 +70,21 @@ public:
 	CC_CORE_LIB_API void computeMeanAndVariance(ScalarType &mean, ScalarType* variance = nullptr) const;
 
 	//! Determines the min and max values
-	CC_CORE_LIB_API void computeMinAndMax();
+	CC_CORE_LIB_API virtual void computeMinAndMax();
 
 	//! Returns whether a scalar value is valid or not
 	static inline bool ValidValue(ScalarType value) { return value == value; } //'value == value' fails for NaN values
 
 	//! Sets the value as 'invalid' (i.e. NAN_VALUE)
-	inline virtual void flagValueAsInvalid(size_t index) { at(index) = NaN(); }
+	inline void flagValueAsInvalid(size_t index) { at(index) = NaN(); }
 
 	//! Returns the minimum value
-	ScalarType getMin() const { return m_minVal; }
+	inline ScalarType getMin() const { return m_minVal; }
 	//! Returns the maximum value
-	ScalarType getMax() const { return m_maxVal; }
+	inline ScalarType getMax() const { return m_maxVal; }
 
 	//! Fills the array with a particular value
-	void fill(ScalarType fillValue = 0) { std::fill(begin(), end(), fillValue); }
+	inline void fill(ScalarType fillValue = 0) { if (empty()) resize(capacity(), fillValue); else std::fill(begin(), end(), fillValue); }
 
 	//! Reserves memory (no exception thrown)
 	CC_CORE_LIB_API bool reserveSafe(size_t count);

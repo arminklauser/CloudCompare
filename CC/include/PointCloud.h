@@ -23,6 +23,7 @@
 #include "GenericIndexedCloudPersist.h"
 #include "PointProjectionTools.h"
 #include "BoundingBox.h"
+#include "ScalarField.h"
 
 //STL
 #include <vector>
@@ -30,7 +31,7 @@
 namespace CCLib
 {
 
-class ScalarField;
+//class ScalarField;
 
 //! A storage-efficient point cloud structure that can also handle an unlimited number of scalar fields
 #ifdef NO_CCLIB_PC_VIRTUAL_HERITAGE

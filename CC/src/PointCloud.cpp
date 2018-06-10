@@ -18,9 +18,6 @@
 
 #include <PointCloud.h>
 
-//local
-#include <ScalarField.h>
-
 using namespace CCLib;
 
 PointCloud::PointCloud()
@@ -304,15 +301,13 @@ int PointCloud::addScalarField(const char* uniqueName)
 	try
 	{
 		//we don't want 'm_scalarFields' to grow by 50% each time! (default behavior of std::vector::push_back)
-		m_scalarFields.resize(m_scalarFields.size() + 1);
+		m_scalarFields.resize(m_scalarFields.size() + 1, sf);
 	}
 	catch (const std::bad_alloc&) //out of memory
 	{
-		delete sf;
+		sf;
 		return -1;
 	}
-
-	m_scalarFields.back() = sf;
 
 	return static_cast<int>(m_scalarFields.size()) - 1;
 }
