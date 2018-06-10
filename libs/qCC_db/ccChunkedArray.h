@@ -124,7 +124,7 @@ public:
 	inline const Type& getValue(size_t index) const { return at(index); }
 	inline void setValue(size_t index, const Type& value) { at(index) = value; }
 	inline void addElement(const Type& value) { emplace_back(value); }
-	inline void fill(const Type& value) { std::fill(begin(), end(), value); }
+	inline void fill(const Type& value) { if (empty()) resize(capacity(), value); else std::fill(begin(), end(), value); }
 	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
 	inline void clear(bool releaseMemory = false) { if (releaseMemory) resize(0); else std::vector<Type>::clear(); }
 	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
