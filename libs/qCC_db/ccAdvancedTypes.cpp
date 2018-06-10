@@ -24,8 +24,8 @@ bool NormsIndexesTableType::fromFile_MeOnly(QFile& in, short dataVersion, int fl
 		//in previous versions (< 41) the normals were compressed on 15 bytes (2*6+3) as unsigned short
 		static const unsigned OLD_QUANTIZE_LEVEL = 6;
 
-		ccArray<CompressedNormType, 1, unsigned short>* oldNormals = new ccArray<CompressedNormType, 1, unsigned short>();
-		if (!ccSerializationHelper::GenericArrayFromFile<CompressedNormType, 1, CompressedNormType>(*oldNormals, in, dataVersion))
+		ccArray<unsigned short, 1, unsigned short>* oldNormals = new ccArray<unsigned short, 1, unsigned short>();
+		if (!ccSerializationHelper::GenericArrayFromFile<unsigned short, 1, unsigned short>(*oldNormals, in, dataVersion))
 		{
 			oldNormals->release();
 			return false;

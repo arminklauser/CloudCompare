@@ -220,7 +220,8 @@ public:
 			{
 				//Apparently Qt and/or Windows don't like to read too many bytes in a row...
 				static const qint64 MaxElementPerChunk = (static_cast<qint64>(1) << 24);
-				qint64 byteCount = static_cast<qint64>(data.size()) * sizeof(Type);
+				assert(sizeof(ComponentType) * N == sizeof(Type));
+				qint64 byteCount = static_cast<qint64>(data.size()) * (sizeof(ComponentType) * N);
 				char* dest = (char*)data.data();
 				while (byteCount > 0)
 				{
