@@ -655,10 +655,10 @@ bool ScalarFieldTools::computeKmeans(	const GenericCloud* theCloud,
 
 		//compute the clusters centers
 		theOldKNums = theKNums;
-		std::fill(theKSums.begin(),theKSums.end(),static_cast<ScalarType>(0));
-		std::fill(theKNums.begin(),theKNums.end(),static_cast<unsigned>(0));
+		std::fill(theKSums.begin(), theKSums.end(), static_cast<ScalarType>(0));
+		std::fill(theKNums.begin(), theKNums.end(), static_cast<unsigned>(0));
 		{
-			for (unsigned i=0; i<n; ++i)
+			for (unsigned i = 0; i < n; ++i)
 			{
 				if (minDistsToMean[i] >= 0) //must be a valid value!
 				{
@@ -670,9 +670,9 @@ bool ScalarFieldTools::computeKmeans(	const GenericCloud* theCloud,
 
 		double classMovingDist = 0.0;
 		{
-			for (unsigned char j=0; j<K; ++j)
+			for (unsigned char j = 0; j < K; ++j)
 			{
-				ScalarType newMean = (theKNums[j] > 0 ? theKSums[j]/theKNums[j] : theKMeans[j]);
+				ScalarType newMean = (theKNums[j] > 0 ? theKSums[j] / theKNums[j] : theKMeans[j]);
 
 				if (theOldKNums[j] != theKNums[j])
 					meansHaveMoved = true;
@@ -700,18 +700,17 @@ bool ScalarFieldTools::computeKmeans(	const GenericCloud* theCloud,
 			}
 			else
 			{
-				progressCb->update(static_cast<float>((1.0 - classMovingDist/initialCMD) * 100.0));
+				progressCb->update(static_cast<float>((1.0 - classMovingDist / initialCMD) * 100.0));
 			}
 		}
-	}
-	while (meansHaveMoved);
+	} while (meansHaveMoved);
 
 	//update distances
-	std::vector<ScalarType> mins,maxs;
+	std::vector<ScalarType> mins, maxs;
 	try
 	{
-		mins.resize(K,maxV);
-		maxs.resize(K,minV);
+		mins.resize(K, maxV);
+		maxs.resize(K, minV);
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -721,7 +720,7 @@ bool ScalarFieldTools::computeKmeans(	const GenericCloud* theCloud,
 
 	//look for min and max values for each cluster
 	{
-		for (unsigned i=0; i<n; ++i)
+		for (unsigned i = 0; i < n; ++i)
 		{
 			ScalarType V = theCloud->getPointScalarValue(i);
 			if (ScalarField::ValidValue(V))
@@ -736,14 +735,14 @@ bool ScalarFieldTools::computeKmeans(	const GenericCloud* theCloud,
 
 	//last check
 	{
-		for (unsigned char j=0; j<K; ++j)
+		for (unsigned char j = 0; j < K; ++j)
 			if (theKNums[j] == 0)
 				mins[j] = maxs[j] = -1.0;
 	}
 
 	//output
 	{
-		for (unsigned char j=0; j<K; ++j)
+		for (unsigned char j = 0; j < K; ++j)
 		{
 			kmcc[j].mean = theKMeans[j];
 			kmcc[j].minValue = mins[j];
