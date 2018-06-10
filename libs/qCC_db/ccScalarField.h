@@ -171,7 +171,7 @@ public:
 	inline bool logScale() const { return m_logScale; }
 
 	//inherited
-	QCC_DB_LIB_API virtual void computeMinAndMax();
+	QCC_DB_LIB_API virtual void computeMinAndMax() override;
 
 	//! Returns associated color scale
 	inline const ccColorScale::Shared& getColorScale() const { return m_colorScale; }
@@ -199,7 +199,7 @@ public:
 	};
 
 	//! Returns associated histogram values (for display)
-	const Histogram& getHistogram() const { return m_histogram; }
+	inline const Histogram& getHistogram() const { return m_histogram; }
 
 	//! Returns whether the scalar field in its current configuration MAY have 'hidden' values or not
 	/** 'Hidden' values are typically NaN values or values outside of the 'displayed' intervale
@@ -208,17 +208,17 @@ public:
 	QCC_DB_LIB_API bool mayHaveHiddenValues() const;
 
 	//! Sets modification flag state
-	void setModificationFlag(bool state) { m_modified = state; }
+	inline void setModificationFlag(bool state) { m_modified = state; }
 	//! Returns modification flag state
-	bool getModificationFlag() const { return m_modified; }
+	inline bool getModificationFlag() const { return m_modified; }
 
 	//! Imports the parameters from another scalar field
 	QCC_DB_LIB_API void importParametersFrom(const ccScalarField* sf);
 
 	//inherited from ccSerializableObject
-	virtual bool isSerializable() const { return true; }
-	QCC_DB_LIB_API virtual bool toFile(QFile& out) const;
-	QCC_DB_LIB_API virtual bool fromFile(QFile& in, short dataVersion, int flags);
+	inline virtual bool isSerializable() const override { return true; }
+	QCC_DB_LIB_API virtual bool toFile(QFile& out) const override;
+	QCC_DB_LIB_API virtual bool fromFile(QFile& in, short dataVersion, int flags) override;
 
 	//! Returns the global shift (if any)
 	inline double getGlobalShift() const { return m_globalShift; }
