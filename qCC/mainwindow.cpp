@@ -338,7 +338,10 @@ MainWindow::~MainWindow()
 	m_mdiArea->closeAllSubWindows();
 
 	if (ccRoot)
+	{
 		delete ccRoot;
+		ccRoot = nullptr;
+	}
 
 	delete m_UI;
 	m_UI = nullptr;
@@ -7305,13 +7308,14 @@ void MainWindow::setView( CC_VIEW_ORIENTATION view )
 void MainWindow::spawnHistogramDialog(const std::vector<unsigned>& histoValues, double minVal, double maxVal, QString title, QString xAxisLabel)
 {
 	ccHistogramWindowDlg* hDlg = new ccHistogramWindowDlg(this);
+	hDlg->setAttribute(Qt::WA_DeleteOnClose, true);
 	hDlg->setWindowTitle("Histogram");
 
 	ccHistogramWindow* histogram = hDlg->window();
 	{
 		histogram->setTitle(title);
-		histogram->fromBinArray(histoValues,minVal,maxVal);
-		histogram->setAxisLabels(xAxisLabel,"Count");
+		histogram->fromBinArray(histoValues, minVal, maxVal);
+		histogram->setAxisLabels(xAxisLabel, "Count");
 		histogram->refresh();
 	}
 
@@ -7331,6 +7335,7 @@ void MainWindow::showSelectedEntitiesHistogram()
 			if (sf)
 			{
 				ccHistogramWindowDlg* hDlg = new ccHistogramWindowDlg(this);
+				hDlg->setAttribute(Qt::WA_DeleteOnClose, true);
 				hDlg->setWindowTitle(QString("Histogram [%1]").arg(cloud->getName()));
 
 				ccHistogramWindow* histogram = hDlg->window();
@@ -7339,13 +7344,13 @@ void MainWindow::showSelectedEntitiesHistogram()
 					unsigned numberOfClasses = static_cast<unsigned>(sqrt(static_cast<double>(numberOfPoints)));
 					//we take the 'nearest' multiple of 4
 					numberOfClasses &= (~3);
-					numberOfClasses = std::max<unsigned>(4,numberOfClasses);
-					numberOfClasses = std::min<unsigned>(256,numberOfClasses);
+					numberOfClasses = std::max<unsigned>(4, numberOfClasses);
+					numberOfClasses = std::min<unsigned>(256, numberOfClasses);
 
 					histogram->setTitle(QString("%1 (%2 values) ").arg(sf->getName()).arg(numberOfPoints));
 					bool showNaNValuesInGrey = sf->areNaNValuesShownInGrey();
-					histogram->fromSF(sf,numberOfClasses,true,showNaNValuesInGrey);
-					histogram->setAxisLabels(sf->getName(),"Count");
+					histogram->fromSF(sf, numberOfClasses, true, showNaNValuesInGrey);
+					histogram->setAxisLabels(sf->getName(), "Count");
 					histogram->refresh();
 				}
 				hDlg->show();
