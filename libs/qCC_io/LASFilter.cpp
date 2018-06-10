@@ -737,12 +737,15 @@ struct LasCloudChunk
 				}
 
 				int sfIndex = loadedCloud->addScalarField(field->sf);
-				if (!loadedCloud->hasDisplayedScalarField())
+				if (sfIndex >= 0 && !loadedCloud->hasDisplayedScalarField())
 				{
 					loadedCloud->setCurrentDisplayedScalarField(sfIndex);
 					loadedCloud->showSF(!loadedCloud->hasColors());
 				}
-				field->sf->release();
+				else
+				{
+					field->sf->release();
+				}
 				field->sf = nullptr;
 			}
 			else
@@ -1330,9 +1333,9 @@ CC_FILE_ERROR LASFilter::loadFile(const QString& filename, ccHObject& container,
 					{
 						field->firstValue = value;
 					}
-					if (!ignoreDefaultFields
-						|| value != field->firstValue
-						|| (field->firstValue != field->defaultValue && field->firstValue >= field->minValue))
+					if (	!ignoreDefaultFields
+						||	value != field->firstValue
+						||	(field->firstValue != field->defaultValue && field->firstValue >= field->minValue))
 					{
 						field->sf = new ccScalarField(qPrintable(field->getName()));
 						if (field->sf->reserveSafe(fileChunkSize))
@@ -1346,9 +1349,10 @@ CC_FILE_ERROR LASFilter::loadFile(const QString& filename, ccHObject& container,
 								field->firstValue = 0;
 							}
 
-							for (unsigned int i = 0; i < loadedCloud->size() - 1; ++i)
+							ScalarType defaultValue = static_cast<ScalarType>(field->defaultValue);
+							for (unsigned i = 1; i < loadedCloud->size(); ++i)
 							{
-								field->sf->addElement(static_cast<ScalarType>(field->defaultValue));
+								field->sf->emplace_back(defaultValue);
 							}
 							ScalarType s = static_cast<ScalarType>(value);
 							field->sf->emplace_back(s);
