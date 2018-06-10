@@ -130,7 +130,7 @@ template <class QOpenGLFunctions> void drawSymbolAt(QOpenGLFunctions* glFunc, do
 
 void ccSymbolCloud::drawMeOnly(CC_DRAW_CONTEXT& context)
 {
-	if (!m_points.capacity() != 0)
+	if (m_points.empty())
 		return;
 
 	//nothing to do?!
