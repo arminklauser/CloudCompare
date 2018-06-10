@@ -965,7 +965,7 @@ template<class Type, int N, class ComponentType> void ccPropertiesTreeDelegate::
 	appendRow(ITEM("Name"), ITEM(_obj->getName().isEmpty() ? "undefined" : _obj->getName()));
 
 	//Count
-	appendRow(ITEM("Elements"), ITEM(QLocale(QLocale::English).toString(_obj->size())));
+	appendRow(ITEM("Elements"), ITEM(QLocale(QLocale::English).toString(static_cast<qulonglong>(_obj->size()))));
 
 	//Capacity
 	appendRow(ITEM("Capacity"), ITEM(QLocale(QLocale::English).toString(_obj->capacity())));
