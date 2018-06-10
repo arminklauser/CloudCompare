@@ -323,10 +323,10 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 				if (level1 != level0)
 				{
 					//add intermediate levels if necessary
-					size_t levelCount = (level1 < level0 ? level0 - level1 : level1 - level0) + 1;
+					std::size_t levelCount = (level1 < level0 ? level0 - level1 : level1 - level0) + 1;
 					assert(levelCount != 0);
 
-					for (size_t i = 1; i < levelCount - 1; ++i) //we already know level0 and level1!
+					for (std::size_t i = 1; i < levelCount - 1; ++i) //we already know level0 and level1!
 					{
 						ScalarType sfVal = sfMin + i*((sfMax - sfMin) / levelCount);
 						PointCoordinateType dist = static_cast<PointCoordinateType>(sfVal * modParams.a + modParams.b);
@@ -394,7 +394,7 @@ ReferenceCloud* CloudSamplingTools::resampleCloudSpatially(GenericIndexedCloudPe
 					//modulate minDistance
 					minDistBetweenPoints = static_cast<PointCoordinateType>(sfVal * modParams.a + modParams.b);
 					//get (approximate) best level
-					size_t levelIndex = static_cast<size_t>(bestOctreeLevel.size() * ((sfVal - sfMin) / (sfMax - sfMin)));
+					std::size_t levelIndex = static_cast<std::size_t>(bestOctreeLevel.size() * ((sfVal - sfMin) / (sfMax - sfMin)));
 					if (levelIndex == bestOctreeLevel.size())
 						--levelIndex;
 					octreeLevel = bestOctreeLevel[levelIndex];

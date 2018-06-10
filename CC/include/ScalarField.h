@@ -73,7 +73,7 @@ public:
 	static inline bool ValidValue(ScalarType value) { return value == value; } //'value == value' fails for NaN values
 
 	//! Sets the value as 'invalid' (i.e. NAN_VALUE)
-	inline void flagValueAsInvalid(size_t index) { at(index) = NaN(); }
+	inline void flagValueAsInvalid(std::size_t index) { at(index) = NaN(); }
 
 	//! Returns the minimum value
 	inline ScalarType getMin() const { return m_minVal; }
@@ -84,17 +84,17 @@ public:
 	inline void fill(ScalarType fillValue = 0) { if (empty()) resize(capacity(), fillValue); else std::fill(begin(), end(), fillValue); }
 
 	//! Reserves memory (no exception thrown)
-	CC_CORE_LIB_API bool reserveSafe(size_t count);
+	CC_CORE_LIB_API bool reserveSafe(std::size_t count);
 	//! Resizes memory (no exception thrown)
-	CC_CORE_LIB_API bool resizeSafe(size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
+	CC_CORE_LIB_API bool resizeSafe(std::size_t count, bool initNewElements = false, ScalarType valueForNewElements = 0);
 
 	//Shortcuts (for backward compatibility)
-	inline ScalarType& getValue(size_t index) { return at(index); }
-	inline const ScalarType& getValue(size_t index) const { return at(index); }
-	inline void setValue(size_t index, ScalarType value) { at(index) = value; }
+	inline ScalarType& getValue(std::size_t index) { return at(index); }
+	inline const ScalarType& getValue(std::size_t index) const { return at(index); }
+	inline void setValue(std::size_t index, ScalarType value) { at(index) = value; }
 	inline void addElement(ScalarType value) { emplace_back(value); }
 	inline unsigned currentSize() const { return static_cast<unsigned>(size()); }
-	inline void swap(size_t i1, size_t i2) { std::swap(at(i1), at(i2)); }
+	inline void swap(std::size_t i1, std::size_t i2) { std::swap(at(i1), at(i2)); }
 
 protected: //methods
 

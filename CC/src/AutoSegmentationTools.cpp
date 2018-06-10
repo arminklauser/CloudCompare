@@ -99,7 +99,7 @@ bool AutoSegmentationTools::extractConnectedComponents(GenericIndexedCloudPersis
 			//(they will be "used" later)
 			try
 			{
-				while (static_cast<size_t>(ccLabel) >= cc.size())
+				while (static_cast<std::size_t>(ccLabel) >= cc.size())
 				{
 					cc.push_back(new ReferenceCloud(theCloud));
 				}

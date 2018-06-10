@@ -90,7 +90,7 @@ const CCVector3* PointCloud::getNextPoint()
 
 bool PointCloud::resize(unsigned newCount)
 {
-	size_t oldCount = m_points.size();
+	std::size_t oldCount = m_points.size();
 
 	//we try to enlarge the 3D points array
 	try
@@ -103,12 +103,12 @@ bool PointCloud::resize(unsigned newCount)
 	}
 
 	//then the scalar fields
-	for (size_t i = 0; i < m_scalarFields.size(); ++i)
+	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
 	{
 		if (!m_scalarFields[i]->resizeSafe(newCount))
 		{
 			//if something fails, we restore the previous size for already processed SFs!
-			for (size_t j = 0; j < i; ++j)
+			for (std::size_t j = 0; j < i; ++j)
 			{
 				m_scalarFields[j]->resize(oldCount);
 				m_scalarFields[j]->computeMinAndMax();
@@ -136,7 +136,7 @@ bool PointCloud::reserve(unsigned newCapacity)
 	}
 
 	//then the scalar fields
-	for (size_t i = 0; i < m_scalarFields.size(); ++i)
+	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
 	{
 		if (!m_scalarFields[i]->reserveSafe(newCapacity))
 			return false;
@@ -212,7 +212,7 @@ bool PointCloud::isScalarFieldEnabled() const
 		return false;
 	}
 
-	size_t sfValuesCount = currentInScalarFieldArray->size();
+	std::size_t sfValuesCount = currentInScalarFieldArray->size();
 	return (sfValuesCount != 0 && sfValuesCount >= m_points.size());
 }
 
@@ -354,8 +354,8 @@ void PointCloud::deleteAllScalarFields()
 
 int PointCloud::getScalarFieldIndexByName(const char* name) const
 {
-	size_t sfCount = m_scalarFields.size();
-	for (size_t i = 0; i < sfCount; ++i)
+	std::size_t sfCount = m_scalarFields.size();
+	for (std::size_t i = 0; i < sfCount; ++i)
 	{
 		//we don't accept two SF with the same name!
 		if (strcmp(m_scalarFields[i]->getName(), name) == 0)
@@ -390,7 +390,7 @@ void PointCloud::swapPoints(unsigned firstIndex, unsigned secondIndex)
 
 	std::swap(m_points[firstIndex], m_points[secondIndex]);
 
-	for (size_t i = 0; i < m_scalarFields.size(); ++i)
+	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
 	{
 		m_scalarFields[i]->swap(firstIndex, secondIndex);
 	}

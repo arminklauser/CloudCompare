@@ -1761,7 +1761,7 @@ int DgmOctree::getPointsInSphericalNeighbourhood(	const CCVector3& sphereCenter,
 	return static_cast<int>(neighbours.size());
 }
 
-size_t DgmOctree::getPointsInBoxNeighbourhood(BoxNeighbourhood& params) const
+std::size_t DgmOctree::getPointsInBoxNeighbourhood(BoxNeighbourhood& params) const
 {
 	//cell size
 	const PointCoordinateType& cs = getCellSize(params.level);
@@ -1929,7 +1929,7 @@ size_t DgmOctree::getPointsInBoxNeighbourhood(BoxNeighbourhood& params) const
 	return params.neighbours.size();
 }
 
-size_t DgmOctree::getPointsInCylindricalNeighbourhood(CylindricalNeighbourhood& params) const
+std::size_t DgmOctree::getPointsInCylindricalNeighbourhood(CylindricalNeighbourhood& params) const
 {
 	//cell size
 	const PointCoordinateType& cs = getCellSize(params.level);
@@ -2054,7 +2054,7 @@ size_t DgmOctree::getPointsInCylindricalNeighbourhood(CylindricalNeighbourhood& 
 	return params.neighbours.size();
 }
 
-size_t DgmOctree::getPointsInCylindricalNeighbourhoodProgressive(ProgressiveCylindricalNeighbourhood& params) const
+std::size_t DgmOctree::getPointsInCylindricalNeighbourhoodProgressive(ProgressiveCylindricalNeighbourhood& params) const
 {
 	//cell size
 	const PointCoordinateType& cs = getCellSize(params.level);
@@ -2078,7 +2078,7 @@ size_t DgmOctree::getPointsInCylindricalNeighbourhoodProgressive(ProgressiveCyli
 
 	//first process potential candidates from the previous pass
 	{
-		for (size_t k=0; k<params.potentialCandidates.size(); /*++k*/)
+		for (std::size_t k=0; k<params.potentialCandidates.size(); /*++k*/)
 		{
 			//potentialCandidates[k].squareDist = 'dot'!
 			if (	params.potentialCandidates[k].squareDistd >= currentHalfLengthMinus
@@ -2351,7 +2351,7 @@ int DgmOctree::findNeighborsInASphereStartingFromCell(NearestNeighboursSpherical
 #else //TEST_CELLS_FOR_SPHERICAL_NN
 
 	//point by point scan
-	size_t i = 0;
+	std::size_t i = 0;
 	
 	for ( PointDescriptor &pDescr : nNSS.pointsInNeighbourhood )
 	{
@@ -2801,7 +2801,7 @@ struct IndexAndCodeExt
 
 int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char level, bool sixConnexity, GenericProgressCallback* progressCb) const
 {
-	size_t numberOfCells = cellCodes.size();
+	std::size_t numberOfCells = cellCodes.size();
 	if (numberOfCells == 0) //no cells!
 		return -1;
 
@@ -2823,7 +2823,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 		//binary shift for cell code truncation
 		unsigned char bitDec = GET_BIT_SHIFT(level);
 
-		for (size_t i = 0; i < numberOfCells; i++)
+		for (std::size_t i = 0; i < numberOfCells; i++)
 		{
 			ccCells[i].theCode = (cellCodes[i] >> bitDec);
 
@@ -2948,7 +2948,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 	}
 
 	//current label
-	size_t currentLabel = 1;
+	std::size_t currentLabel = 1;
 
 	//process each slice
 	{
@@ -2995,7 +2995,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 				}
 
 				//number of neighbors for current cell
-				size_t p = neighboursVal.size();
+				std::size_t p = neighboursVal.size();
 
 				if (p == 0) //no neighbor
 				{
@@ -3020,7 +3020,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 						neighboursMin.clear();
 						//we get the smallest equivalent label for each neighbor's branch
 						{
-							for (size_t n = 0; n < p; n++)
+							for (std::size_t n = 0; n < p; n++)
 							{
 								// ... we start from its C.C. index
 								int label = neighboursVal[n];
@@ -3052,7 +3052,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 						//for all other branches
 						lastLabel = smallestLabel;
 						{
-							for (size_t n = 1; n < neighboursMin.size(); n++)
+							for (std::size_t n = 1; n < neighboursMin.size(); n++)
 							{
 								int label = neighboursMin[n];
 								assert(label < static_cast<int>(numberOfCells)+2);
@@ -3101,7 +3101,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 	//path compression (http://en.wikipedia.org/wiki/Union_find)
 	assert(currentLabel < numberOfCells + 2);
 	{
-		for (size_t i = 2; i <= currentLabel; i++)
+		for (std::size_t i = 2; i <= currentLabel; i++)
 		{
 			int label = equivalentLabels[i];
 			assert(label < static_cast<int>(numberOfCells)+2);
@@ -3116,7 +3116,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 
 	//update leaves
 	{
-		for (size_t i = 0; i < numberOfCells; i++)
+		for (std::size_t i = 0; i < numberOfCells; i++)
 		{
 			int label = cellIndexToLabel[i];
 			assert(label < static_cast<int>(numberOfCells)+2);
@@ -3130,14 +3130,14 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 	{
 		std::fill(equivalentLabels.begin(), equivalentLabels.end(), 0);
 
-		for (size_t i = 0; i < numberOfCells; i++)
+		for (std::size_t i = 0; i < numberOfCells; i++)
 		{
 			assert(cellIndexToLabel[i] > 1 && cellIndexToLabel[i] < static_cast<int>(numberOfCells)+2);
 			equivalentLabels[cellIndexToLabel[i]] = 1;
 		}
 
 		//we create (following) indexes for each components
-		for (size_t i = 2; i < numberOfCells + 2; i++)
+		for (std::size_t i = 2; i < numberOfCells + 2; i++)
 			if (equivalentLabels[i] == 1)
 				equivalentLabels[i] = ++numberOfComponents; //labels start at '1'
 	}
@@ -3161,7 +3161,7 @@ int DgmOctree::extractCCs(const cellCodesContainer& cellCodes, unsigned char lev
 		NormalizedProgress nprogress(progressCb, static_cast<unsigned>(numberOfCells));
 
 		ReferenceCloud Y(m_theAssociatedCloud);
-		for (size_t i = 0; i < numberOfCells; i++)
+		for (std::size_t i = 0; i < numberOfCells; i++)
 		{
 			assert(cellIndexToLabel[i] < static_cast<int>(numberOfCells)+2);
 

@@ -108,7 +108,7 @@ bool ManualSegmentationTools::isPointInsidePoly(const CCVector2& P,
 												const std::vector<CCVector2>& polyVertices)
 {
 	//number of vertices
-	size_t vertCount = polyVertices.size();
+	std::size_t vertCount = polyVertices.size();
 	if (vertCount < 2)
 		return false;
 

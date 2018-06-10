@@ -1464,7 +1464,7 @@ int FPCSRegistrationTools::FindCongruentBases(KDTree* tree,
 			pointsIndexes.clear();
 			tree->findPointsLyingToDistance(q0->u, static_cast<ScalarType>(d1), delta, pointsIndexes);
 			{
-				for(size_t j=0; j<pointsIndexes.size(); j++)
+				for(std::size_t j=0; j<pointsIndexes.size(); j++)
 				{
 					//As ||pi-pj|| = ||pj-pi||, we only take care of pairs that verify i<j
 					if (pointsIndexes[j]>i)
@@ -1478,7 +1478,7 @@ int FPCSRegistrationTools::FindCongruentBases(KDTree* tree,
 			pointsIndexes.clear();
 			tree->findPointsLyingToDistance(q0->u, static_cast<ScalarType>(d2), delta, pointsIndexes);
 			{
-				for(size_t j=0; j<pointsIndexes.size(); j++)
+				for(std::size_t j=0; j<pointsIndexes.size(); j++)
 				{
 					if (pointsIndexes[j]>i)
 					{
@@ -1556,13 +1556,13 @@ int FPCSRegistrationTools::FindCongruentBases(KDTree* tree,
 	//Find bases from matching intermediate points indexes
 	{
 		results.clear();
-		size_t count = match.size();
+		std::size_t count = match.size();
 		if (count>0)
 		{
 			results.reserve(count);
 			if (results.capacity() < count)		//not enough memory
 				return -6;
-			for(size_t i=0; i<count; i++)
+			for(std::size_t i=0; i<count; i++)
 			{
 				Base quad;
 				unsigned b = match[i].second / 2;

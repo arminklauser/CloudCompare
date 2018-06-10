@@ -46,7 +46,7 @@ SimpleMesh::~SimpleMesh()
 void SimpleMesh::forEach(genericTriangleAction action)
 {
 	SimpleTriangle tri;
-	size_t count = m_triIndexes.size();
+	std::size_t count = m_triIndexes.size();
 	for (VerticesIndexes& ti : m_triIndexes)
 	{
 		theVertices->getPoint(ti.i1, tri.A);

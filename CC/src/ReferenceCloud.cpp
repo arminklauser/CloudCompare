@@ -194,12 +194,12 @@ bool ReferenceCloud::add(const ReferenceCloud& cloud)
 		return false;
 	}
 
-	size_t newCount = cloud.m_theIndexes.size();
+	std::size_t newCount = cloud.m_theIndexes.size();
 	if (newCount == 0)
 		return true;
 
 	//reserve memory
-	size_t count = m_theIndexes.size();
+	std::size_t count = m_theIndexes.size();
 	try
 	{
 		m_theIndexes.resize(count + newCount);

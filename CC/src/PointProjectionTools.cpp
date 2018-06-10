@@ -347,14 +347,14 @@ inline bool LexicographicSort(const CCVector2& a, const CCVector2& b)
 bool PointProjectionTools::extractConvexHull2D(	std::vector<IndexedCCVector2>& points,
 												std::list<IndexedCCVector2*>& hullPoints)
 {
-	size_t n = points.size();
+	std::size_t n = points.size();
 
 	// Sort points lexicographically
 	ParallelSort(points.begin(), points.end(), LexicographicSort);
 
 	// Build lower hull
 	{
-		for (size_t i=0; i<n; i++)
+		for (std::size_t i=0; i<n; i++)
 		{
 			while (hullPoints.size() >= 2)
 			{
@@ -384,7 +384,7 @@ bool PointProjectionTools::extractConvexHull2D(	std::vector<IndexedCCVector2>& p
 
 	// Build upper hull
 	{
-		size_t t = hullPoints.size()+1;
+		std::size_t t = hullPoints.size()+1;
 		for (int i=static_cast<int>(n)-2; i>=0; i--)
 		{
 			while (hullPoints.size() >= t)
@@ -602,7 +602,7 @@ bool PointProjectionTools::extractConcaveHull2D(std::vector<IndexedCCVector2>& p
 	PointCoordinateType minSquareEdgeLength = 0;
 	{
 		CCVector2 minP,maxP;
-		for (size_t i = 0; i < pointCount; ++i)
+		for (std::size_t i = 0; i < pointCount; ++i)
 		{
 			const IndexedCCVector2& P = points[i];
 			if (i)
@@ -652,7 +652,7 @@ bool PointProjectionTools::extractConcaveHull2D(std::vector<IndexedCCVector2>& p
 			++step;
 
 			////reset point flags
-			//for (size_t i=0; i<pointCount; ++i)
+			//for (std::size_t i=0; i<pointCount; ++i)
 			//{
 			//	if (pointFlags[i] != POINT_FROZEN)
 			//		pointFlags[i] = POINT_NOT_USED;
@@ -780,7 +780,7 @@ bool PointProjectionTools::extractConcaveHull2D(std::vector<IndexedCCVector2>& p
 						}
 
 						//update the removed edges info and put them back in the main list
-						for (size_t i=0; i<removed.size(); ++i)
+						for (std::size_t i=0; i<removed.size(); ++i)
 						{
 							VertexIterator itC = removed[i];
 							VertexIterator itD = itC; ++itD;

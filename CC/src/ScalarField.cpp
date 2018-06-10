@@ -44,9 +44,9 @@ void ScalarField::setName(const char* name)
 void ScalarField::computeMeanAndVariance(ScalarType &mean, ScalarType* variance) const
 {
 	double _mean = 0.0, _std2 = 0.0;
-	size_t count = 0;
+	std::size_t count = 0;
 
-	for (size_t i = 0; i < size(); ++i)
+	for (std::size_t i = 0; i < size(); ++i)
 	{
 		const ScalarType& val = at(i);
 		if (ValidValue(val))
@@ -83,7 +83,7 @@ void ScalarField::computeMinAndMax()
 	if (!empty())
 	{
 		bool minMaxInitialized = false;
-		for (size_t i = 0; i < size(); ++i)
+		for (std::size_t i = 0; i < size(); ++i)
 		{
 			const ScalarType& val = at(i);
 			if (ValidValue(val))
@@ -110,7 +110,7 @@ void ScalarField::computeMinAndMax()
 	}
 }
 
-bool ScalarField::reserveSafe(size_t count)
+bool ScalarField::reserveSafe(std::size_t count)
 {
 	try
 	{
@@ -124,7 +124,7 @@ bool ScalarField::reserveSafe(size_t count)
 	return true;
 }
 
-bool ScalarField::resizeSafe(size_t count, bool initNewElements/*=false*/, ScalarType valueForNewElements/*=0*/)
+bool ScalarField::resizeSafe(std::size_t count, bool initNewElements/*=false*/, ScalarType valueForNewElements/*=0*/)
 {
 	try
 	{
