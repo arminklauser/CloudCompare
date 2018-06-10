@@ -305,7 +305,7 @@ int PointCloud::addScalarField(const char* uniqueName)
 	}
 	catch (const std::bad_alloc&) //out of memory
 	{
-		sf;
+		sf->release();
 		return -1;
 	}
 

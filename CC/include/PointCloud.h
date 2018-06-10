@@ -16,8 +16,8 @@
 //#                                                                        #
 //##########################################################################
 
-#ifndef CHUNKED_POINT_CLOUD_HEADER
-#define CHUNKED_POINT_CLOUD_HEADER
+#ifndef CC_LIB_POINT_CLOUD_HEADER
+#define CC_LIB_POINT_CLOUD_HEADER
 
 //Local
 #include "GenericIndexedCloudPersist.h"
@@ -251,4 +251,4 @@ protected:
 
 }
 
-#endif //CHUNKED_POINT_CLOUD_HEADER
+#endif //CC_LIB_POINT_CLOUD_HEADER
