@@ -52,7 +52,7 @@ class ccOctreeProxy;
 	- an octree strucutre
 	- visibility information per point (to hide/display subsets of points)
 **/
-class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject,  virtual public CCLib::GenericIndexedCloudPersist
+class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject,  public CCLib::GenericIndexedCloudPersist
 {
 	friend class ccMesh;
 

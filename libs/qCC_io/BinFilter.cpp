@@ -23,9 +23,6 @@
 #include <QFileInfo>
 #include <QtConcurrentRun>
 
-//CCLib
-#include <ScalarField.h>
-
 //qCC_db
 #include <ccFlags.h>
 #include <ccGenericPointCloud.h>
@@ -40,6 +37,7 @@
 #include <ccSensor.h>
 #include <ccCameraSensor.h>
 #include <ccImage.h>
+#include <ccScalarField.h>
 
 //system
 #include <unordered_set>
@@ -1177,7 +1175,9 @@ CC_FILE_ERROR BinFilter::LoadFileV1(QFile& in, ccHObject& container, unsigned nb
 			if (lineRead == fileChunkPos + fileChunkSize)
 			{
 				if (header.scalarField)
+				{
 					loadedCloud->getCurrentInScalarField()->computeMinAndMax();
+				}
 
 				container.addChild(loadedCloud);
 				fileChunkPos = lineRead;

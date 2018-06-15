@@ -3660,6 +3660,7 @@ void MainWindow::doAction4pcsRegister()
 			data->getParent()->addChild(newDataCloud);
 		newDataCloud->setName(data->getName() + QString(".registered"));
 		transform.apply(*newDataCloud);
+		newDataCloud->invalidateBoundingBox(); //invalidate bb
 		newDataCloud->setDisplay(data->getDisplay());
 		newDataCloud->prepareDisplayForRefresh();
 		zoomOn(newDataCloud);

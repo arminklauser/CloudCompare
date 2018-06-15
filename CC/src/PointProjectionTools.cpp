@@ -855,7 +855,7 @@ bool PointProjectionTools::extractConcaveHull2D(std::vector<IndexedCCVector2>& p
 	return true;
 }
 
-void PointProjectionTools::Transformation::apply(PointCloud& cloud) const
+void PointProjectionTools::Transformation::apply(GenericIndexedCloudPersist& cloud) const
 {
 	unsigned count = cloud.size();
 
@@ -867,7 +867,6 @@ void PointProjectionTools::Transformation::apply(PointCloud& cloud) const
 			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
 			*P *= s;
 		}
-		cloud.invalidateBoundingBox(); //invalidate bb
 	}
 
 	if (R.isValid())
@@ -877,7 +876,6 @@ void PointProjectionTools::Transformation::apply(PointCloud& cloud) const
 			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
 			(*P) = R * (*P);
 		}
-		cloud.invalidateBoundingBox(); //invalidate bb
 	}
 
 	if (T.norm() > ZERO_TOLERANCE) //T applied only if it makes sense
@@ -887,6 +885,5 @@ void PointProjectionTools::Transformation::apply(PointCloud& cloud) const
 			CCVector3* P = const_cast<CCVector3*>(cloud.getPoint(i));
 			(*P) += T;
 		}
-		cloud.invalidateBoundingBox(); //invalidate bb
 	}
 }

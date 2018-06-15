@@ -63,9 +63,10 @@ public:
 		inline CCVector3 apply(const CCVector3& P) const { return s * (R * P) + T; }
 
 		//! Applies the transformation to a cloud
-		/** WARNING: THIS METHOD IS NOT COMPATIBLE WITH PARALLEL STRATEGIES
+		/** \warning THIS METHOD IS NOT COMPATIBLE WITH PARALLEL STRATEGIES
+			\warning The caller should invalidate the bounding-box manually afterwards
 		**/
-		CC_CORE_LIB_API void apply(PointCloud& cloud) const;
+		CC_CORE_LIB_API void apply(GenericIndexedCloudPersist& cloud) const;
 	};
 
 	//! Develops a cylinder-shaped point cloud around its main axis

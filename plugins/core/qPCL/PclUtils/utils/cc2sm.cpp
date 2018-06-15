@@ -24,11 +24,9 @@
 //PCL
 #include <pcl/common/io.h>
 
-//CCLib
-#include <ScalarField.h>
-
 //qCC_db
 #include <ccPointCloud.h>
+#include <ccScalarField.h>
 
 //system
 #include <assert.h>
@@ -426,7 +424,7 @@ PCLCloud::Ptr cc2smReader::getAsSM() const
 			fields.push_back("normal_xyz");
 		if (m_cc_cloud->hasColors())
 			fields.push_back("rgb");
-		for (unsigned i=0; i<m_cc_cloud->getNumberOfScalarFields(); ++i)
+		for (unsigned i = 0; i < m_cc_cloud->getNumberOfScalarFields(); ++i)
 			fields.push_back(m_cc_cloud->getScalarField(static_cast<int>(i))->getName());
 	}
 	catch (const std::bad_alloc&)

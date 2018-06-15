@@ -24,7 +24,7 @@
 #include <DgmOctree.h>
 #include <DistanceComputationTools.h>
 #include <GenericProgressCallback.h>
-#include <ScalarField.h>
+#include <ccScalarField.h>
 
 struct SFPair
 {

@@ -763,6 +763,8 @@ ICPRegistrationTools::RESULT_TYPE ICPRegistrationTools::Register(	GenericIndexed
 		{
 			//we simply have to rotate the existing temporary cloud
 			currentTrans.apply(*data.rotatedCloud);
+			data.rotatedCloud->invalidateBoundingBox(); //invalidate bb
+
 			//DGM: warning, we must manually invalidate the ReferenceCloud bbox after rotation!
 			data.cloud->invalidateBoundingBox();
 		}

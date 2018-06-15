@@ -17,12 +17,10 @@
 
 #include "PVFilter.h"
 
-//CCLib
-#include <ScalarField.h>
-
 //qCC_db
 #include <ccLog.h>
 #include <ccPointCloud.h>
+#include <ccScalarField.h>
 #include <ccProgressDialog.h>
 
 //Qt
