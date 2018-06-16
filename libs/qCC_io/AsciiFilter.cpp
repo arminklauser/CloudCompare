@@ -990,7 +990,7 @@ CC_FILE_ERROR AsciiFilter::loadCloudFromFormatedAsciiFile(	const QString& filena
 				for (size_t j = 0; j < cloudDesc.scalarIndexes.size(); ++j)
 				{
 					D = static_cast<ScalarType>(parts[cloudDesc.scalarIndexes[j]].toDouble());
-					cloudDesc.scalarFields[j]->setValue(pointsRead - cloudChunkPos, D);
+					cloudDesc.scalarFields[j]->emplace_back(D);
 				}
 			}
 

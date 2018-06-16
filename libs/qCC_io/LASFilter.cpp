@@ -742,10 +742,7 @@ struct LasCloudChunk
 					loadedCloud->setCurrentDisplayedScalarField(sfIndex);
 					loadedCloud->showSF(!loadedCloud->hasColors());
 				}
-				else
-				{
-					field->sf->release();
-				}
+				field->sf->release();
 				field->sf = nullptr;
 			}
 			else
@@ -1340,6 +1337,7 @@ CC_FILE_ERROR LASFilter::loadFile(const QString& filename, ccHObject& container,
 						field->sf = new ccScalarField(qPrintable(field->getName()));
 						if (field->sf->reserveSafe(fileChunkSize))
 						{
+							field->sf->link();
 							if (field->type == LAS_TIME)
 							{
 								//we use the first value as 'global shift' (otherwise we will lose accuracy)
