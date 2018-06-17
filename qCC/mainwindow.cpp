@@ -1346,6 +1346,10 @@ void MainWindow::doActionEditGlobalShiftAndScale()
 		{
 			bool lockedVertices;
 			ccShiftedObject* shifted = ccHObjectCaster::ToShifted(entity, &lockedVertices);
+			if (!shifted)
+			{
+				continue;
+			}
 			//for (unlocked) entities only
 			if (lockedVertices)
 			{
@@ -1408,7 +1412,9 @@ void MainWindow::doActionEditGlobalShiftAndScale()
 	}
 
 	if (shiftedEntities.empty())
+	{
 		return;
+	}
 
 	ccShiftAndScaleCloudDlg sasDlg(Pl, Dl, Pg, Dg, this);
 	sasDlg.showApplyAllButton(shiftedEntities.size() > 1);
