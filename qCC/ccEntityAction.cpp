@@ -1554,7 +1554,7 @@ namespace ccEntityAction
 						CCVector3 sensorPosition;
 						for (size_t i = 0; i < cloud->getChildrenNumber(); ++i)
 						{
-							ccHObject* child = cloud->getChild(i);
+							ccHObject* child = cloud->getChild(static_cast<unsigned>(i));
 							if (child && child->isKindOf(CC_TYPES::SENSOR))
 							{
 								ccSensor* sensor = ccHObjectCaster::ToSensor(child);
