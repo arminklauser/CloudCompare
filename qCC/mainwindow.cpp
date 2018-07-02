@@ -5089,7 +5089,7 @@ void MainWindow::doActionMatchBBCenters()
 		//"severe" modifications (octree deletion, etc.) --> see ccHObject::applyGLTransformation
 		ccHObjectContext objContext = removeObjectTemporarilyFromDBTree(entity);
 		entity->applyGLTransformation_recursive(&glTrans);
-		putObjectBackIntoDBTree(entity,objContext);
+		putObjectBackIntoDBTree(entity, objContext);
 
 		entity->prepareDisplayForRefresh_recursive();
 	}
@@ -5972,7 +5972,7 @@ void MainWindow::activateRegisterPointPairTool()
 
 	if (!m_pprDlg)
 	{
-		m_pprDlg = new ccPointPairRegistrationDlg(m_pickingHub, this);
+		m_pprDlg = new ccPointPairRegistrationDlg(m_pickingHub, this, this);
 		connect(m_pprDlg, &ccOverlayDialog::processFinished, this, &MainWindow::deactivateRegisterPointPairTool);
 		registerOverlayDialog(m_pprDlg, Qt::TopRightCorner);
 	}
