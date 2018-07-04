@@ -60,15 +60,7 @@
 static const char s_deviationSFName[] = "Deviation";
 
 ccPointCloud::ccPointCloud(QString name) throw()
-#ifdef INHERIT_FROM_CCLIB_POINT_CLOUD
-	: PointCloud()
-	, ccGenericPointCloud(name)
-#else
-	: ccGenericPointCloud(name)
-	, m_currentPointIndex(0)
-	, m_currentInScalarFieldIndex(-1)
-	, m_currentOutScalarFieldIndex(-1)
-#endif
+	: CCLib::PointCloudTpl<ccGenericPointCloud>()
 	, m_rgbColors(nullptr)
 	, m_normals(nullptr)
 	, m_sfColorScaleDisplayed(false)
@@ -78,6 +70,7 @@ ccPointCloud::ccPointCloud(QString name) throw()
 	, m_lod(nullptr)
 	, m_fwfData(0)
 {
+	setName(name); //sadly we cannot use the ccGenericPointCloud constructor argument
 	showSF(false);
 }
 
@@ -443,10 +436,6 @@ ccPointCloud::~ccPointCloud()
 {
 	clear();
 
-#ifndef INHERIT_FROM_CCLIB_POINT_CLOUD
-	deleteAllScalarFields();
-#endif
-
 	if (m_lod)
 	{
 		delete m_lod;
@@ -466,14 +455,7 @@ void ccPointCloud::unalloactePoints()
 {
 	clearLOD();	// we have to clear the LOD structure before clearing the colors / SFs, so we can't leave it to notifyGeometryUpdate()
 	showSFColorsScale(false); //SFs will be destroyed
-#ifdef INHERIT_FROM_CCLIB_POINT_CLOUD
-	PointCloud::clear();
-#else
-	m_points.clear();
-	deleteAllScalarFields();
-	placeIteratorAtBeginning();
-	invalidateBoundingBox();
-#endif
+	BaseClass::clear();
 	ccGenericPointCloud::clear();
 
 	notifyGeometryUpdate(); //calls releaseVBOs()
@@ -1402,35 +1384,8 @@ bool ccPointCloud::reserve(unsigned newNumberOfPoints)
 		return false;
 
 	//call parent method first (for points + scalar fields)
-#ifndef INHERIT_FROM_CCLIB_POINT_CLOUD
-	//we try to enlarge the 3D points array
-	try
-	{
-		m_points.reserve(newNumberOfPoints);
-	}
-	catch (const std::bad_alloc&)
-	{
-		return false;
-	}
-
-	//then the scalar fields
-	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
-	{
-		if (!m_scalarFields[i]->reserveSafe(newNumberOfPoints))
-			return false;
-	}
-
-	//double check
-	if (m_points.capacity() < newNumberOfPoints)
-	{
-		return false;
-	}
-
-	if (
-#else
-	if (	!PointCloud::reserve(newNumberOfPoints) ||
-#endif
-			(hasColors() && !reserveTheRGBTable())
+	if (	!BaseClass::reserve(newNumberOfPoints)
+		||	(hasColors() && !reserveTheRGBTable())
 		||	(hasNormals() && !reserveTheNormsTable())
 		||	(hasFWF() && !reserveTheFWFTable()))
 	{
@@ -1453,44 +1408,12 @@ bool ccPointCloud::resize(unsigned newNumberOfPoints)
 	if (newNumberOfPoints < size() && isLocked())
 		return false;
 
-#ifdef INHERIT_FROM_CCLIB_POINT_CLOUD
 	//call parent method first (for points + scalar fields)
-	if (!PointCloud::resize(newNumberOfPoints))
+	if (!BaseClass::resize(newNumberOfPoints))
 	{
 		ccLog::Error("[ccPointCloud::resize] Not enough memory!");
 		return false;
 	}
-#else
-	std::size_t oldCount = m_points.size();
-
-	//we try to enlarge the 3D points array
-	try
-	{
-		m_points.resize(newNumberOfPoints);
-	}
-	catch (const std::bad_alloc&)
-	{
-		return false;
-	}
-
-	//then the scalar fields
-	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
-	{
-		if (!m_scalarFields[i]->resizeSafe(newNumberOfPoints))
-		{
-			//if something fails, we restore the previous size for already processed SFs!
-			for (std::size_t j = 0; j < i; ++j)
-			{
-				m_scalarFields[j]->resize(oldCount);
-				m_scalarFields[j]->computeMinAndMax();
-			}
-			//we can assume that newCount > oldNumberOfPoints, so it should always be ok
-			m_points.resize(oldCount);
-			return false;
-		}
-		m_scalarFields[i]->computeMinAndMax();
-	}
-#endif
 
 	notifyGeometryUpdate(); //calls releaseVBOs()
 
@@ -1610,11 +1533,7 @@ bool ccPointCloud::hasDisplayedScalarField() const
 
 void ccPointCloud::invalidateBoundingBox()
 {
-#ifndef INHERIT_FROM_CCLIB_POINT_CLOUD
-	m_bbox.setValidity(false);
-#else
-	CCLib::PointCloud::invalidateBoundingBox();
-#endif
+	BaseClass::invalidateBoundingBox();
 
 	notifyGeometryUpdate();	//calls releaseVBOs()
 }
@@ -2181,17 +2100,7 @@ void ccPointCloud::swapPoints(unsigned firstIndex, unsigned secondIndex)
 		return;
 
 	//points + associated SF values
-#ifdef INHERIT_FROM_CCLIB_POINT_CLOUD
-	PointCloud::swapPoints(firstIndex, secondIndex);
-#else
-	std::swap(m_points[firstIndex], m_points[secondIndex]);
-
-	for (std::size_t i = 0; i < m_scalarFields.size(); ++i)
-	{
-		m_scalarFields[i]->swap(firstIndex, secondIndex);
-	}
-
-#endif
+	BaseClass::swapPoints(firstIndex, secondIndex);
 
 	//colors
 	if (hasColors())
@@ -3457,19 +3366,17 @@ void ccPointCloud::setCurrentDisplayedScalarField(int index)
 		setCurrentOutScalarField(m_currentDisplayedScalarFieldIndex);
 }
 
-#ifdef INHERIT_FROM_CCLIB_POINT_CLOUD
-
 void ccPointCloud::deleteScalarField(int index)
 {
 	//we 'store' the currently displayed SF, as the SF order may be mixed up
 	setCurrentInScalarField(m_currentDisplayedScalarFieldIndex);
 
 	//the father does all the work
-	PointCloud::deleteScalarField(index);
+	BaseClass::deleteScalarField(index);
 
 	//current SF should still be up-to-date!
 	if (m_currentInScalarFieldIndex < 0 && getNumberOfScalarFields() > 0)
-		setCurrentInScalarField(static_cast<int>(getNumberOfScalarFields()-1));
+		setCurrentInScalarField(static_cast<int>(getNumberOfScalarFields() - 1));
 
 	setCurrentDisplayedScalarField(m_currentInScalarFieldIndex);
 	showSF(m_currentInScalarFieldIndex >= 0);
@@ -3478,14 +3385,12 @@ void ccPointCloud::deleteScalarField(int index)
 void ccPointCloud::deleteAllScalarFields()
 {
 	//the father does all the work
-	PointCloud::deleteAllScalarFields();
+	BaseClass::deleteAllScalarFields();
 
 	//update the currently displayed SF
 	setCurrentDisplayedScalarField(-1);
 	showSF(false);
 }
-
-#endif
 
 bool ccPointCloud::setRGBColorWithCurrentScalarField(bool mixWithExistingColor/*=false*/)
 {
@@ -4143,6 +4048,7 @@ int ccPointCloud::addScalarField(const char* uniqueName)
 	//failure?
 	if (sfIdx < 0)
 	{
+		sf->release();
 		return -1;
 	}
 
@@ -5999,227 +5905,3 @@ bool ccPointCloud::exportCoordToSF(bool exportDims[3])
 
 	return true;
 }
-
-#ifndef INHERIT_FROM_CCLIB_POINT_CLOUD
-
-using namespace CCLib;
-
-void ccPointCloud::forEach(genericPointAction action)
-{
-	//there's no point of calling forEach if there's no activated scalar field!
-	ScalarField* currentOutScalarFieldArray = getCurrentOutScalarField();
-	if (!currentOutScalarFieldArray)
-	{
-		assert(false);
-		return;
-	}
-
-	unsigned n = size();
-	for (unsigned i = 0; i < n; ++i)
-	{
-		action(m_points[i], (*currentOutScalarFieldArray)[i]);
-	}
-}
-
-void ccPointCloud::getBoundingBox(CCVector3& bbMin, CCVector3& bbMax)
-{
-	if (!m_bbox.isValid())
-	{
-		m_bbox.clear();
-		for (const CCVector3& P : m_points)
-		{
-			m_bbox.add(P);
-		}
-	}
-
-	bbMin = m_bbox.minCorner();
-	bbMax = m_bbox.maxCorner();
-}
-
-void ccPointCloud::placeIteratorAtBeginning()
-{
-	m_currentPointIndex = 0;
-}
-
-const CCVector3* ccPointCloud::getNextPoint()
-{
-	return (m_currentPointIndex < m_points.size() ? point(m_currentPointIndex++) : 0);
-}
-
-void ccPointCloud::addPoint(const CCVector3 &P)
-{
-	//NaN coordinates check
-	if (	P.x != P.x
-		||	P.y != P.y
-		||	P.z != P.z)
-	{
-		//replace NaN point by (0, 0, 0)
-		CCVector3 fakeP(0, 0, 0);
-		m_points.push_back(fakeP);
-	}
-	else
-	{
-		m_points.push_back(P);
-	}
-
-	m_bbox.setValidity(false);
-}
-
-bool ccPointCloud::isScalarFieldEnabled() const
-{
-	ScalarField* currentInScalarFieldArray = getCurrentInScalarField();
-	if (!currentInScalarFieldArray)
-	{
-		return false;
-	}
-
-	std::size_t sfValuesCount = currentInScalarFieldArray->size();
-	return (sfValuesCount != 0 && sfValuesCount >= m_points.size());
-}
-
-bool ccPointCloud::enableScalarField()
-{
-	ScalarField* currentInScalarField = getCurrentInScalarField();
-
-	if (!currentInScalarField)
-	{
-		//if we get there, it means that either the caller has forgot to create
-		//(and assign) a scalar field to the cloud, or that we are in a compatibility
-		//mode with old/basic behaviour: a unique SF for everything (input/output)
-
-		//we look for any already existing "default" scalar field 
-		m_currentInScalarFieldIndex = getScalarFieldIndexByName("Default");
-		if (m_currentInScalarFieldIndex < 0)
-		{
-			//if not, we create it
-			m_currentInScalarFieldIndex = addScalarField("Default");
-			if (m_currentInScalarFieldIndex < 0) //Something went wrong
-			{
-				return false;
-			}
-		}
-
-		currentInScalarField = getCurrentInScalarField();
-		assert(currentInScalarField);
-	}
-
-	//if there's no output scalar field either, we set this new scalar field as output also
-	if (!getCurrentOutScalarField())
-	{
-		m_currentOutScalarFieldIndex = m_currentInScalarFieldIndex;
-	}
-
-	return currentInScalarField->resizeSafe(m_points.capacity());
-}
-
-void ccPointCloud::setPointScalarValue(unsigned pointIndex, ScalarType value)
-{
-	assert(m_currentInScalarFieldIndex >= 0 && m_currentInScalarFieldIndex<(int)m_scalarFields.size());
-	//slow version
-	//ScalarField* currentInScalarFieldArray = getCurrentInScalarField();
-	//if (currentInScalarFieldArray)
-	//	currentInScalarFieldArray->setValue(pointIndex,value);
-
-	//fast version
-	m_scalarFields[m_currentInScalarFieldIndex]->setValue(pointIndex, value);
-}
-
-ScalarType ccPointCloud::getPointScalarValue(unsigned pointIndex) const
-{
-	assert(m_currentOutScalarFieldIndex >= 0 && m_currentOutScalarFieldIndex < static_cast<int>(m_scalarFields.size()));
-
-	return m_scalarFields[m_currentOutScalarFieldIndex]->getValue(pointIndex);
-}
-
-ccScalarField* ccPointCloud::getScalarField(int index) const
-{
-	return (index >= 0 && index < static_cast<int>(m_scalarFields.size()) ? m_scalarFields[index] : 0);
-}
-
-const char* ccPointCloud::getScalarFieldName(int index) const
-{
-	return (index >= 0 && index < static_cast<int>(m_scalarFields.size()) ? m_scalarFields[index]->getName() : 0);
-}
-
-void ccPointCloud::deleteScalarField(int index)
-{
-	int sfCount = static_cast<int>(m_scalarFields.size());
-	if (index < 0 || index >= sfCount)
-		return;
-
-	//we 'store' the currently displayed SF, as the SF order may be mixed up
-	setCurrentInScalarField(m_currentDisplayedScalarFieldIndex);
-
-	//we update SF roles if they point to the deleted scalar field
-	if (index == m_currentInScalarFieldIndex)
-		m_currentInScalarFieldIndex = -1;
-	if (index == m_currentOutScalarFieldIndex)
-		m_currentOutScalarFieldIndex = -1;
-
-	//if the deleted SF is not the last one, we swap it with the last element
-	int lastIndex = sfCount - 1; //lastIndex>=0
-	if (index < lastIndex) //i.e.lastIndex>0
-	{
-		std::swap(m_scalarFields[index], m_scalarFields[lastIndex]);
-		//don't forget to update SF roles also if they point to the last element
-		if (lastIndex == m_currentInScalarFieldIndex)
-			m_currentInScalarFieldIndex = index;
-		if (lastIndex == m_currentOutScalarFieldIndex)
-			m_currentOutScalarFieldIndex = index;
-	}
-
-	//we can always delete the last element (and the vector stays consistent)
-	m_scalarFields.back()->release();
-	m_scalarFields.pop_back();
-
-	//current SF should still be up-to-date!
-	if (m_currentInScalarFieldIndex < 0 && getNumberOfScalarFields() > 0)
-		setCurrentInScalarField(static_cast<int>(getNumberOfScalarFields() - 1));
-
-	setCurrentDisplayedScalarField(m_currentInScalarFieldIndex);
-	showSF(m_currentInScalarFieldIndex >= 0);
-}
-
-void ccPointCloud::deleteAllScalarFields()
-{
-	m_currentInScalarFieldIndex = m_currentOutScalarFieldIndex = -1;
-
-	while (!m_scalarFields.empty())
-	{
-		m_scalarFields.back()->release();
-		m_scalarFields.pop_back();
-	}
-
-	//update the currently displayed SF
-	setCurrentDisplayedScalarField(-1);
-	showSF(false);
-}
-
-int ccPointCloud::getScalarFieldIndexByName(const char* name) const
-{
-	std::size_t sfCount = m_scalarFields.size();
-	for (std::size_t i = 0; i < sfCount; ++i)
-	{
-		//we don't accept two SF with the same name!
-		if (strcmp(m_scalarFields[i]->getName(), name) == 0)
-			return static_cast<int>(i);
-	}
-
-	return -1;
-}
-
-bool ccPointCloud::renameScalarField(int index, const char* newName)
-{
-	if (getScalarFieldIndexByName(newName) < 0)
-	{
-		ScalarField* sf = getScalarField(index);
-		if (sf)
-		{
-			sf->setName(newName);
-			return true;
-		}
-	}
-	return false;
-}
-
-#endif
