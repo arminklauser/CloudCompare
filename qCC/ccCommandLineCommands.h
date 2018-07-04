@@ -963,7 +963,7 @@ struct CommandCurvature : public ccCommandLineInterface::Command
 		}
 		else if (curvTypeStr == "NORMAL_CHANGE")
 		{
-		curvType = CCLib::Neighbourhood::NORMAL_CHANGE_RATE;
+			curvType = CCLib::Neighbourhood::NORMAL_CHANGE_RATE;
 		}
 		else
 		{
